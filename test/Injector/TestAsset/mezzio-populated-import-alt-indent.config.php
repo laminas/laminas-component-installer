@@ -1,5 +1,5 @@
 <?php
-use Zend\ConfigAggregator\ConfigAggregator;
+use Laminas\ConfigAggregator\ConfigAggregator;
 
 $aggregator = new ConfigAggregator(
     array(
