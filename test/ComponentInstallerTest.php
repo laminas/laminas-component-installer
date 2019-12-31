@@ -1,11 +1,12 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-component-installer for the canonical source repository
- * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-component-installer/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-component-installer for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-component-installer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-component-installer/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\ComponentInstaller;
+namespace LaminasTest\ComponentInstaller;
 
 use Composer\Composer;
 use Composer\DependencyResolver\Operation\InstallOperation;
@@ -14,6 +15,7 @@ use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Package\RootPackageInterface;
+use Laminas\ComponentInstaller\ComponentInstaller;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use org\bovigo\vfs\vfsStreamWrapper;
@@ -21,7 +23,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionObject;
-use Zend\ComponentInstaller\ComponentInstaller;
 
 class ComponentInstallerTest extends TestCase
 {
@@ -120,7 +121,7 @@ CONTENT
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
         $package->getExtra()->willReturn([
-            'zf' => [
+            'laminas' => [
                 'component' => 'SomeComponent',
             ],
         ]);
@@ -496,7 +497,7 @@ CONTENT
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
         $package->getExtra()->willReturn([
-            'zf' => [
+            'laminas' => [
                 'component' => $packageName,
             ],
         ]);
@@ -623,7 +624,7 @@ CONTENT
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/module');
         $package->getExtra()->willReturn([
-            'zf' => [
+            'laminas' => [
                 'module' => 'SomeModule',
             ],
         ]);
@@ -718,7 +719,7 @@ CONTENT
     {
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => 'Some\\Component',
             'config-provider' => 'Some\\Component\\ConfigProvider',
             'module' => 'Some\\Component',
@@ -734,11 +735,11 @@ CONTENT
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
     }
 
-    public function testPostPackageInstallDoesNothingIfZFExtraSectionDoesNotContainComponentOrModule()
+    public function testPostPackageInstallDoesNothingIfLaminasExtraSectionDoesNotContainComponentOrModule()
     {
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['zf' => []]);
+        $package->getExtra()->willReturn(['laminas' => []]);
 
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
@@ -758,7 +759,7 @@ CONTENT
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => 'Some\\Component',
         ]]);
         $package->getAutoload()->willReturn([]);
@@ -783,7 +784,7 @@ CONTENT
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => 'Some\\Component',
         ]]);
         $package->getAutoload()->willReturn([]);
@@ -795,7 +796,7 @@ CONTENT
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
 
-        $this->rootPackage->getExtra()->willReturn(['zf' => [
+        $this->rootPackage->getExtra()->willReturn(['laminas' => [
             'component-whitelist' => ['some/component'],
         ]]);
 
@@ -814,7 +815,7 @@ CONTENT
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => 'Some\\Component',
         ]]);
         $package->getAutoload()->willReturn([]);
@@ -875,7 +876,7 @@ CONTENT
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => [
                 'Some\\Component',
                 'Other\\Component',
@@ -977,7 +978,7 @@ CONTENT
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => 'Some\\Component',
         ]]);
         $package->getAutoload()->willReturn([]);
@@ -1034,7 +1035,7 @@ CONTENT
         // Now do a second pass, with another package
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('other/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => 'Other\\Component',
         ]]);
         $package->getAutoload()->willReturn([]);
@@ -1096,7 +1097,7 @@ CONTENT
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => 'Some\\Component',
         ]]);
         $package->getAutoload()->willReturn([]);
@@ -1153,7 +1154,7 @@ CONTENT
         // Now do a second pass, with another package
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('other/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => 'Other\\Component',
         ]]);
         $package->getAutoload()->willReturn([]);
@@ -1200,7 +1201,7 @@ CONTENT
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => 'Some\\Component',
         ]]);
         $package->getAutoload()->willReturn([]);
@@ -1239,7 +1240,7 @@ CONTENT
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => [
                 'Some\\Component',
                 'Other\\Component',
@@ -1285,7 +1286,7 @@ CONTENT
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/module');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'module' => 'Some\\Module',
         ]]);
         $package->getAutoload()->willReturn([]);
@@ -1353,7 +1354,7 @@ CONTENT
         $package = $this->prophesize(PackageInterface::class);
         $package->getAutoload()->willReturn([]);
         $package->getName()->willReturn('some/package');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'module' => 'Some\\Module',
             'component' => 'Some\\Component',
         ]]);
@@ -1449,7 +1450,7 @@ CONTENT
         $package = $this->prophesize(PackageInterface::class);
         $package->getAutoload()->willReturn([]);
         $package->getName()->willReturn('some/package');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => 'Some\\Component',
             'module' => 'Some\\Module',
         ]]);
@@ -1696,7 +1697,7 @@ CONTENT
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
         $package->getExtra()->willReturn([
-            'zf' => [
+            'laminas' => [
                 'component' => [
                     'Some\\Component',
                 ],
