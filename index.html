@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Composer plugin for injecting modules and configuration providers into application configuration">  
+    <link rel="canonical" href="https://docs.laminas.dev/">
+    <link rel="shortcut icon" href="/img/trademark-laminas-foundation-rgb.svg">
+
+    <title>laminas-component-installer - Laminas Docs</title>
+
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body id="page-top" class="components">
+
+    
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        
+        <a class="logo-link navbar-brand offset-md-2" href="https://getlaminas.org/" data-tooltip data-placement="bottom" title="Go to the Laminas homepage">
+            <img src="img/laminas-foundation-white.svg" height="28" alt="Lamnias">
+        </a>
+        <a class="navbar-title" href="https://docs.laminas.dev/" data-tooltip data-placement="bottom" title="Go to the Laminas Documentation">
+            Documentation
+        </a>
+
+        
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+            
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a href="https://getlaminas.org/about" class="nav-link">About</a>
+                </li>
+                <li class="nav-item">
+                    <a href="https://getlaminas.org/blog" class="nav-link">Blog</a>
+                </li>
+                <li class="nav-item">
+                    <a href="https://docs.laminas.dev" class="nav-link">All Docs</a>
+                </li>
+                <li class="nav-item">
+                    <a href="https://getlaminas.org/participate" class="nav-link">Community</a>
+                </li>
+            </ul>
+
+            
+            
+                <div class="d-block d-sm-none">
+                    
+                </div>
+            
+
+            
+            <div class="d-block d-sm-none">
+                <div class="component-selector">
+    
+    <h5 class="component-selector__subtitle">Find documentation…</h5>
+    <select class="form-control component-selector__control">
+        <option value="/">Overview</option>
+        <optgroup label="Components"></optgroup>
+    </select>
+</div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+    
+    <header class="header">
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="col-6 offset-md-2">
+                <h1 class="header__title">
+                    Components
+
+                    
+                        <small class="header__subtitle">laminas-component-installer</small>
+                    
+                </h1>
+            </div>
+
+            
+            <div class="col-4 text-sm-right">
+                
+                    
+
+                    <a href="#" class="header__link header__link--search" data-toggle="modal" data-target="#mkdocs_search_modal" title="Open search">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                    <a href="https://github.com/laminas/laminas-component-installer/" class="header__link header__link--github" title="Go to repository of laminas-component-installer">
+                        <i class="fa fa-github"></i> GitHub
+                    </a>
+                
+            </div>
+        </div>
+    </div>
+</header>
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2 col-sm-12">
+                
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+            </div>
+            <div class="col-md-7 col-sm-12 content" role="main" data-spy="scroll" data-target=".toc">
+                
+                    <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        
+            <li class="breadcrumb-item"><a href="">Overview</a></li>
+
+            
+                <li class="breadcrumb-item">laminas-component-installer</li>
+            
+        
+    </ol>
+</nav>
+
+
+
+
+
+    <h1>laminas-component-installer</h1>
+<p>Composer plugin for injecting modules and configuration providers into application configuration</p>
+
+
+    <p> <div class=codehilite><pre><span></span>$ composer require --dev laminas/laminas-component-installer
+</pre></div></p>
+<blockquote>
+<h3>Global Installation</h3>
+<p>You can also install the plugin globally, in which case it will be active for
+every project you manage on your machine.</p>
+<pre class=codehilite><code class=language-bash>
+$ composer global require laminas/laminas-component-installer
+</code></pre>
+</blockquote>
+<h2 id="installable-packages">Installable Packages</h2>
+<p>How do you define a package for which laminas-component-installer will install
+configuration?</p>
+<h3>Components</h3>
+<p>Components are Laminas modules that deliver low-level
+functionality; examples include the various Laminas components
+themselves. These require the following:</p>
+<ul>
+<li>A <code>Module</code> class in the package namespace.</li>
+<li>An <code>extra.laminas.component</code> entry listing the package namespace in your
+  <code>composer.json</code>.</li>
+</ul>
+<p> <div class=codehilite><pre><span></span><span class=s2>&quot;extra&quot;</span><span class=err>:</span> <span class=p>{</span>
+    <span class=nt>&quot;laminas&quot;</span><span class=p>:</span> <span class=p>{</span>
+        <span class=nt>&quot;component&quot;</span><span class=p>:</span> <span class=s2>&quot;Some\\Component&quot;</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</pre></div></p>
+<p>You may also specify multiple components as an array:</p>
+<p> <div class=codehilite><pre><span></span><span class=s2>&quot;extra&quot;</span><span class=err>:</span> <span class=p>{</span>
+    <span class=nt>&quot;laminas&quot;</span><span class=p>:</span> <span class=p>{</span>
+        <span class=nt>&quot;component&quot;</span><span class=p>:</span> <span class=p>[</span>
+            <span class=s2>&quot;Some\\Component&quot;</span><span class=p>,</span>
+            <span class=s2>&quot;Other\\Component&quot;</span>
+        <span class=p>]</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</pre></div></p>
+<p>Your application will need to have one or more of the following configuration
+files, from which you will be prompted to choose which one in which to inject
+the component:</p>
+<ul>
+<li><code>config/application.config.php</code> (vanilla Laminas application)</li>
+<li><code>config/modules.config.php</code> (<a href="https://api-tools.getlaminas.org">Laminas API Tools</a> application)</li>
+<li><code>config/development.config.php.dist</code> and <code>config/development.config.php</code>
+  (applications using <a href="https://github.com/laminas/laminas-development-mode">laminas-development-mode</a>)</li>
+</ul>
+<p>Components are added at the <strong>top</strong> of the application's list of modules.</p>
+<h3>Modules</h3>
+<p>Laminas modules typically deliver functionality around the
+<a href="https://docs.laminas.dev/laminas-mvc/">laminas-mvc</a> workflow, including MVC
+event listeners, controllers, etc. To enable the installer workflow, they 
+require the following:</p>
+<ul>
+<li>A <code>Module</code> class in the package namespace.</li>
+<li>An <code>extra.laminas.module</code> entry listing the package namespace in your <code>composer.json</code>.</li>
+</ul>
+<p> <div class=codehilite><pre><span></span><span class=s2>&quot;extra&quot;</span><span class=err>:</span> <span class=p>{</span>
+    <span class=nt>&quot;laminas&quot;</span><span class=p>:</span> <span class=p>{</span>
+        <span class=nt>&quot;module&quot;</span><span class=p>:</span> <span class=s2>&quot;Some\\Component&quot;</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</pre></div></p>
+<p>You may also specify multiple modules as an array:</p>
+<p> <div class=codehilite><pre><span></span><span class=s2>&quot;extra&quot;</span><span class=err>:</span> <span class=p>{</span>
+    <span class=nt>&quot;laminas&quot;</span><span class=p>:</span> <span class=p>{</span>
+        <span class=nt>&quot;module&quot;</span><span class=p>:</span> <span class=p>[</span>
+            <span class=s2>&quot;Some\\Component&quot;</span><span class=p>,</span>
+            <span class=s2>&quot;Other\\Component&quot;</span>
+        <span class=p>]</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</pre></div></p>
+<p>Your application will need to have one or more of the following configuration
+files, from which you will be prompted to choose which one in which to inject
+the module:</p>
+<ul>
+<li><code>config/application.config.php</code> (vanilla Laminas application)</li>
+<li><code>config/modules.config.php</code> (<a href="https://api-tools.getlaminas.org">Laminas API Tools</a> application)</li>
+<li><code>config/development.config.php.dist</code> and <code>config/development.config.php</code>
+  (applications using <a href="https://github.com/laminas/laminas-development-mode">laminas-development-mode</a>)</li>
+</ul>
+<p>Modules are added at the <strong>bottom</strong> of the application's list of modules.</p>
+<h3>Config Providers</h3>
+<p>Configuration providers work with <a href="https://github.com/mtymek/mezzio-config-manager">mezzio-config-manager</a>
+and <a href="https://github.com/laminas/laminas-config-aggregator">laminas-config-aggregator</a>,
+which provides generic functionality for aggregating and merging application
+configuration. Packages that provide configuration will provide an invokable
+class that returns configuration for the package. To enable the installer
+workflow, you will need:</p>
+<ul>
+<li>A configuration provider class. This is a class with no constructor
+  arguments defining an <code>__invoke()</code> method returning a configuration array.</li>
+</ul>
+<p> <div class=codehilite><pre><span></span><span class=x>namespace Some\Component;</span>
+
+<span class=x>class ConfigProvider</span>
+<span class=x>{</span>
+<span class=x>    public function __invoke()</span>
+<span class=x>    {</span>
+<span class=x>        return [ /* ... */ ];</span>
+<span class=x>    }</span>
+<span class=x>}</span>
+</pre></div></p>
+<ul>
+<li>An <code>extra.laminas.config-provider</code> entry listing the configuration provider class
+  in your <code>composer.json</code>.</li>
+</ul>
+<p> <div class=codehilite><pre><span></span><span class=s2>&quot;extra&quot;</span><span class=err>:</span> <span class=p>{</span>
+    <span class=nt>&quot;laminas&quot;</span><span class=p>:</span> <span class=p>{</span>
+        <span class=nt>&quot;config-provider&quot;</span><span class=p>:</span> <span class=s2>&quot;Some\\Component\\ConfigProvider&quot;</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</pre></div></p>
+<p>You may also specify multiple configuration providers as an array:</p>
+<p> <div class=codehilite><pre><span></span><span class=s2>&quot;extra&quot;</span><span class=err>:</span> <span class=p>{</span>
+    <span class=nt>&quot;laminas&quot;</span><span class=p>:</span> <span class=p>{</span>
+        <span class=nt>&quot;config-provider&quot;</span><span class=p>:</span> <span class=p>[</span>
+            <span class=s2>&quot;Some\\Component\\ConfigProvider&quot;</span><span class=p>,</span>
+            <span class=s2>&quot;Some\\Component\\PluginConfigProvider&quot;</span>
+        <span class=p>]</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</pre></div></p>
+<p>Your application will need to define a <code>config/config.php</code> file, and that file
+will need to have a line that instantiates either a
+<code>Mezzio\ConfigManager\ConfigManager</code> instance (deprecated) or
+<code>Laminas\ConfigAggregator\ConfigAggregator</code> instance.</p>
+<p>Configuration providers are added at the <strong>top</strong> of the
+<code>ConfigManager</code>/<code>ConfigAggregator</code> provider array.</p>
+<h2 id="whitelisting-packages-to-autoinstall">Whitelisting packages to autoinstall</h2>
+<p>At the root package level, you can indicate that certain packages that supply
+config providers and/or modules should automatically inject configuration,
+instead of prompting for installation, via the <code>component-whitelist</code> setting.
+This value should be an array of package names.</p>
+<p> <div class=codehilite><pre><span></span><span class=s2>&quot;extra&quot;</span><span class=err>:</span> <span class=p>{</span>
+    <span class=nt>&quot;laminas&quot;</span><span class=p>:</span> <span class=p>{</span>
+        <span class=nt>&quot;component-whitelist&quot;</span><span class=p>:</span> <span class=p>[</span>
+            <span class=s2>&quot;mezzio/mezzio&quot;</span><span class=p>,</span>
+            <span class=s2>&quot;mezzio/mezzio-helper&quot;</span><span class=p>,</span>
+            <span class=s2>&quot;mezzio/mezzio-fastrouterouter&quot;</span><span class=p>,</span>
+            <span class=s2>&quot;mezzio/mezzio-platesrenderer&quot;</span>
+        <span class=p>]</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</pre></div></p>
+<p>This setting only works in the root package.</p>
+<h2 id="why">Why?</h2>
+<p>When preparing laminas-mvc's version 3 release, we wanted to reduce the number of
+components required by the package. To do so, we moved integration code, such as
+factories, plugin managers, and event listeners into the components they
+consumed. This had a side effect: the components were no longer wired
+automatically.</p>
+<p>To provide service and event wiring, we added <code>Module</code> classes (and
+configuration providers) to all Laminas components. This exposed a new
+problem, however: how could we ensure that those components are added to the
+application module list as you add them to your application?</p>
+<p>This package provides the answer to that problem. As soon as you add this
+package to your application, whenever you add a component or module that exposes
+itself as such, the plugin will prompt you, asking where you want to inject it.</p>
+<h2 id="when-are-multiple-items-required">When are multiple items required?</h2>
+<p>As noted under each of the component, module, and config-provider sections, you
+can optionally specify an <em>array</em> of items. When would you do this?</p>
+<p>The primary reason is for <a href="https://getcomposer.org/doc/04-schema.md#type">metapackages</a>.
+Composer does not trigger either <code>post-package-install</code> or
+<code>post-package-uninstall</code> events for packages defined as metapackage
+requirements. As such, you would define the metadata for such packages in the
+metapackage as well, to ensure that the component installer can update the
+configuration accordingly.</p>
+<p>The other use case is to allow specifying multiple configuration providers from
+the same package. As an example, you might define default configuration, plus
+configuration for plugins; specifying these as separate configuration providers
+allows the consumer to choose if they want both enabled in their application.</p>
+<h3>Removing individual packages</h3>
+<p>When removing individual packages that were originally installed via a
+metapackage, <em>the component installer will not trigger</em>. As such, you will need
+to manually remove such packages from your configuration.</p>
+<p>Additionally, a later update may actually <em>re-install</em> the package, as it's a
+requirement of the metapackage. As such, it's typically safer to:</p>
+<ul>
+<li>Remove the metapackage</li>
+<li>Individually install the packages from the metapackage that you wish to keep.</li>
+</ul>
+
+    
+
+
+<h2>Support</h2>
+<ul>
+    <li>Issues: <a href="https://github.com/zendframework/laminas-component-installer/issues/">github.com/zendframework/laminas-component-installer/issues</a></li>
+    <li>Source: <a href="https://github.com/zendframework/laminas-component-installer/">github.com/zendframework/laminas-component-installer</a></li>
+    <li>Chat: <a href="https://zendframework-slack.herokuapp.com">zendframework-slack.herokuapp.com</a></li>
+    <li>Forum: <a href="https://discourse.zendframework.com/">discourse.zendframework.com</a></li>
+</ul>
+
+
+
+
+
+
+
+    <div class="help-wanted">
+        <p>
+            Found a mistake or want to contribute to the documentation?
+            <a href="https://github.com/laminas/laminas-component-installer/edit/master/docs/book/index.md" target="_blank" class="help-wanted__link">
+                Edit this page on GitHub!
+            </a>
+        </p>
+    </div>
+
+                
+            </div>
+            <div class="col-md-3 col-sm-12 sidebar">
+                
+                    <div class="component-selector">
+    
+    <h5 class="component-selector__subtitle">Find documentation…</h5>
+    <select class="form-control component-selector__control">
+        <option value="/">Overview</option>
+        <optgroup label="Components"></optgroup>
+    </select>
+</div>
+                    
+                
+            </div>
+        </div>
+    </div>
+
+    
+    <footer class="footer">
+    <div class="container">
+
+        
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <a class="footer__button" href="#page-top"><i class="fa fa-chevron-up" aria-hidden="true"></i></a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-7 offset-md-2">
+                <h5>Laminas</h5>
+                <ul>
+                    <li>Laminas Project <a href="https://getlaminas.org/">Components and MVC for Enterprise Applications</a></li>
+                    <li>Mezzio <a href="https://docs.mezzio.dev/">PSR-15 Middleware in Minutes</a></li>
+                    <li>Laminas API Tools: <a href="https://api-tools.getlaminas.org/">Build RESTful APIs in minutes</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row">
+
+            
+            <div class="col-md-4 offset-md-2">
+                <h4 class="footer__headline">Support</h4>
+                <ul class="support__list">
+                    <li class="support__list-item">
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://laminas.dev/chat" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://github.com/laminas" class="support__link" title="Github"><i class="fa fa-github"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://twitter.com/getlaminas" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://getlaminas.org/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://getlaminas.org/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
+                    </li>
+                </ul>
+            </div>
+
+            
+            <div class="col-md-3">
+                <h4 class="footer__headline">License</h4>
+                <p>
+                    Code licensed under <a
+                        href="https://github.com/laminas/laminas-component-installer//blob/master/LICENSE.md">BSD 3-Clause</a>.
+                </p>
+            </div>
+
+            
+            <div class="col-md-3">
+                <h4 class="footer__headline">Copyright</h4>
+                <p>
+                    <!--Built with love by the Laminas team with the help of our
+                    <a href="https://github.com/laminas/laminas-component-installer//graphs/contributors">contributors</a>.<br>-->
+                    &copy; 2019-2019 by <a href="https://getlaminas.org/">The Laminas Project</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script>
+        let base_url = '.',
+            project  = "components",
+            siteName = 'laminas-component-installer';
+    </script>
+    <script src="/js/scripts.js"></script>
+        <script src="search/main.js"></script>
+
+    
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Search</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search in laminas-component-installer" id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+
+</html>
+
+<!--
+MkDocs version : 1.0.4
+Build Date UTC : 2019-12-31 20:08:04
+-->
