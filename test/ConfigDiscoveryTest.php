@@ -1,21 +1,23 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies Ltd (http://www.zend.com)
+ * @see       https://github.com/laminas/laminas-component-installer for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-component-installer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-component-installer/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\ComponentInstaller;
+namespace LaminasTest\ComponentInstaller;
 
+use Laminas\ComponentInstaller\Collection;
+use Laminas\ComponentInstaller\ConfigDiscovery;
+use Laminas\ComponentInstaller\ConfigOption;
+use Laminas\ComponentInstaller\Injector;
+use Laminas\ComponentInstaller\Injector\InjectorInterface;
+use Laminas\ComponentInstaller\Injector\NoopInjector;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit_Framework_ExpectationFailedException as ExpectationFailedException;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\ComponentInstaller\Collection;
-use Zend\ComponentInstaller\ConfigDiscovery;
-use Zend\ComponentInstaller\ConfigOption;
-use Zend\ComponentInstaller\Injector;
-use Zend\ComponentInstaller\Injector\InjectorInterface;
-use Zend\ComponentInstaller\Injector\NoopInjector;
 
 class ConfigDiscoveryTest extends TestCase
 {
@@ -35,10 +37,10 @@ class ConfigDiscoveryTest extends TestCase
         ]);
 
         $this->injectorTypes = [
-            'Zend\ComponentInstaller\Injector\ApplicationConfigInjector',
-            'Zend\ComponentInstaller\Injector\DevelopmentConfigInjector',
-            'Zend\ComponentInstaller\Injector\ExpressiveConfigInjector',
-            'Zend\ComponentInstaller\Injector\ModulesConfigInjector',
+            'Laminas\ComponentInstaller\Injector\ApplicationConfigInjector',
+            'Laminas\ComponentInstaller\Injector\DevelopmentConfigInjector',
+            'Laminas\ComponentInstaller\Injector\MezzioConfigInjector',
+            'Laminas\ComponentInstaller\Injector\ModulesConfigInjector',
         ];
     }
 
@@ -56,7 +58,7 @@ class ConfigDiscoveryTest extends TestCase
             ->setContent('<' . "?php\nreturn [\n    'modules' => [\n    ]\n];");
     }
 
-    public function createExpressiveConfig()
+    public function createMezzioConfig()
     {
         vfsStream::newFile('config/config.php')
             ->at($this->projectRoot)
@@ -116,7 +118,7 @@ class ConfigDiscoveryTest extends TestCase
     {
         $this->createApplicationConfig();
         $this->createDevelopmentConfig();
-        $this->createExpressiveConfig();
+        $this->createMezzioConfig();
         $this->createModulesConfig();
 
         $options = $this->discovery->getAvailableConfigOptions($this->allTypes, vfsStream::url('project'));
@@ -152,14 +154,14 @@ class ConfigDiscoveryTest extends TestCase
                 'expected'   => Injector\DevelopmentConfigInjector::class,
             ],
             [
-                'seedMethod' => 'createExpressiveConfig',
+                'seedMethod' => 'createMezzioConfig',
                 'type'       => InjectorInterface::TYPE_CONFIG_PROVIDER,
-                'expected'   => Injector\ExpressiveConfigInjector::class,
+                'expected'   => Injector\MezzioConfigInjector::class,
             ],
             [
-                'seedMethod' => 'createExpressiveConfig',
+                'seedMethod' => 'createMezzioConfig',
                 'type'       => InjectorInterface::TYPE_CONFIG_PROVIDER,
-                'expected'   => Injector\ExpressiveConfigInjector::class,
+                'expected'   => Injector\MezzioConfigInjector::class,
             ],
             [
                 'seedMethod' => 'createModulesConfig',
