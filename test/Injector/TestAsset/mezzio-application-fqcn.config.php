@@ -1,7 +1,6 @@
 <?php
 
-$configManager = new Zend\Expressive\ConfigManager\ConfigManager(array(
-    \Foo\Bar::class,
+$configManager = new Mezzio\ConfigManager\ConfigManager(array(
     Application\ConfigProvider::class,
 ), 'data/cache/config.php');
 

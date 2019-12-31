@@ -1,23 +1,25 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2015 Zend Technologies Ltd (http://www.zend.com)
+ * @see       https://github.com/laminas/laminas-component-installer for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-component-installer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-component-installer/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\ComponentInstaller;
+namespace LaminasTest\ComponentInstaller;
 
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamDirectory;
 use Composer\Composer;
 use Composer\DependencyResolver\Operation\InstallOperation;
 use Composer\DependencyResolver\Operation\UninstallOperation;
 use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Script\PackageEvent;
+use Laminas\ComponentInstaller\ComponentInstaller;
+use Laminas\ComponentInstaller\FileInfoStub;
+use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
-use Zend\ComponentInstaller\ComponentInstaller;
-use Zend\ComponentInstaller\FileInfoStub;
 
 class ComponentInstallerTest extends TestCase
 {
@@ -80,7 +82,7 @@ class ComponentInstallerTest extends TestCase
     {
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => 'Some\\Component',
             'config-provider' => 'Some\\Component\\ConfigProvider',
             'module' => 'Some\\Component',
@@ -96,11 +98,11 @@ class ComponentInstallerTest extends TestCase
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
     }
 
-    public function testPostPackageInstallDoesNothingIfZFExtraSectionDoesNotContainComponentOrModule()
+    public function testPostPackageInstallDoesNothingIfLaminasExtraSectionDoesNotContainComponentOrModule()
     {
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['zf' => []]);
+        $package->getExtra()->willReturn(['laminas' => []]);
 
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
@@ -120,7 +122,7 @@ class ComponentInstallerTest extends TestCase
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => 'Some\\Component',
         ]]);
 
@@ -144,7 +146,7 @@ class ComponentInstallerTest extends TestCase
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => 'Some\\Component',
         ]]);
 
@@ -202,7 +204,7 @@ class ComponentInstallerTest extends TestCase
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => 'Some\\Component',
         ]]);
 
@@ -255,7 +257,7 @@ class ComponentInstallerTest extends TestCase
         // Now do a second pass, with another package
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('other/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => 'Other\\Component',
         ]]);
 
@@ -313,7 +315,7 @@ class ComponentInstallerTest extends TestCase
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => 'Some\\Component',
         ]]);
 
@@ -366,7 +368,7 @@ class ComponentInstallerTest extends TestCase
         // Now do a second pass, with another package
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('other/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => 'Other\\Component',
         ]]);
 
@@ -412,7 +414,7 @@ class ComponentInstallerTest extends TestCase
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['zf' => [
+        $package->getExtra()->willReturn(['laminas' => [
             'component' => 'Some\\Component',
         ]]);
 
