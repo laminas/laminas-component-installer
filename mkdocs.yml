@@ -1,9 +1,11 @@
 docs_dir: docs/book
 site_dir: docs/html
 nav:
-    - Home: index.md
+    - { Home: index.md }
 site_name: laminas-component-installer
 site_description: 'Composer plugin for injecting modules and configuration providers into application configuration'
 repo_url: 'https://github.com/laminas/laminas-component-installer'
 extra:
     show_special_homepage: true
+    project: Components
+    project_url: 'https://docs.laminas.dev'
