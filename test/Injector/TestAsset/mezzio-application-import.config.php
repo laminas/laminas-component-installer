@@ -1,7 +1,7 @@
 <?php
+use Laminas\ConfigAggregator\ConfigAggregator;
 
-$aggregator = new Zend\ConfigAggregator\ConfigAggregator(array(
-    \Foo\Bar::class,
+$aggregator = new ConfigAggregator(array(
     Application\ConfigProvider::class,
 ), 'data/cache/config.php');
 

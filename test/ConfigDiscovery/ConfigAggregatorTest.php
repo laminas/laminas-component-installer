@@ -1,16 +1,17 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-component-installer for the canonical source repository
- * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-component-installer/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-component-installer for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-component-installer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-component-installer/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\ComponentInstaller\ConfigDiscovery;
+namespace LaminasTest\ComponentInstaller\ConfigDiscovery;
 
+use Laminas\ComponentInstaller\ConfigDiscovery\ConfigAggregator;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
-use Zend\ComponentInstaller\ConfigDiscovery\ConfigAggregator;
 
 class ConfigAggregatorTest extends TestCase
 {
@@ -41,22 +42,22 @@ class ConfigAggregatorTest extends TestCase
         $this->assertFalse($this->locator->locate());
     }
 
-    public function validExpressiveConfigContents()
+    public function validMezzioConfigContents()
     {
         // @codingStandardsIgnoreStart
         return [
-            'fqcn-short-array'               => ['<' . "?php\n\$aggregator = new Zend\ConfigAggregator\ConfigAggregator([\n]);"],
-            'globally-qualified-short-array' => ['<' . "?php\n\$aggregator = new \Zend\ConfigAggregator\ConfigAggregator([\n]);"],
+            'fqcn-short-array'               => ['<' . "?php\n\$aggregator = new Laminas\ConfigAggregator\ConfigAggregator([\n]);"],
+            'globally-qualified-short-array' => ['<' . "?php\n\$aggregator = new \Laminas\ConfigAggregator\ConfigAggregator([\n]);"],
             'imported-short-array'           => ['<' . "?php\n\$aggregator = new ConfigAggregator([\n]);"],
-            'fqcn-long-array'                => ['<' . "?php\n\$aggregator = new Zend\ConfigAggregator\ConfigAggregator(array(\n));"],
-            'globally-qualified-long-array'  => ['<' . "?php\n\$aggregator = new \Zend\ConfigAggregator\ConfigAggregator(array(\n));"],
+            'fqcn-long-array'                => ['<' . "?php\n\$aggregator = new Laminas\ConfigAggregator\ConfigAggregator(array(\n));"],
+            'globally-qualified-long-array'  => ['<' . "?php\n\$aggregator = new \Laminas\ConfigAggregator\ConfigAggregator(array(\n));"],
             'imported-long-array'            => ['<' . "?php\n\$aggregator = new ConfigAggregator(array(\n));"],
         ];
         // @codingStandardsIgnoreEnd
     }
 
     /**
-     * @dataProvider validExpressiveConfigContents
+     * @dataProvider validMezzioConfigContents
      *
      * @param string $contents
      */
