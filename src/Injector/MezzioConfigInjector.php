@@ -1,14 +1,16 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies Ltd (http://www.zend.com)
+ * @see       https://github.com/laminas/laminas-component-installer for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-component-installer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-component-installer/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\ComponentInstaller\Injector;
+namespace Laminas\ComponentInstaller\Injector;
 
-use Zend\ComponentInstaller\ConfigDiscovery\ExpressiveConfig as ExpressiveConfigDiscovery;
+use Laminas\ComponentInstaller\ConfigDiscovery\MezzioConfig as MezzioConfigDiscovery;
 
-class ExpressiveConfigInjector extends AbstractInjector
+class MezzioConfigInjector extends AbstractInjector
 {
     use ConditionalDiscoveryTrait;
 
@@ -34,7 +36,7 @@ class ExpressiveConfigInjector extends AbstractInjector
      *
      * @var string
      */
-    protected $discoveryClass = ExpressiveConfigDiscovery::class;
+    protected $discoveryClass = MezzioConfigDiscovery::class;
 
     /**
      * Patterns and replacements to use when registering a code item.
@@ -80,13 +82,13 @@ class ExpressiveConfigInjector extends AbstractInjector
         $this->isRegisteredPattern = '/new (?:'
             . preg_quote('\\')
             . '?'
-            . preg_quote('Zend\Expressive\ConfigManager\\')
+            . preg_quote('Mezzio\ConfigManager\\')
             . ')?ConfigManager\(\s*(?:array\(|\[).*\s+%s::class/s';
 
         $this->injectionPatterns[self::TYPE_CONFIG_PROVIDER]['pattern'] = sprintf(
             '/(new (?:%s?%s)?ConfigManager\(\s*(?:array\(|\[)\s*)$/m',
             preg_quote('\\'),
-            preg_quote('Zend\Expressive\ConfigManager\\')
+            preg_quote('Mezzio\ConfigManager\\')
         );
 
         parent::__construct($projectRoot);
