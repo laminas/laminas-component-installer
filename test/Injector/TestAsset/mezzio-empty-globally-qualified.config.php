@@ -1,6 +1,6 @@
 <?php
 
-$aggregator = new \Zend\ConfigAggregator\ConfigAggregator(array(
+$aggregator = new \Laminas\ConfigAggregator\ConfigAggregator(array(
 ), 'data/cache/config.php');
 
 return $aggregator->getMergedConfig();
