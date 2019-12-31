@@ -1,5 +1,5 @@
 ```bash
-$ composer require --dev zendframework/zend-component-installer
+$ composer require --dev laminas/laminas-component-installer
 ```
 
 > ### Global Installation
@@ -8,27 +8,27 @@ $ composer require --dev zendframework/zend-component-installer
 > every project you manage on your machine.
 >
 > ```bash
-> $ composer global require zendframework/zend-component-installer
+> $ composer global require laminas/laminas-component-installer
 > ```
 
 ## Installable Packages
 
-How do you define a package for which zend-component-installer will install
+How do you define a package for which laminas-component-installer will install
 configuration?
 
 ### Components
 
-Components are Zend Framework modules that deliver low-level
-functionality; examples include the various Zend Framework components
+Components are Laminas modules that deliver low-level
+functionality; examples include the various Laminas components
 themselves. These require the following:
 
 * A `Module` class in the package namespace.
-* An `extra.zf.component` entry listing the package namespace in your
+* An `extra.laminas.component` entry listing the package namespace in your
   `composer.json`.
 
 ```json
 "extra": {
-    "zf": {
+    "laminas": {
         "component": "Some\\Component"
     }
 }
@@ -38,7 +38,7 @@ You may also specify multiple components as an array:
 
 ```json
 "extra": {
-    "zf": {
+    "laminas": {
         "component": [
             "Some\\Component",
             "Other\\Component"
@@ -51,26 +51,26 @@ Your application will need to have one or more of the following configuration
 files, from which you will be prompted to choose which one in which to inject
 the component:
 
-* `config/application.config.php` (vanilla ZF2 application)
-* `config/modules.config.php` ([Apigility](https://apigility.org) application)
+* `config/application.config.php` (vanilla Laminas application)
+* `config/modules.config.php` ([Laminas API Tools](https://api-tools.getlaminas.org) application)
 * `config/development.config.php.dist` and `config/development.config.php`
-  (applications using [zf-development-mode](https://github.com/zfcampus/zf-development-mode))
+  (applications using [laminas-development-mode](https://github.com/laminas/laminas-development-mode))
 
 Components are added at the **top** of the application's list of modules.
 
 ### Modules
 
-Zend Framework modules typically deliver functionality around the
-[zend-mvc](https://docs.zendframework.com/zend-mvc/) workflow, including MVC
+Laminas modules typically deliver functionality around the
+[laminas-mvc](https://docs.laminas.dev/laminas-mvc/) workflow, including MVC
 event listeners, controllers, etc. To enable the installer workflow, they 
 require the following:
 
 * A `Module` class in the package namespace.
-* An `extra.zf.module` entry listing the package namespace in your `composer.json`.
+* An `extra.laminas.module` entry listing the package namespace in your `composer.json`.
 
 ```json
 "extra": {
-    "zf": {
+    "laminas": {
         "module": "Some\\Component"
     }
 }
@@ -80,7 +80,7 @@ You may also specify multiple modules as an array:
 
 ```json
 "extra": {
-    "zf": {
+    "laminas": {
         "module": [
             "Some\\Component",
             "Other\\Component"
@@ -93,17 +93,17 @@ Your application will need to have one or more of the following configuration
 files, from which you will be prompted to choose which one in which to inject
 the module:
 
-* `config/application.config.php` (vanilla ZF2 application)
-* `config/modules.config.php` ([Apigility](https://apigility.org) application)
+* `config/application.config.php` (vanilla Laminas application)
+* `config/modules.config.php` ([Laminas API Tools](https://api-tools.getlaminas.org) application)
 * `config/development.config.php.dist` and `config/development.config.php`
-  (applications using [zf-development-mode](https://github.com/zfcampus/zf-development-mode))
+  (applications using [laminas-development-mode](https://github.com/laminas/laminas-development-mode))
 
 Modules are added at the **bottom** of the application's list of modules.
 
 ### Config Providers
 
-Configuration providers work with [expressive-config-manager](https://github.com/mtymek/expressive-config-manager)
-and [zend-config-aggregator](https://github.com/zendframework/zend-config-aggregator),
+Configuration providers work with [mezzio-config-manager](https://github.com/mtymek/mezzio-config-manager)
+and [laminas-config-aggregator](https://github.com/laminas/laminas-config-aggregator),
 which provides generic functionality for aggregating and merging application
 configuration. Packages that provide configuration will provide an invokable
 class that returns configuration for the package. To enable the installer
@@ -124,12 +124,12 @@ class ConfigProvider
 }
 ```
 
-* An `extra.zf.config-provider` entry listing the configuration provider class
+* An `extra.laminas.config-provider` entry listing the configuration provider class
   in your `composer.json`.
 
 ```json
 "extra": {
-    "zf": {
+    "laminas": {
         "config-provider": "Some\\Component\\ConfigProvider"
     }
 }
@@ -139,7 +139,7 @@ You may also specify multiple configuration providers as an array:
 
 ```json
 "extra": {
-    "zf": {
+    "laminas": {
         "config-provider": [
             "Some\\Component\\ConfigProvider",
             "Some\\Component\\PluginConfigProvider"
@@ -150,8 +150,8 @@ You may also specify multiple configuration providers as an array:
 
 Your application will need to define a `config/config.php` file, and that file
 will need to have a line that instantiates either a
-`Zend\Expressive\ConfigManager\ConfigManager` instance (deprecated) or
-`Zend\ConfigAggregator\ConfigAggregator` instance.
+`Mezzio\ConfigManager\ConfigManager` instance (deprecated) or
+`Laminas\ConfigAggregator\ConfigAggregator` instance.
 
 Configuration providers are added at the **top** of the
 `ConfigManager`/`ConfigAggregator` provider array.
@@ -165,12 +165,12 @@ This value should be an array of package names.
 
 ```json
 "extra": {
-    "zf": {
+    "laminas": {
         "component-whitelist": [
-            "zendframework/zend-expressive",
-            "zendframework/zend-expressive-helper",
-            "zendframework/zend-expressive-fastrouterouter",
-            "zendframework/zend-expressive-platesrenderer"
+            "mezzio/mezzio",
+            "mezzio/mezzio-helper",
+            "mezzio/mezzio-fastrouterouter",
+            "mezzio/mezzio-platesrenderer"
         ]
     }
 }
@@ -180,14 +180,14 @@ This setting only works in the root package.
 
 ## Why?
 
-When preparing zend-mvc's version 3 release, we wanted to reduce the number of
+When preparing laminas-mvc's version 3 release, we wanted to reduce the number of
 components required by the package. To do so, we moved integration code, such as
 factories, plugin managers, and event listeners into the components they
 consumed. This had a side effect: the components were no longer wired
 automatically.
 
 To provide service and event wiring, we added `Module` classes (and
-configuration providers) to all Zend Framework components. This exposed a new
+configuration providers) to all Laminas components. This exposed a new
 problem, however: how could we ensure that those components are added to the
 application module list as you add them to your application?
 

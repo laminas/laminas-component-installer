@@ -1,8 +1,8 @@
 <?php
 
-use Zend\ConfigAggregator\ArrayProvider;
-use Zend\ConfigAggregator\ConfigAggregator;
-use Zend\ConfigAggregator\PhpFileProvider;
+use Laminas\ConfigAggregator\ArrayProvider;
+use Laminas\ConfigAggregator\ConfigAggregator;
+use Laminas\ConfigAggregator\PhpFileProvider;
 
 // To enable or disable caching, set the `ConfigAggregator::ENABLE_CACHE` boolean in
 // `config/autoload/local.php`.
@@ -11,10 +11,10 @@ $cacheConfig = [
 ];
 
 $aggregator = new ConfigAggregator([
-    \Zend\Validator\ConfigProvider::class,
-    \Zend\InputFilter\ConfigProvider::class,
-    \Zend\Filter\ConfigProvider::class,
-    \Zend\Mail\ConfigProvider::class,
+    \Laminas\Validator\ConfigProvider::class,
+    \Laminas\InputFilter\ConfigProvider::class,
+    \Laminas\Filter\ConfigProvider::class,
+    \Laminas\Mail\ConfigProvider::class,
     \Contact\ConfigProvider::class,
     // Include cache configuration
     new ArrayProvider($cacheConfig),

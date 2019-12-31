@@ -2,8 +2,8 @@ docs_dir: docs/book
 site_dir: docs/html
 nav:
     - Home: index.md
-site_name: zend-component-installer
+site_name: laminas-component-installer
 site_description: 'Composer plugin for injecting modules and configuration providers into application configuration'
-repo_url: 'https://github.com/zendframework/zend-component-installer'
+repo_url: 'https://github.com/laminas/laminas-component-installer'
 extra:
     show_special_homepage: true

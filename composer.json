@@ -1,43 +1,22 @@
 {
-    "name": "zendframework/zend-component-installer",
+    "name": "laminas/laminas-component-installer",
     "description": "Composer plugin for injecting modules and configuration providers into application configuration",
     "type": "composer-plugin",
     "license": "BSD-3-Clause",
     "keywords": [
-        "zf",
-        "zendframework",
+        "laminas",
         "component installer",
         "composer",
         "plugin"
     ],
+    "homepage": "https://laminas.dev",
     "support": {
-        "docs": "https://docs.zendframework.com/zend-component-installer/",
-        "issues": "https://github.com/zendframework/zend-component-installer/issues",
-        "source": "https://github.com/zendframework/zend-component-installer",
-        "rss": "https://github.com/zendframework/zend-component-installer/releases.atom",
-        "chat": "https://zendframework-slack.herokuapp.com",
-        "forum": "https://discourse.zendframework.com/c/questions/components"
-    },
-    "require": {
-        "php": "^7.1",
-        "composer-plugin-api": "^1.0"
-    },
-    "require-dev": {
-        "composer/composer": "^1.5.2",
-        "malukenho/docheader": "^0.1.6",
-        "mikey179/vfsstream": "^1.6.7",
-        "phpunit/phpunit": "^7.5.15 || ^8.3.4",
-        "zendframework/zend-coding-standard": "~1.0.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "Zend\\ComponentInstaller\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "ZendTest\\ComponentInstaller\\": "test/"
-        }
+        "docs": "https://docs.laminas.dev/laminas-component-installer/",
+        "issues": "https://github.com/laminas/laminas-component-installer/issues",
+        "source": "https://github.com/laminas/laminas-component-installer",
+        "rss": "https://github.com/laminas/laminas-component-installer/releases.atom",
+        "chat": "https://laminas.dev/chat",
+        "forum": "https://discourse.laminas.dev"
     },
     "config": {
         "sort-packages": true
@@ -47,7 +26,29 @@
             "dev-master": "2.1.x-dev",
             "dev-develop": "2.2.x-dev"
         },
-        "class": "Zend\\ComponentInstaller\\ComponentInstaller"
+        "class": "Laminas\\ComponentInstaller\\ComponentInstaller"
+    },
+    "require": {
+        "php": "^7.1",
+        "composer-plugin-api": "^1.0",
+        "laminas/laminas-zendframework-bridge": "^1.0"
+    },
+    "require-dev": {
+        "composer/composer": "^1.5.2",
+        "laminas/laminas-coding-standard": "~1.0.0",
+        "malukenho/docheader": "^0.1.6",
+        "mikey179/vfsstream": "^1.6.7",
+        "phpunit/phpunit": "^7.5.15 || ^8.3.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Laminas\\ComponentInstaller\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LaminasTest\\ComponentInstaller\\": "test/"
+        }
     },
     "scripts": {
         "check": [
@@ -60,5 +61,8 @@
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
         "license-check": "docheader check src/"
+    },
+    "replace": {
+        "zendframework/zend-component-installer": "self.version"
     }
 }
