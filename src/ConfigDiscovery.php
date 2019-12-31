@@ -1,11 +1,12 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-component-installer for the canonical source repository
- * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-component-installer/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-component-installer for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-component-installer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-component-installer/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\ComponentInstaller;
+namespace Laminas\ComponentInstaller;
 
 class ConfigDiscovery
 {
@@ -23,7 +24,7 @@ class ConfigDiscovery
         ],
         'config/config.php' => [
             'aggregator' => ConfigDiscovery\ConfigAggregator::class,
-            'manager'    => ConfigDiscovery\ExpressiveConfig::class,
+            'manager'    => ConfigDiscovery\MezzioConfig::class,
         ],
     ];
 
@@ -41,7 +42,7 @@ class ConfigDiscovery
         ],
         'config/config.php' => [
             'aggregator' => Injector\ConfigAggregatorInjector::class,
-            'manager'    => Injector\ExpressiveConfigInjector::class,
+            'manager'    => Injector\MezzioConfigInjector::class,
         ]
     ];
 

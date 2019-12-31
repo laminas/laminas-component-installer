@@ -1,13 +1,14 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-component-installer for the canonical source repository
- * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-component-installer/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-component-installer for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-component-installer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-component-installer/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\ComponentInstaller\Injector;
+namespace Laminas\ComponentInstaller\Injector;
 
-use Zend\ComponentInstaller\ConfigDiscovery\ConfigAggregator as ConfigAggregatorDiscovery;
+use Laminas\ComponentInstaller\ConfigDiscovery\ConfigAggregator as ConfigAggregatorDiscovery;
 
 class ConfigAggregatorInjector extends AbstractInjector
 {
@@ -82,7 +83,7 @@ class ConfigAggregatorInjector extends AbstractInjector
         $this->isRegisteredPattern = '/new (?:'
             . $ns
             . '?'
-            . preg_quote('Zend\ConfigAggregator\\')
+            . preg_quote('Laminas\ConfigAggregator\\')
             . ')?ConfigAggregator\(\s*(?:array\(|\[).*\s+'
             . $ns
             . '?%s::class/s';
@@ -90,7 +91,7 @@ class ConfigAggregatorInjector extends AbstractInjector
         $this->injectionPatterns[self::TYPE_CONFIG_PROVIDER]['pattern'] = sprintf(
             "/(new (?:%s?%s)?ConfigAggregator\(\s*(?:array\(|\[)\s*)(?:\r|\n|\r\n)(\s*)/",
             preg_quote('\\'),
-            preg_quote('Zend\ConfigAggregator\\')
+            preg_quote('Laminas\ConfigAggregator\\')
         );
 
         parent::__construct($projectRoot);
