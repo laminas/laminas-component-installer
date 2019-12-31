@@ -1,6 +1,6 @@
 <?php
 
-$configManager = new \Zend\Expressive\ConfigManager\ConfigManager(array(
+$configManager = new Mezzio\ConfigManager\ConfigManager(array(
 ), 'data/cache/config.php');
 
 return $configManager->getMergedConfig();

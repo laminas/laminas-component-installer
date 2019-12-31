@@ -1,11 +1,12 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-component-installer for the canonical source repository
- * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-component-installer/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-component-installer for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-component-installer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-component-installer/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\ComponentInstaller;
+namespace Laminas\ComponentInstaller;
 
 use ArrayObject;
 use Composer\Composer;
@@ -15,18 +16,18 @@ use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Plugin\PluginInterface;
 use DirectoryIterator;
-use Zend\ComponentInstaller\Injector\AbstractInjector;
-use Zend\ComponentInstaller\Injector\ConfigInjectorChain;
-use Zend\ComponentInstaller\Injector\InjectorInterface;
+use Laminas\ComponentInstaller\Injector\AbstractInjector;
+use Laminas\ComponentInstaller\Injector\ConfigInjectorChain;
+use Laminas\ComponentInstaller\Injector\InjectorInterface;
 
 /**
  * If a package represents a component module, update the application configuration.
  *
  * Packages opt-in to this workflow by defining one or more of the keys:
  *
- * - extra.zf.component
- * - extra.zf.module
- * - extra.zf.config-provider
+ * - extra.laminas.component
+ * - extra.laminas.module
+ * - extra.laminas.config-provider
  *
  * with the value being the string namespace the component and/or module
  * defines, or, in the case of config-provider, the fully qualified class name
@@ -35,10 +36,10 @@ use Zend\ComponentInstaller\Injector\InjectorInterface;
  * <code class="lang-javascript">
  * {
  *   "extra": {
- *     "zf": {
- *       "component": "Zend\\Form",
- *       "module": "ZF\\Apigility\\ContentNegotiation",
- *       "config-provider": "Zend\\Expressive\\PlatesRenderer\\ConfigProvider"
+ *     "laminas": {
+ *       "component": "Laminas\\Form",
+ *       "module": "Laminas\\ApiTools\\ContentNegotiation",
+ *       "config-provider": "Mezzio\\PlatesRenderer\\ConfigProvider"
  *     }
  *   }
  * }
@@ -46,7 +47,7 @@ use Zend\ComponentInstaller\Injector\InjectorInterface;
  *
  * With regards to components and modules, for this to work correctly, the
  * package MUST define a `Module` in the namespace listed in either the
- * extra.zf.component or extra.zf.module definition.
+ * extra.laminas.component or extra.laminas.module definition.
  *
  * Components are added to the TOP of the modules list, to ensure that userland
  * code and/or modules can override the settings. Modules are added to the
@@ -146,13 +147,13 @@ class ComponentInstaller implements
      *
      * - Executed in non-development mode
      * - No config/application.config.php is available
-     * - The composer.json does not define one of either extra.zf.component
-     *   or extra.zf.module
-     * - The value used for either extra.zf.component or extra.zf.module are
+     * - The composer.json does not define one of either extra.laminas.component
+     *   or extra.laminas.module
+     * - The value used for either extra.laminas.component or extra.laminas.module are
      *   empty or not strings.
      *
      * Otherwise, it will attempt to update the application configuration
-     * using the value(s) discovered in extra.zf.component and/or extra.zf.module,
+     * using the value(s) discovered in extra.laminas.component and/or extra.laminas.module,
      * writing their values into the `modules` list.
      *
      * @param PackageEvent $event
@@ -214,7 +215,7 @@ class ComponentInstaller implements
      * via method `getModuleDependencies` of Module class.
      *
      * These dependencies are used later
-     * @see \Zend\ComponentInstaller\Injector\AbstractInjector::injectAfterDependencies
+     * @see \Laminas\ComponentInstaller\Injector\AbstractInjector::injectAfterDependencies
      * to add component in a correct order on the module list - after dependencies.
      *
      * It works with PSR-0, PSR-4, 'classmap' and 'files' composer autoloading.
@@ -267,13 +268,13 @@ class ComponentInstaller implements
      *
      * - Executed in non-development mode
      * - No config/application.config.php is available
-     * - The composer.json does not define one of either extra.zf.component
-     *   or extra.zf.module
-     * - The value used for either extra.zf.component or extra.zf.module are
+     * - The composer.json does not define one of either extra.laminas.component
+     *   or extra.laminas.module
+     * - The value used for either extra.laminas.component or extra.laminas.module are
      *   empty or not strings.
      *
      * Otherwise, it will attempt to update the application configuration
-     * using the value(s) discovered in extra.zf.component and/or extra.zf.module,
+     * using the value(s) discovered in extra.laminas.component and/or extra.laminas.module,
      * removing their values from the `modules` list.
      *
      * @param PackageEvent $event
@@ -304,13 +305,18 @@ class ComponentInstaller implements
     }
 
     /**
-     * Retrieve the zf-specific metadata from the "extra" section
+     * Retrieve the metadata from the "extra" section
      *
      * @param array $extra
      * @return array
      */
     private function getExtraMetadata(array $extra)
     {
+        if (isset($extra['laminas']) && is_array($extra['laminas'])) {
+            return $extra['laminas'];
+        }
+
+        // supports legacy "extra.zf" configuration
         return isset($extra['zf']) && is_array($extra['zf'])
             ? $extra['zf']
             : []
@@ -345,7 +351,7 @@ class ComponentInstaller implements
     /**
      * Marshal a collection of defined package types.
      *
-     * @param array $extra extra.zf value
+     * @param array $extra extra.laminas value
      * @return Collection
      */
     private function marshalPackageTypes(array $extra)
@@ -360,7 +366,7 @@ class ComponentInstaller implements
     /**
      * Marshal a collection of package modules.
      *
-     * @param array $extra extra.zf value
+     * @param array $extra extra.laminas value
      * @param Collection $packageTypes
      * @param Collection $options ConfigOption instances
      * @return Collection
@@ -516,7 +522,7 @@ class ComponentInstaller implements
      * Remove a package from configuration.
      *
      * @param string $package Package name
-     * @param array $metadata Metadata pulled from extra.zf
+     * @param array $metadata Metadata pulled from extra.laminas
      * @param Collection $configOptions Discovered configuration options from
      *     which to remove package.
      * @return void
@@ -618,7 +624,7 @@ class ComponentInstaller implements
     }
 
     /**
-     * Is a given metadata value (extra.zf.*) valid?
+     * Is a given metadata value (extra.laminas.*) valid?
      *
      * @param string $key Key to examine in metadata
      * @param array $metadata
