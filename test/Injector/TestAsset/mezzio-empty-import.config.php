@@ -1,5 +1,5 @@
 <?php
-use Zend\Expressive\ConfigManager\ConfigManager;
+use Mezzio\ConfigManager\ConfigManager;
 
 $configManager = new ConfigManager(array(
 ), 'data/cache/config.php');

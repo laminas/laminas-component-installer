@@ -1,33 +1,45 @@
 {
-    "name": "zendframework/zend-component-installer",
-    "description": "Composer plugin for automating component registration in zend-mvc and Expressive applications",
+    "name": "laminas/laminas-component-installer",
+    "description": "Composer plugin for automating component registration in laminas-mvc and Mezzio applications",
     "type": "composer-plugin",
     "license": "BSD-3-Clause",
-    "require": {
-        "php": "^5.6 || ^7.0",
-        "composer-plugin-api": "^1.0"
+    "homepage": "https://laminas.dev",
+    "support": {
+        "docs": "https://docs.laminas.dev/laminas-component-installer/",
+        "issues": "https://github.com/laminas/laminas-component-installer/issues",
+        "source": "https://github.com/laminas/laminas-component-installer",
+        "rss": "https://github.com/laminas/laminas-component-installer/releases.atom",
+        "chat": "https://laminas.dev/chat",
+        "forum": "https://discourse.laminas.dev"
+    },
+    "config": {
+        "sort-packages": true
     },
     "extra": {
         "branch-alias": {
             "dev-master": "1.0-dev"
         },
-        "class": "Zend\\ComponentInstaller\\ComponentInstaller"
+        "class": "Laminas\\ComponentInstaller\\ComponentInstaller"
+    },
+    "require": {
+        "php": "^5.6 || ^7.0",
+        "composer-plugin-api": "^1.0",
+        "laminas/laminas-zendframework-bridge": "^1.0"
     },
     "require-dev": {
         "composer/composer": ">=1.0.0-alpha10",
+        "mikey179/vfsstream": "^1.6",
         "phpunit/phpunit": "^4.7",
-        "roave/security-advisories": "dev-master",
-        "squizlabs/php_codesniffer": "^2.7",
-        "mikey179/vfsStream": "^1.6"
+        "squizlabs/php_codesniffer": "^2.7"
     },
     "autoload": {
         "psr-4": {
-            "Zend\\ComponentInstaller\\": "src/"
+            "Laminas\\ComponentInstaller\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ZendTest\\ComponentInstaller\\": "test/"
+            "LaminasTest\\ComponentInstaller\\": "test/"
         }
     },
     "scripts": {
@@ -40,5 +52,8 @@
         "cs-fix": "phpcbf",
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
+    },
+    "replace": {
+        "zendframework/zend-component-installer": "self.version"
     }
 }

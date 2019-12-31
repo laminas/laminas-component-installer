@@ -1,10 +1,12 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies Ltd (http://www.zend.com)
+ * @see       https://github.com/laminas/laminas-component-installer for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-component-installer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-component-installer/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\ComponentInstaller;
+namespace Laminas\ComponentInstaller;
 
 class ConfigDiscovery
 {
@@ -20,7 +22,7 @@ class ConfigDiscovery
             'dist' => ConfigDiscovery\DevelopmentConfig::class,
             'work' => ConfigDiscovery\DevelopmentWorkConfig::class,
         ],
-        'config/config.php' => ConfigDiscovery\ExpressiveConfig::class,
+        'config/config.php' => ConfigDiscovery\MezzioConfig::class,
     ];
 
     /**
@@ -35,7 +37,7 @@ class ConfigDiscovery
             'dist' => Injector\DevelopmentConfigInjector::class,
             'work' => Injector\DevelopmentWorkConfigInjector::class,
         ],
-        'config/config.php' => Injector\ExpressiveConfigInjector::class,
+        'config/config.php' => Injector\MezzioConfigInjector::class,
     ];
 
     /**
