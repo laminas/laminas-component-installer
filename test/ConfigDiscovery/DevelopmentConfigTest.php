@@ -1,15 +1,17 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies Ltd (http://www.zend.com)
+ * @see       https://github.com/laminas/laminas-component-installer for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-component-installer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-component-installer/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\ComponentInstaller\ConfigDiscovery;
+namespace LaminasTest\ComponentInstaller\ConfigDiscovery;
 
+use Laminas\ComponentInstaller\ConfigDiscovery\DevelopmentConfig;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\ComponentInstaller\ConfigDiscovery\DevelopmentConfig;
 
 class DevelopmentConfigTest extends TestCase
 {
