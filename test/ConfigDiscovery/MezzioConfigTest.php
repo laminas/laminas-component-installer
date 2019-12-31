@@ -1,17 +1,19 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies Ltd (http://www.zend.com)
+ * @see       https://github.com/laminas/laminas-component-installer for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-component-installer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-component-installer/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\ComponentInstaller\ConfigDiscovery;
+namespace LaminasTest\ComponentInstaller\ConfigDiscovery;
 
+use Laminas\ComponentInstaller\ConfigDiscovery\MezzioConfig;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\ComponentInstaller\ConfigDiscovery\ExpressiveConfig;
 
-class ExpressiveConfigTest extends TestCase
+class MezzioConfigTest extends TestCase
 {
     private $configDir;
 
@@ -20,7 +22,7 @@ class ExpressiveConfigTest extends TestCase
     public function setUp()
     {
         $this->configDir = vfsStream::setup('project');
-        $this->locator = new ExpressiveConfig(
+        $this->locator = new MezzioConfig(
             vfsStream::url('project')
         );
     }
@@ -38,22 +40,22 @@ class ExpressiveConfigTest extends TestCase
         $this->assertFalse($this->locator->locate());
     }
 
-    public function validExpressiveConfigContents()
+    public function validMezzioConfigContents()
     {
         // @codingStandardsIgnoreStart
         return [
-            'fqcn-short-array'               => ['<' . "?php\n\$configManager = new Zend\Expressive\ConfigManager\ConfigManager([\n]);"],
-            'globally-qualified-short-array' => ['<' . "?php\n\$configManager = new \Zend\Expressive\ConfigManager\ConfigManager([\n]);"],
+            'fqcn-short-array'               => ['<' . "?php\n\$configManager = new Mezzio\ConfigManager\ConfigManager([\n]);"],
+            'globally-qualified-short-array' => ['<' . "?php\n\$configManager = new \Mezzio\ConfigManager\ConfigManager([\n]);"],
             'imported-short-array'           => ['<' . "?php\n\$configManager = new ConfigManager([\n]);"],
-            'fqcn-long-array'                => ['<' . "?php\n\$configManager = new Zend\Expressive\ConfigManager\ConfigManager(array(\n));"],
-            'globally-qualified-long-array'  => ['<' . "?php\n\$configManager = new \Zend\Expressive\ConfigManager\ConfigManager(array(\n));"],
+            'fqcn-long-array'                => ['<' . "?php\n\$configManager = new Mezzio\ConfigManager\ConfigManager(array(\n));"],
+            'globally-qualified-long-array'  => ['<' . "?php\n\$configManager = new \Mezzio\ConfigManager\ConfigManager(array(\n));"],
             'imported-long-array'            => ['<' . "?php\n\$configManager = new ConfigManager(array(\n));"],
         ];
         // @codingStandardsIgnoreEnd
     }
 
     /**
-     * @dataProvider validExpressiveConfigContents
+     * @dataProvider validMezzioConfigContents
      */
     public function testLocateReturnsTrueWhenFileExistsAndHasExpectedContent($contents)
     {

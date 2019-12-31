@@ -1,8 +1,7 @@
 docs_dir: doc/book
 site_dir: doc/html
-pages:
+nav:
     - index.md
-site_name: zend-component-installer
-site_description: Zend\Component\Installer
-repo_url: 'https://github.com/zendframework/zend-component-installer'
-copyright: 'Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a>'
+site_name: laminas-component-installer
+site_description: Laminas\Component\Installer
+repo_url: 'https://github.com/laminas/laminas-component-installer'
