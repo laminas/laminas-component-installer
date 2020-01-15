@@ -1,3 +1,7 @@
+# Basic Usage
+
+## Installation
+
 ```bash
 $ composer require --dev laminas/laminas-component-installer
 ```
