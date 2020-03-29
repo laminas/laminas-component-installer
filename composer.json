@@ -63,6 +63,6 @@
         "license-check": "docheader check src/"
     },
     "replace": {
-        "zendframework/zend-component-installer": "self.version"
+        "zendframework/zend-component-installer": "^2.1.2"
     }
 }
