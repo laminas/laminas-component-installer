@@ -229,14 +229,14 @@
 
     <h1 id="basic-usage">Basic Usage</h1>
 <h2 id="installation">Installation</h2>
-<pre class=codehilite><code class=language-bash>$ composer require --dev laminas/laminas-component-installer</code></pre>
+<pre class="highlight"><code class="language-bash">$ composer require --dev laminas/laminas-component-installer</code></pre>
+
 <blockquote>
 <h3>Global Installation</h3>
 <p>You can also install the plugin globally, in which case it will be active for
 every project you manage on your machine.</p>
-<pre class="codehilite"><code class="language-bash">
-$ composer global require laminas/laminas-component-installer
-</code></pre>
+<pre class="highlight"><code class="language-bash">$ composer global require laminas/laminas-component-installer</code></pre>
+
 </blockquote>
 <h2 id="installable-packages">Installable Packages</h2>
 <p>How do you define a package for which laminas-component-installer will install
@@ -250,20 +250,22 @@ themselves. These require the following:</p>
 <li>An <code>extra.laminas.component</code> entry listing the package namespace in your
   <code>composer.json</code>.</li>
 </ul>
-<pre class=codehilite><code class=language-json>&quot;extra&quot;: {
-    &quot;laminas&quot;: {
-        &quot;component&quot;: &quot;Some\\Component&quot;
+<pre class="highlight"><code class="language-json">"extra": {
+    "laminas": {
+        "component": "Some\\Component"
     }
 }</code></pre>
+
 <p>You may also specify multiple components as an array:</p>
-<pre class=codehilite><code class=language-json>&quot;extra&quot;: {
-    &quot;laminas&quot;: {
-        &quot;component&quot;: [
-            &quot;Some\\Component&quot;,
-            &quot;Other\\Component&quot;
+<pre class="highlight"><code class="language-json">"extra": {
+    "laminas": {
+        "component": [
+            "Some\\Component",
+            "Other\\Component"
         ]
     }
 }</code></pre>
+
 <p>Your application will need to have one or more of the following configuration
 files, from which you will be prompted to choose which one in which to inject
 the component:</p>
@@ -283,20 +285,22 @@ require the following:</p>
 <li>A <code>Module</code> class in the package namespace.</li>
 <li>An <code>extra.laminas.module</code> entry listing the package namespace in your <code>composer.json</code>.</li>
 </ul>
-<pre class=codehilite><code class=language-json>&quot;extra&quot;: {
-    &quot;laminas&quot;: {
-        &quot;module&quot;: &quot;Some\\Component&quot;
+<pre class="highlight"><code class="language-json">"extra": {
+    "laminas": {
+        "module": "Some\\Component"
     }
 }</code></pre>
+
 <p>You may also specify multiple modules as an array:</p>
-<pre class=codehilite><code class=language-json>&quot;extra&quot;: {
-    &quot;laminas&quot;: {
-        &quot;module&quot;: [
-            &quot;Some\\Component&quot;,
-            &quot;Other\\Component&quot;
+<pre class="highlight"><code class="language-json">"extra": {
+    "laminas": {
+        "module": [
+            "Some\\Component",
+            "Other\\Component"
         ]
     }
 }</code></pre>
+
 <p>Your application will need to have one or more of the following configuration
 files, from which you will be prompted to choose which one in which to inject
 the module:</p>
@@ -318,7 +322,7 @@ workflow, you will need:</p>
 <li>A configuration provider class. This is a class with no constructor
   arguments defining an <code>__invoke()</code> method returning a configuration array.</li>
 </ul>
-<pre class=codehilite><code class=language-php>namespace Some\Component;
+<pre class="highlight"><code class="language-php">namespace Some\Component;
 
 class ConfigProvider
 {
@@ -327,24 +331,27 @@ class ConfigProvider
         return [ /* ... */ ];
     }
 }</code></pre>
+
 <ul>
 <li>An <code>extra.laminas.config-provider</code> entry listing the configuration provider class
   in your <code>composer.json</code>.</li>
 </ul>
-<pre class=codehilite><code class=language-json>&quot;extra&quot;: {
-    &quot;laminas&quot;: {
-        &quot;config-provider&quot;: &quot;Some\\Component\\ConfigProvider&quot;
+<pre class="highlight"><code class="language-json">"extra": {
+    "laminas": {
+        "config-provider": "Some\\Component\\ConfigProvider"
     }
 }</code></pre>
+
 <p>You may also specify multiple configuration providers as an array:</p>
-<pre class=codehilite><code class=language-json>&quot;extra&quot;: {
-    &quot;laminas&quot;: {
-        &quot;config-provider&quot;: [
-            &quot;Some\\Component\\ConfigProvider&quot;,
-            &quot;Some\\Component\\PluginConfigProvider&quot;
+<pre class="highlight"><code class="language-json">"extra": {
+    "laminas": {
+        "config-provider": [
+            "Some\\Component\\ConfigProvider",
+            "Some\\Component\\PluginConfigProvider"
         ]
     }
 }</code></pre>
+
 <p>Your application will need to define a <code>config/config.php</code> file, and that file
 will need to have a line that instantiates either a
 <code>Mezzio\ConfigManager\ConfigManager</code> instance (deprecated) or
@@ -356,16 +363,17 @@ will need to have a line that instantiates either a
 config providers and/or modules should automatically inject configuration,
 instead of prompting for installation, via the <code>component-whitelist</code> setting.
 This value should be an array of package names.</p>
-<pre class=codehilite><code class=language-json>&quot;extra&quot;: {
-    &quot;laminas&quot;: {
-        &quot;component-whitelist&quot;: [
-            &quot;mezzio/mezzio&quot;,
-            &quot;mezzio/mezzio-helper&quot;,
-            &quot;mezzio/mezzio-fastrouterouter&quot;,
-            &quot;mezzio/mezzio-platesrenderer&quot;
+<pre class="highlight"><code class="language-json">"extra": {
+    "laminas": {
+        "component-whitelist": [
+            "mezzio/mezzio",
+            "mezzio/mezzio-helper",
+            "mezzio/mezzio-fastrouterouter",
+            "mezzio/mezzio-platesrenderer"
         ]
     }
 }</code></pre>
+
 <p>This setting only works in the root package.</p>
 <h2 id="why">Why?</h2>
 <p>When preparing laminas-mvc's version 3 release, we wanted to reduce the number of
@@ -563,5 +571,5 @@ requirement of the metapackage. As such, it's typically safer to:</p>
 
 <!--
 MkDocs version : 1.1
-Build Date UTC : 2020-03-29 11:10:32
+Build Date UTC : 2020-04-03 18:17:49
 -->
