@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#8](https://github.com/laminas/laminas-component-installer/pull/8) PHP 7.4 for travis build matrix
 
 ### Changed
 
