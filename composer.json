@@ -35,7 +35,6 @@
     },
     "require-dev": {
         "composer/composer": "^1.5.2 || ^2.0@dev",
-        "composer/semver": "^1.5.1 || ^2.0@dev",
         "laminas/laminas-coding-standard": "~1.0.0",
         "malukenho/docheader": "^0.1.6",
         "mikey179/vfsstream": "^1.6.7",
