@@ -23,18 +23,18 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.1.x-dev",
-            "dev-develop": "2.2.x-dev"
+            "dev-master": "2.2.x-dev",
+            "dev-develop": "2.3.x-dev"
         },
         "class": "Laminas\\ComponentInstaller\\ComponentInstaller"
     },
     "require": {
         "php": "^7.1",
-        "composer-plugin-api": "^1.0",
+        "composer-plugin-api": "^1.0 || ^2.0",
         "laminas/laminas-zendframework-bridge": "^1.0"
     },
     "require-dev": {
-        "composer/composer": "^1.5.2",
+        "composer/composer": "^1.5.2 || ~2.0.0.0@dev || ^2.0",
         "laminas/laminas-coding-standard": "~1.0.0",
         "malukenho/docheader": "^0.1.6",
         "mikey179/vfsstream": "^1.6.7",

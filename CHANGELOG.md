@@ -2,11 +2,13 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 2.1.3 - TBD
+## 2.2.0 - 2020-07-01
 
 ### Added
 
-- Nothing.
+- [#8](https://github.com/laminas/laminas-component-installer/pull/8) adds PHP 7.4 for travis build matrix
+
+- [#7](https://github.com/laminas/laminas-component-installer/pull/7) Added support for composer v2
 
 ### Changed
 
