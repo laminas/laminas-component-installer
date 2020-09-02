@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- Nothing.
+- [#9](https://github.com/laminas/laminas-component-installer/pull/9) modifies the installer to add development dependencies to the `development.config.php` file instead of the `modules.config.php` file in MVC applications.
 
 ### Deprecated
 
