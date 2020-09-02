@@ -22,10 +22,6 @@
         "sort-packages": true
     },
     "extra": {
-        "branch-alias": {
-            "dev-master": "2.2.x-dev",
-            "dev-develop": "2.3.x-dev"
-        },
         "class": "Laminas\\ComponentInstaller\\ComponentInstaller"
     },
     "require": {
