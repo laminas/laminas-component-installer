@@ -10,6 +10,7 @@ namespace Laminas\ComponentInstaller;
 
 use ArrayObject;
 use Composer\Composer;
+use Composer\DependencyResolver\GenericRule;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
@@ -22,6 +23,7 @@ use Laminas\ComponentInstaller\Injector\InjectorInterface;
 
 use function array_filter;
 use function array_flip;
+use function array_key_exists;
 use function array_keys;
 use function array_map;
 use function array_unshift;
@@ -189,6 +191,8 @@ class ComponentInstaller implements
             return;
         }
 
+        /** @var GenericRule $genericRule */
+        $genericRule = $event->getOperation()->getReason();
         $package = $event->getOperation()->getPackage();
         $name    = $package->getName();
         $extra   = $this->getExtraMetadata($package->getExtra());
@@ -207,6 +211,7 @@ class ComponentInstaller implements
             return;
         }
 
+        $requireDev = $this->isADevDependency($genericRule, $name);
         $dependencies = $this->loadModuleClassesDependencies($package);
         $applicationModules = $this->findApplicationModules();
 
@@ -214,12 +219,19 @@ class ComponentInstaller implements
             ->each(function ($module) use ($name) {
             })
             // Create injectors
-            ->reduce(function ($injectors, $module) use ($options, $packageTypes, $name) {
+            ->reduce(function ($injectors, $module) use ($options, $packageTypes, $name, $requireDev) {
                 // Get extra from root package
                 $rootExtra = $this->getExtraMetadata($this->composer->getPackage()->getExtra());
                 $whitelist = $rootExtra['component-whitelist'] ?? [];
                 $packageType = $packageTypes[$module];
-                $injectors[$module] = $this->promptForConfigOption($module, $options, $packageType, $name, $whitelist);
+                $injectors[$module] = $this->promptForConfigOption(
+                    $module,
+                    $options,
+                    $packageType,
+                    $name,
+                    $whitelist,
+                    $requireDev
+                );
                 return $injectors;
             }, new Collection([]))
             // Inject modules into configuration
@@ -448,7 +460,8 @@ class ComponentInstaller implements
         Collection $options,
         int $packageType,
         string $packageName,
-        array $whitelist
+        array $whitelist,
+        bool $requireDev = false
     ) {
         if ($cachedInjector = $this->getCachedInjector($packageType)) {
             return $cachedInjector;
@@ -456,6 +469,10 @@ class ComponentInstaller implements
 
         // If package is whitelisted, don't ask...
         if (in_array($packageName, $whitelist, true)) {
+            if ($requireDev) {
+                return isset($options[2]) ? $options[2]->getInjector() : $options[1]->getInjector();
+            }
+
             return $options[1]->getInjector();
         }
 
@@ -840,6 +857,19 @@ class ComponentInstaller implements
         }
 
         return [];
+    }
+
+    private function isADevDependency(GenericRule $genericRule, string $name): bool
+    {
+        if (array_key_exists($name, $this->composer->getPackage()->getDevRequires())) {
+            return true;
+        }
+
+        $dependentFor = is_string($genericRule->getReasonData())
+            ? $genericRule->getReasonData()
+            : $genericRule->getReasonData()->getSource();
+
+        return array_key_exists($dependentFor, $this->composer->getPackage()->getDevRequires());
     }
 
     public function deactivate(Composer $composer, IOInterface $io)
