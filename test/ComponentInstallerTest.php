@@ -692,6 +692,23 @@ CONTENT
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
     }
 
+    public function testPostPackageDoesNotFailsIfOperationReasonIsNull()
+    {
+        $package = $this->prophesize(PackageInterface::class);
+        $package->getName()->willReturn('some/component');
+        $package->getExtra()->willReturn([]);
+
+        $operation = $this->prophesize(InstallOperation::class);
+        $operation->getPackage()->willReturn($package->reveal());
+        $operation->getReason()->willReturn(null);
+
+        $event = $this->prophesize(PackageEvent::class);
+        $event->isDevMode()->willReturn(true);
+        $event->getOperation()->willReturn($operation->reveal());
+
+        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
+    }
+
     public function testOnPostPackageInstallReturnsEarlyIfApplicationConfigIsMissing()
     {
         $package = $this->prophesize(PackageInterface::class);

@@ -191,7 +191,7 @@ class ComponentInstaller implements
             return;
         }
 
-        /** @var GenericRule $genericRule */
+        /** @var ?GenericRule $genericRule */
         $genericRule = $event->getOperation()->getReason();
         $package = $event->getOperation()->getPackage();
         $name    = $package->getName();
@@ -859,10 +859,14 @@ class ComponentInstaller implements
         return [];
     }
 
-    private function isADevDependency(GenericRule $genericRule, string $name): bool
+    private function isADevDependency(?GenericRule $genericRule, string $name): bool
     {
         if (array_key_exists($name, $this->composer->getPackage()->getDevRequires())) {
             return true;
+        }
+
+        if (null === $genericRule) {
+            return false;
         }
 
         $dependentFor = is_string($genericRule->getReasonData())
