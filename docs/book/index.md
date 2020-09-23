@@ -182,6 +182,37 @@ This value should be an array of package names.
 
 This setting only works in the root package.
 
+### Behavior with the whitelisted require-dev dependencies
+
+In a Laminas MVC application, when you have a whitelisted package declared as "require-dev", the module will add its config to the `config/development.config.php` file if it exists.
+
+```json
+"require-dev": {
+  "laminas/laminas-validator": "*"
+},
+"extra": {
+  "laminas": {
+    "component-whitelist": [
+      "laminas/laminas-validator"
+    ]
+  }
+}
+```
+
+```php
+<?php
+// config/development.config.php
+
+return [
+    // Additional modules to include when in development mode
+    'modules' => [
+        'Laminas\Validator', // automatically added line. 
+    ],
+];
+```
+
+> Using composer 2, the dependencies of the require-dev package will install in `modules.config.php` file if there are whitelisted.
+
 ## Why?
 
 When preparing laminas-mvc's version 3 release, we wanted to reduce the number of
