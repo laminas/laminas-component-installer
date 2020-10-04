@@ -5,7 +5,6 @@ namespace Laminas\ComponentInstaller\PackageProvider;
 
 use Composer\Composer;
 use Composer\Installer\PackageEvent;
-use Composer\Package\PackageInterface;
 use Composer\Plugin\PluginInterface;
 use Composer\Repository\CompositeRepository;
 use Composer\Repository\InstalledArrayRepository;
@@ -15,7 +14,7 @@ use Composer\Repository\RepositoryFactory;
 use Composer\Repository\RootPackageRepository;
 use function version_compare;
 
-class PackageProviderDetectionFactory
+final class PackageProviderDetectionFactory
 {
     /**
      * @var Composer
