@@ -10,7 +10,8 @@ namespace Laminas\ComponentInstaller;
 
 use ArrayObject;
 use Composer\Composer;
-use Composer\DependencyResolver\GenericRule;
+use Composer\DependencyResolver\Operation\InstallOperation;
+use Composer\DependencyResolver\Pool;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
@@ -191,9 +192,9 @@ class ComponentInstaller implements
             return;
         }
 
-        /** @var GenericRule $genericRule */
-        $genericRule = $event->getOperation()->getReason();
-        $package = $event->getOperation()->getPackage();
+        $operation = $event->getOperation();
+        assert($operation instanceof InstallOperation);
+        $package = $operation->getPackage();
         $name    = $package->getName();
         $extra   = $this->getExtraMetadata($package->getExtra());
 
@@ -211,13 +212,11 @@ class ComponentInstaller implements
             return;
         }
 
-        $requireDev = $this->isADevDependency($genericRule, $name);
+        $requireDev = $this->isADevDependency($event->getPool(), $package);
         $dependencies = $this->loadModuleClassesDependencies($package);
         $applicationModules = $this->findApplicationModules();
 
         $this->marshalInstallableModules($extra, $options)
-            ->each(function ($module) use ($name) {
-            })
             // Create injectors
             ->reduce(function ($injectors, $module) use ($options, $packageTypes, $name, $requireDev) {
                 // Get extra from root package
@@ -432,7 +431,7 @@ class ComponentInstaller implements
      *
      * @param string[] $extra
      * @param Collection $options
-     * @return string[] List of packages to install
+     * @return Collection List of packages to install
      */
     private function marshalInstallableModules(array $extra, Collection $options)
     {
@@ -859,17 +858,27 @@ class ComponentInstaller implements
         return [];
     }
 
-    private function isADevDependency(GenericRule $genericRule, string $name): bool
+    private function isADevDependency(Pool $pool, PackageInterface $package): bool
     {
-        if (array_key_exists($name, $this->composer->getPackage()->getDevRequires())) {
+        $packageName = $package->getName();
+        if (array_key_exists($packageName, $this->composer->getPackage()->getDevRequires())) {
             return true;
         }
 
-        $dependentFor = is_string($genericRule->getReasonData())
-            ? $genericRule->getReasonData()
-            : $genericRule->getReasonData()->getSource();
+        $packages = $pool->whatProvides($packageName);
+        if (empty($packages)) {
+            return false;
+        }
 
-        return array_key_exists($dependentFor, $this->composer->getPackage()->getDevRequires());
+        $requirements = $this->composer->getPackage()->getRequires();
+        foreach ($packages as $parent) {
+            // Package is required by any package which is NOT a dev-requirement
+            if (isset($requirements[$parent->getName()])) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function deactivate(Composer $composer, IOInterface $io)
