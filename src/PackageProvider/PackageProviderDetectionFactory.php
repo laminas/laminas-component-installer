@@ -5,6 +5,7 @@ namespace Laminas\ComponentInstaller\PackageProvider;
 
 use Composer\Composer;
 use Composer\Installer\PackageEvent;
+use Composer\IO\NullIO;
 use Composer\Plugin\PluginInterface;
 use Composer\Repository\CompositeRepository;
 use Composer\Repository\InstalledArrayRepository;
@@ -45,13 +46,14 @@ final class PackageProviderDetectionFactory
         $platformOverrides = $this->composer->getConfig()->get('platform') ?? [];
 
         $installedRepo = new InstalledRepository([
-            new RootPackageRepository($this->composer->getPackage()),
             $this->composer->getRepositoryManager()->getLocalRepository(),
             new PlatformRepository([], $platformOverrides),
         ]);
 
-        $defaultRepos = new CompositeRepository(RepositoryFactory::defaultRepos());
-        if ($match = $defaultRepos->findPackage($packageName, '')) {
+        $defaultRepos = new CompositeRepository(RepositoryFactory::defaultRepos(new NullIO()));
+        if (($match = $defaultRepos->findPackage($packageName, '*'))
+            && false === $installedRepo->hasPackage($match)
+        ) {
             $installedRepo->addRepository(new InstalledArrayRepository([clone $match]));
         }
 
