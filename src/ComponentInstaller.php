@@ -16,6 +16,7 @@ use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Plugin\PluginInterface;
+use Composer\Repository\RootPackageRepository;
 use DirectoryIterator;
 use Laminas\ComponentInstaller\Injector\AbstractInjector;
 use Laminas\ComponentInstaller\Injector\ConfigInjectorChain;
@@ -123,9 +124,19 @@ class ComponentInstaller implements
     private $projectRoot;
 
     /**
-     * @var callable(Composer $composer, PackageEvent $packageEvent, string $packageName):PackageProviderDetectionFactory
+     * @var callable(
+     *     Composer $composer,
+     *     PackageEvent $packageEvent,
+     *     ?RootPackageRepository $rootRepository,
+     *     string $packageName
+     * ): PackageProviderDetectionFactory
      */
     private $packageProviderFactory;
+
+    /**
+     * @var ?RootPackageRepository
+     */
+    private $rootRepository = null;
 
     /**
      * Constructor
@@ -143,9 +154,10 @@ class ComponentInstaller implements
         static function (
             Composer $composer,
             PackageEvent $event,
+            ?RootPackageRepository $rootRepository,
             string $packageName
         ): PackageProviderDetectionInterface {
-            return PackageProviderDetectionFactory::create($composer)->detect($event, $packageName);
+            return PackageProviderDetectionFactory::create($composer)->detect($event, $packageName, $rootRepository);
         };
     }
 
@@ -165,6 +177,9 @@ class ComponentInstaller implements
         $this->composer = $composer;
         $this->io = $io;
         $this->cachedInjectors = [];
+        if (false === PackageProviderDetectionFactory::isComposerV1()) {
+            $this->rootRepository = new RootPackageRepository($this->composer->getPackage());
+        }
     }
 
     /**
@@ -227,7 +242,12 @@ class ComponentInstaller implements
             return;
         }
 
-        $packageProviderDetection = ($this->packageProviderFactory)($this->composer, $event, $name);
+        $packageProviderDetection = ($this->packageProviderFactory)(
+            $this->composer,
+            $event,
+            $this->rootRepository,
+            $name
+        );
         $requireDev = $this->isADevDependency($packageProviderDetection, $package);
         $dependencies = $this->loadModuleClassesDependencies($package);
         $applicationModules = $this->findApplicationModules();

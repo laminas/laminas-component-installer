@@ -1,4 +1,11 @@
 <?php
+
+/**
+ * @see       https://github.com/laminas/laminas-component-installer for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-component-installer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-component-installer/blob/master/LICENSE.md New BSD License
+ */
+
 declare(strict_types=1);
 
 namespace Laminas\ComponentInstaller\PackageProvider;
@@ -37,8 +44,11 @@ final class PackageProviderDetectionFactory
         return version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0.0', '<') === true;
     }
 
-    public function detect(PackageEvent $event, string $packageName): PackageProviderDetectionInterface
-    {
+    public function detect(
+        PackageEvent $event,
+        string $packageName,
+        ?RootPackageRepository $packageRepository
+    ): PackageProviderDetectionInterface {
         if (self::isComposerV1()) {
             return new ComposerV1($event->getPool());
         }
@@ -46,6 +56,7 @@ final class PackageProviderDetectionFactory
         $platformOverrides = $this->composer->getConfig()->get('platform') ?? [];
 
         $installedRepo = new InstalledRepository([
+            $packageRepository,
             $this->composer->getRepositoryManager()->getLocalRepository(),
             new PlatformRepository([], $platformOverrides),
         ]);
