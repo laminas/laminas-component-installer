@@ -9,6 +9,7 @@
 namespace LaminasTest\ComponentInstaller;
 
 use Composer\Composer;
+use Composer\Config;
 use Composer\DependencyResolver\Operation\InstallOperation;
 use Composer\DependencyResolver\Pool;
 use Composer\Installer\InstallationManager;
@@ -16,7 +17,12 @@ use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Package\RootPackageInterface;
+use Composer\Repository\PlatformRepository;
+use Composer\Repository\RepositoryInterface;
+use Composer\Repository\RepositoryManager;
+use Composer\Repository\RootPackageRepository;
 use Laminas\ComponentInstaller\ComponentInstaller;
+use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionFactory;
 use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionInterface;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
@@ -78,7 +84,12 @@ class ComponentInstallerTest extends TestCase
         $this->packageProviderDetection = $this->createMock(PackageProviderDetectionInterface::class);
         $this->installer = new ComponentInstaller(
             vfsStream::url('project'),
-            function (Composer $composer, PackageEvent $event, string $packageName): PackageProviderDetectionInterface {
+            function (
+                Composer $composer,
+                PackageEvent $event,
+                ?RootPackageRepository $repository,
+                string $packageName
+            ): PackageProviderDetectionInterface {
                 return $this->packageProviderDetection;
             }
         );
@@ -88,8 +99,20 @@ class ComponentInstallerTest extends TestCase
         $this->io = $this->prophesize(IOInterface::class);
 
         $this->composer->getPackage()->willReturn($this->rootPackage->reveal());
-        $this->rootPackage->getExtra()->willReturn([]);
+        $config = $this->prophesize(Config::class);
+
         $this->rootPackage->getDevRequires()->willReturn([]);
+        $this->rootPackage->getExtra()->willReturn([]);
+        if (false === PackageProviderDetectionFactory::isComposerV1()) {
+            $this->composer->getConfig()->willReturn($config->reveal());
+            $repositoryManager = $this->prophesize(RepositoryManager::class);
+            $localRepository = $this->prophesize(PlatformRepository::class);
+            $repositoryManager->getLocalRepository()->willReturn($localRepository->reveal());
+            $this->composer->getRepositoryManager()->willReturn($repositoryManager->reveal());
+            $this->rootPackage
+                ->setRepository(Argument::type(RootPackageRepository::class))
+                ->willReturn([]);
+        }
 
         $this->installer->activate(
             $this->composer->reveal(),
