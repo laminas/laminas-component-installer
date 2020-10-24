@@ -24,27 +24,28 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 2.3.1 - TBD
-
-### Added
-
-- Nothing.
-
-### Changed
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
+## 2.3.1 - 2020-10-24
 
 ### Fixed
 
 - [#16](https://github.com/laminas/laminas-component-installer/pull/16) Fixed issue with detection packages in composer v2 as dev dependencies.
+
+
+-----
+
+### Release Notes for [2.3.1](https://github.com/laminas/laminas-component-installer/milestone/3)
+
+2.3.x bugfix release (patch)
+
+### 2.3.1
+
+- Total issues resolved: **0**
+- Total pull requests resolved: **1**
+- Total contributors: **1**
+
+#### Bug
+
+ - [16: bugfix: composer 2.0 compatibility](https://github.com/laminas/laminas-component-installer/pull/16) thanks to @boesing
 
 ## 2.3.0 - 2020-09-02
 
