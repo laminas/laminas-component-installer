@@ -9,14 +9,19 @@
 namespace LaminasTest\ComponentInstaller;
 
 use Composer\Composer;
-use Composer\DependencyResolver\GenericRule;
+use Composer\Config;
 use Composer\DependencyResolver\Operation\InstallOperation;
+use Composer\DependencyResolver\Pool;
 use Composer\Installer\InstallationManager;
 use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Package\RootPackageInterface;
+use Composer\Repository\PlatformRepository;
+use Composer\Repository\RepositoryManager;
+use Composer\Repository\RootPackageRepository;
 use Laminas\ComponentInstaller\ComponentInstaller;
+use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionFactory;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
@@ -68,16 +73,30 @@ class ComponentInstallerTest extends TestCase
     protected function setUp() : void
     {
         $this->projectRoot = vfsStream::setup('project');
-        $this->installer = new ComponentInstaller(vfsStream::url('project'));
+        $this->installer = new ComponentInstaller(
+            vfsStream::url('project')
+        );
 
         $this->composer = $this->prophesize(Composer::class);
         $this->rootPackage = $this->prophesize(RootPackageInterface::class);
         $this->io = $this->prophesize(IOInterface::class);
 
-        $this->composer->getPackage()->willReturn($this->rootPackage->reveal());
-        $this->rootPackage->getExtra()->willReturn([]);
         $this->rootPackage->getDevRequires()->willReturn([]);
+        $this->rootPackage->getExtra()->willReturn([]);
+        if (false === PackageProviderDetectionFactory::isComposerV1()) {
+            $config = $this->prophesize(Config::class);
+            $this->composer->getConfig()->willReturn($config->reveal());
+            $repositoryManager = $this->prophesize(RepositoryManager::class);
+            $localRepository = $this->prophesize(PlatformRepository::class);
+            $localRepository->getPackages()->willReturn([]);
+            $repositoryManager->getLocalRepository()->willReturn($localRepository->reveal());
+            $this->composer->getRepositoryManager()->willReturn($repositoryManager->reveal());
+            $this->rootPackage->getProvides()->willReturn([]);
+            $this->rootPackage->getReplaces()->willReturn([]);
+            $this->rootPackage->setRepository(Argument::type(RootPackageRepository::class))->willReturn([]);
+        }
 
+        $this->composer->getPackage()->willReturn($this->rootPackage->reveal());
         $this->installer->activate(
             $this->composer->reveal(),
             $this->io->reveal()
@@ -176,16 +195,21 @@ CONTENT
         $this->installationManager->getInstallPath(Argument::exact($package->reveal()))
             ->willReturn(vfsStream::url('project/' . $installPath));
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
-
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
+
+        $this->rootPackage
+            ->getName()
+            ->willReturn('some/component');
+
+        $this->rootPackage
+            ->getRequires()
+            ->willReturn([]);
 
         $this->io->ask(Argument::that(function ($argument) {
             return ComponentInstallerTest::assertPrompt($argument, 'SomeComponent');
@@ -528,15 +552,18 @@ CONTENT
         $this->installationManager->getInstallPath(Argument::exact($package->reveal()))
             ->willReturn(vfsStream::url('project/' . $installPath));
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
+
+        $this->rootPackage->getRequires()->willReturn([]);
+        $this->rootPackage
+            ->getName()
+            ->willReturn('some/component');
 
         $this->io->ask(Argument::that(function ($argument) use ($packageName) {
             return ComponentInstallerTest::assertPrompt($argument, $packageName);
@@ -627,15 +654,18 @@ CONTENT
         ]);
         $package->getAutoload()->willReturn([]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/module');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/module');
+        $this->prepareEventForPackageProviderDetection($event, 'some/module');
+
+
+        $this->rootPackage->getRequires()->willReturn([]);
+        $this->rootPackage->getName()->willReturn('some/component');
 
         $this->io->ask(Argument::that(function ($argument) {
             return ComponentInstallerTest::assertPrompt($argument, 'SomeModule');
@@ -679,11 +709,8 @@ CONTENT
         $package->getName()->willReturn('some/component');
         $package->getExtra()->willReturn([]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
@@ -702,11 +729,8 @@ CONTENT
             'module' => 'Some\\Component',
         ]]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
@@ -721,11 +745,8 @@ CONTENT
         $package->getName()->willReturn('some/component');
         $package->getExtra()->willReturn(['laminas' => []]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
@@ -747,15 +768,15 @@ CONTENT
         ]]);
         $package->getAutoload()->willReturn([]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
+        $this->rootPackage->getRequires()->willReturn([]);
+        $this->rootPackage->getName()->willReturn('some/component');
 
         $this->io->ask(Argument::any())->shouldNotBeCalled();
 
@@ -775,15 +796,16 @@ CONTENT
         ]]);
         $package->getAutoload()->willReturn([]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
+
+        $this->rootPackage->getRequires()->willReturn([]);
+        $this->rootPackage->getName()->willReturn('some/component');
 
         $this->rootPackage->getExtra()->willReturn(['laminas' => [
             'component-whitelist' => ['some/component'],
@@ -809,15 +831,16 @@ CONTENT
         ]]);
         $package->getAutoload()->willReturn([]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
+
+        $this->rootPackage->getRequires()->willReturn([]);
+        $this->rootPackage->getName()->willReturn('some/component');
 
         $this->io->ask(Argument::that(function ($argument) {
             if (! is_string($argument)) {
@@ -876,15 +899,16 @@ CONTENT
         ]]);
         $package->getAutoload()->willReturn([]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
+
+        $this->rootPackage->getRequires()->willReturn([]);
+        $this->rootPackage->getName()->willReturn('some/component');
 
         $this->io->ask(Argument::that(function ($argument) {
             if (! is_string($argument)) {
@@ -978,15 +1002,13 @@ CONTENT
         ]]);
         $package->getAutoload()->willReturn([]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
 
         $this->io->ask(Argument::that(function ($argument) {
             if (! is_string($argument)) {
@@ -1038,15 +1060,16 @@ CONTENT
         ]]);
         $package->getAutoload()->willReturn([]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'other/component');
+
+        $this->rootPackage->getRequires()->willReturn([]);
+        $this->rootPackage->getName()->willReturn('other/component');
 
         $this->io->ask(Argument::that(function ($argument) {
             if (! is_string($argument)) {
@@ -1103,15 +1126,13 @@ CONTENT
         ]]);
         $package->getAutoload()->willReturn([]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
 
         $this->io->ask(Argument::that(function ($argument) {
             if (! is_string($argument)) {
@@ -1163,15 +1184,16 @@ CONTENT
         ]]);
         $package->getAutoload()->willReturn([]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'other/component');
+
+        $this->rootPackage->getRequires()->willReturn([]);
+        $this->rootPackage->getName()->willReturn('some/component');
 
         $this->io->write(Argument::that(function ($argument) {
             return strstr($argument, 'Installing Other\Component from package other/component');
@@ -1213,11 +1235,8 @@ CONTENT
         ]]);
         $package->getAutoload()->willReturn([]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
@@ -1258,15 +1277,14 @@ CONTENT
         ]]);
         $package->getAutoload()->willReturn([]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+
+        $this->rootPackage->getRequires()->willReturn([]);
 
         $this->io
             ->write('<info>    Removing Some\Component from package some/component</info>')
@@ -1304,15 +1322,17 @@ CONTENT
         ]]);
         $package->getAutoload()->willReturn([]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/module');
+
+
+        $this->rootPackage->getRequires()->willReturn([]);
+        $this->rootPackage->getName()->willReturn('some/module');
 
         $this->io->ask(Argument::that(function ($argument) {
             if (! is_string($argument)) {
@@ -1375,15 +1395,16 @@ CONTENT
             'component' => 'Some\\Component',
         ]]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/package');
+
+        $this->rootPackage->getRequires()->willReturn([]);
+        $this->rootPackage->getName()->willReturn('some/package');
 
         $this->io->ask(Argument::that(function ($argument) {
             if (! is_string($argument)) {
@@ -1474,15 +1495,18 @@ CONTENT
             'module' => 'Some\\Module',
         ]]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/package');
+
+        $this->rootPackage->getRequires()->willReturn([]);
+        $this->rootPackage
+            ->getName()
+            ->willReturn('some/package');
 
         $this->io->ask(Argument::that(function ($argument) {
             if (! is_string($argument)) {
@@ -1734,6 +1758,8 @@ CONTENT
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
 
+        $this->rootPackage->getRequires()->willReturn([]);
+
         $this->io
             ->write('<info>    Removing Some\Component from package some/component</info>')
             ->shouldBeCalled();
@@ -1777,7 +1803,7 @@ CONFIG;
             $this->createConfigFile($configName, $configContents);
         }
 
-        $this->rootPackage->getDevRequires()->willReturn(['some/component' => null]);
+        $this->rootPackage->getDevRequires()->willReturn(['some/component' => '*']);
         $this->rootPackage->getExtra()->willReturn([
            'laminas' => [
                "component-whitelist" => [
@@ -1797,15 +1823,15 @@ CONFIG;
         ]);
         $package->getAutoload()->willReturn([]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/component');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
+
+        $this->rootPackage->getRequires()->willReturn([]);
 
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
         $config = include vfsStream::url('project/config/modules.config.php');
@@ -1852,15 +1878,18 @@ CONFIG;
         ]);
         $package->getAutoload()->willReturn([]);
 
-        $genericRule = $this->prophesize(GenericRule::class);
-        $genericRule->getReasonData()->willReturn('some/module');
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
-        $operation->getReason()->willReturn($genericRule->reveal());
 
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/module');
+
+        $this->rootPackage
+            ->getName()
+            ->willReturn('some/module');
+        $this->rootPackage->getRequires()->willReturn([]);
 
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
         $config = include vfsStream::url('project/config/modules.config.php');
@@ -1912,5 +1941,19 @@ CONFIG;
         vfsStream::newFile('config/' . $name)
             ->at($this->projectRoot)
             ->setContent($contents);
+    }
+
+    /**
+     * @param ObjectProphecy|PackageEvent $event
+     * @param string $packageName
+     * @return ObjectProphecy
+     */
+    private function prepareEventForPackageProviderDetection(ObjectProphecy $event, string $packageName): void
+    {
+        if (method_exists(PackageEvent::class, 'getPool')) {
+            $pool = $this->prophesize(Pool::class);
+            $pool->whatProvides($packageName)->willReturn([]);
+            $event->getPool()->willReturn($pool->reveal());
+        }
     }
 }

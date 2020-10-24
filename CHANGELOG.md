@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#16](https://github.com/laminas/laminas-component-installer/pull/16) Fixed issue with detection packages in composer v2 as dev dependencies.
 
 ## 2.3.0 - 2020-09-02
 
