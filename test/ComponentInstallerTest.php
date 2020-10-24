@@ -18,15 +18,12 @@ use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Package\RootPackageInterface;
 use Composer\Repository\PlatformRepository;
-use Composer\Repository\RepositoryInterface;
 use Composer\Repository\RepositoryManager;
 use Composer\Repository\RootPackageRepository;
 use Laminas\ComponentInstaller\ComponentInstaller;
 use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionFactory;
-use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionInterface;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -73,47 +70,33 @@ class ComponentInstallerTest extends TestCase
      */
     private $installationManager;
 
-    /**
-     * @var PackageProviderDetectionInterface|MockObject
-     */
-    private $packageProviderDetection;
-
     protected function setUp() : void
     {
         $this->projectRoot = vfsStream::setup('project');
-        $this->packageProviderDetection = $this->createMock(PackageProviderDetectionInterface::class);
         $this->installer = new ComponentInstaller(
-            vfsStream::url('project'),
-            function (
-                Composer $composer,
-                PackageEvent $event,
-                ?RootPackageRepository $repository,
-                string $packageName
-            ): PackageProviderDetectionInterface {
-                return $this->packageProviderDetection;
-            }
+            vfsStream::url('project')
         );
 
         $this->composer = $this->prophesize(Composer::class);
         $this->rootPackage = $this->prophesize(RootPackageInterface::class);
         $this->io = $this->prophesize(IOInterface::class);
 
-        $this->composer->getPackage()->willReturn($this->rootPackage->reveal());
-        $config = $this->prophesize(Config::class);
-
         $this->rootPackage->getDevRequires()->willReturn([]);
         $this->rootPackage->getExtra()->willReturn([]);
         if (false === PackageProviderDetectionFactory::isComposerV1()) {
+            $config = $this->prophesize(Config::class);
             $this->composer->getConfig()->willReturn($config->reveal());
             $repositoryManager = $this->prophesize(RepositoryManager::class);
             $localRepository = $this->prophesize(PlatformRepository::class);
+            $localRepository->getPackages()->willReturn([]);
             $repositoryManager->getLocalRepository()->willReturn($localRepository->reveal());
             $this->composer->getRepositoryManager()->willReturn($repositoryManager->reveal());
-            $this->rootPackage
-                ->setRepository(Argument::type(RootPackageRepository::class))
-                ->willReturn([]);
+            $this->rootPackage->getProvides()->willReturn([]);
+            $this->rootPackage->getReplaces()->willReturn([]);
+            $this->rootPackage->setRepository(Argument::type(RootPackageRepository::class))->willReturn([]);
         }
 
+        $this->composer->getPackage()->willReturn($this->rootPackage->reveal());
         $this->installer->activate(
             $this->composer->reveal(),
             $this->io->reveal()
@@ -218,12 +201,11 @@ CONTENT
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
 
-        $this->packageProviderDetection
-            ->expects($this->atLeastOnce())
-            ->method('whatProvides')
-            ->with('some/component')
-            ->willReturn([]);
+        $this->rootPackage
+            ->getName()
+            ->willReturn('some/component');
 
         $this->rootPackage
             ->getRequires()
@@ -576,13 +558,12 @@ CONTENT
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
 
         $this->rootPackage->getRequires()->willReturn([]);
-        $this->packageProviderDetection
-            ->expects($this->any())
-            ->method('whatProvides')
-            ->with('some/component')
-            ->willReturn([]);
+        $this->rootPackage
+            ->getName()
+            ->willReturn('some/component');
 
         $this->io->ask(Argument::that(function ($argument) use ($packageName) {
             return ComponentInstallerTest::assertPrompt($argument, $packageName);
@@ -679,13 +660,12 @@ CONTENT
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/module');
+        $this->prepareEventForPackageProviderDetection($event, 'some/module');
+
 
         $this->rootPackage->getRequires()->willReturn([]);
-        $this->packageProviderDetection
-            ->expects($this->any())
-            ->method('whatProvides')
-            ->with('some/module')
-            ->willReturn([$package->reveal()]);
+        $this->rootPackage->getName()->willReturn('some/component');
 
         $this->io->ask(Argument::that(function ($argument) {
             return ComponentInstallerTest::assertPrompt($argument, 'SomeModule');
@@ -794,12 +774,9 @@ CONTENT
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
         $this->rootPackage->getRequires()->willReturn([]);
-        $this->packageProviderDetection
-            ->expects($this->any())
-            ->method('whatProvides')
-            ->with('some/component')
-            ->willReturn([]);
+        $this->rootPackage->getName()->willReturn('some/component');
 
         $this->io->ask(Argument::any())->shouldNotBeCalled();
 
@@ -825,13 +802,10 @@ CONTENT
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
 
         $this->rootPackage->getRequires()->willReturn([]);
-        $this->packageProviderDetection
-            ->expects($this->any())
-            ->method('whatProvides')
-            ->with('some/component')
-            ->willReturn([]);
+        $this->rootPackage->getName()->willReturn('some/component');
 
         $this->rootPackage->getExtra()->willReturn(['laminas' => [
             'component-whitelist' => ['some/component'],
@@ -863,13 +837,10 @@ CONTENT
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
 
         $this->rootPackage->getRequires()->willReturn([]);
-        $this->packageProviderDetection
-            ->expects($this->any())
-            ->method('whatProvides')
-            ->with('some/component')
-            ->willReturn([]);
+        $this->rootPackage->getName()->willReturn('some/component');
 
         $this->io->ask(Argument::that(function ($argument) {
             if (! is_string($argument)) {
@@ -934,13 +905,10 @@ CONTENT
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
 
         $this->rootPackage->getRequires()->willReturn([]);
-        $this->packageProviderDetection
-            ->expects($this->any())
-            ->method('whatProvides')
-            ->with('some/component')
-            ->willReturn([]);
+        $this->rootPackage->getName()->willReturn('some/component');
 
         $this->io->ask(Argument::that(function ($argument) {
             if (! is_string($argument)) {
@@ -1040,6 +1008,7 @@ CONTENT
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
 
         $this->io->ask(Argument::that(function ($argument) {
             if (! is_string($argument)) {
@@ -1097,13 +1066,10 @@ CONTENT
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'other/component');
 
         $this->rootPackage->getRequires()->willReturn([]);
-        $this->packageProviderDetection
-            ->expects($this->any())
-            ->method('whatProvides')
-            ->with('other/component')
-            ->willReturn([]);
+        $this->rootPackage->getName()->willReturn('other/component');
 
         $this->io->ask(Argument::that(function ($argument) {
             if (! is_string($argument)) {
@@ -1166,6 +1132,7 @@ CONTENT
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
 
         $this->io->ask(Argument::that(function ($argument) {
             if (! is_string($argument)) {
@@ -1223,13 +1190,10 @@ CONTENT
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'other/component');
 
         $this->rootPackage->getRequires()->willReturn([]);
-        $this->packageProviderDetection
-            ->expects($this->any())
-            ->method('whatProvides')
-            ->withConsecutive(['other/component'], ['some/component'])
-            ->willReturn([]);
+        $this->rootPackage->getName()->willReturn('some/component');
 
         $this->io->write(Argument::that(function ($argument) {
             return strstr($argument, 'Installing Other\Component from package other/component');
@@ -1321,11 +1285,6 @@ CONTENT
         $event->getOperation()->willReturn($operation->reveal());
 
         $this->rootPackage->getRequires()->willReturn([]);
-        $this->packageProviderDetection
-            ->expects($this->any())
-            ->method('whatProvides')
-            ->with('some/component')
-            ->willReturn([]);
 
         $this->io
             ->write('<info>    Removing Some\Component from package some/component</info>')
@@ -1369,13 +1328,11 @@ CONTENT
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/module');
+
 
         $this->rootPackage->getRequires()->willReturn([]);
-        $this->packageProviderDetection
-            ->expects($this->any())
-            ->method('whatProvides')
-            ->with('some/module')
-            ->willReturn([]);
+        $this->rootPackage->getName()->willReturn('some/module');
 
         $this->io->ask(Argument::that(function ($argument) {
             if (! is_string($argument)) {
@@ -1444,13 +1401,10 @@ CONTENT
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/package');
 
         $this->rootPackage->getRequires()->willReturn([]);
-        $this->packageProviderDetection
-            ->expects($this->any())
-            ->method('whatProvides')
-            ->with('some/package')
-            ->willReturn([]);
+        $this->rootPackage->getName()->willReturn('some/package');
 
         $this->io->ask(Argument::that(function ($argument) {
             if (! is_string($argument)) {
@@ -1547,13 +1501,12 @@ CONTENT
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/package');
 
         $this->rootPackage->getRequires()->willReturn([]);
-        $this->packageProviderDetection
-            ->expects($this->any())
-            ->method('whatProvides')
-            ->with('some/package')
-            ->willReturn([]);
+        $this->rootPackage
+            ->getName()
+            ->willReturn('some/package');
 
         $this->io->ask(Argument::that(function ($argument) {
             if (! is_string($argument)) {
@@ -1806,11 +1759,6 @@ CONTENT
         $event->getOperation()->willReturn($operation->reveal());
 
         $this->rootPackage->getRequires()->willReturn([]);
-        $this->packageProviderDetection
-            ->expects($this->any())
-            ->method('whatProvides')
-            ->with('some/component')
-            ->willReturn([]);
 
         $this->io
             ->write('<info>    Removing Some\Component from package some/component</info>')
@@ -1881,13 +1829,9 @@ CONFIG;
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
 
         $this->rootPackage->getRequires()->willReturn([]);
-        $this->packageProviderDetection
-            ->expects($this->any())
-            ->method('whatProvides')
-            ->with('some/component')
-            ->willReturn([]);
 
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
         $config = include vfsStream::url('project/config/modules.config.php');
@@ -1940,13 +1884,12 @@ CONFIG;
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
+        $this->prepareEventForPackageProviderDetection($event, 'some/module');
 
+        $this->rootPackage
+            ->getName()
+            ->willReturn('some/module');
         $this->rootPackage->getRequires()->willReturn([]);
-        $this->packageProviderDetection
-            ->expects($this->any())
-            ->method('whatProvides')
-            ->with('some/module')
-            ->willReturn([]);
 
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
         $config = include vfsStream::url('project/config/modules.config.php');
@@ -2000,7 +1943,17 @@ CONFIG;
             ->setContent($contents);
     }
 
-    private function prepareEventForPackageProviderDetection(ObjectProphecy $event): ObjectProphecy
+    /**
+     * @param ObjectProphecy|PackageEvent $event
+     * @param string $packageName
+     * @return ObjectProphecy
+     */
+    private function prepareEventForPackageProviderDetection(ObjectProphecy $event, string $packageName): void
     {
+        if (method_exists(PackageEvent::class, 'getPool')) {
+            $pool = $this->prophesize(Pool::class);
+            $pool->whatProvides($packageName)->willReturn([]);
+            $event->getPool()->willReturn($pool->reveal());
+        }
     }
 }

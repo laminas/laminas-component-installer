@@ -28,10 +28,17 @@ final class PackageProviderDetectionFactory
      * @var Composer
      */
     private $composer;
+    /**
+     * @var null|RootPackageRepository
+     */
+    private $packageRepository = null;
 
     public function __construct(Composer $composer)
     {
         $this->composer = $composer;
+        if (false === self::isComposerV1()) {
+            $this->packageRepository = new RootPackageRepository($composer->getPackage());
+        }
     }
 
     public static function create(Composer $composer): self
@@ -44,11 +51,8 @@ final class PackageProviderDetectionFactory
         return version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0.0', '<') === true;
     }
 
-    public function detect(
-        PackageEvent $event,
-        string $packageName,
-        ?RootPackageRepository $packageRepository
-    ): PackageProviderDetectionInterface {
+    public function detect(PackageEvent $event, string $packageName): PackageProviderDetectionInterface
+    {
         if (self::isComposerV1()) {
             return new ComposerV1($event->getPool());
         }
@@ -56,7 +60,7 @@ final class PackageProviderDetectionFactory
         $platformOverrides = $this->composer->getConfig()->get('platform') ?? [];
 
         $installedRepo = new InstalledRepository([
-            $packageRepository,
+            $this->packageRepository,
             $this->composer->getRepositoryManager()->getLocalRepository(),
             new PlatformRepository([], $platformOverrides),
         ]);
