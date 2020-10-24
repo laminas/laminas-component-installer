@@ -10,7 +10,7 @@ namespace Laminas\ComponentInstaller;
 
 use ArrayObject;
 use Composer\Composer;
-use Composer\DependencyResolver\GenericRule;
+use Composer\DependencyResolver\Operation\InstallOperation;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
@@ -20,10 +20,10 @@ use DirectoryIterator;
 use Laminas\ComponentInstaller\Injector\AbstractInjector;
 use Laminas\ComponentInstaller\Injector\ConfigInjectorChain;
 use Laminas\ComponentInstaller\Injector\InjectorInterface;
-
+use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionFactory;
+use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionInterface;
 use function array_filter;
 use function array_flip;
-use function array_key_exists;
 use function array_keys;
 use function array_map;
 use function array_unshift;
@@ -122,6 +122,11 @@ class ComponentInstaller implements
     private $projectRoot;
 
     /**
+     * @var PackageProviderDetectionFactory
+     */
+    private $packageProviderFactory;
+
+    /**
      * Constructor
      *
      * Optionally accept the project root into which to install.
@@ -141,15 +146,17 @@ class ComponentInstaller implements
      * Sets internal pointers to Composer and IOInterface instances, and resets
      * cached injector map.
      *
-     * @param Composer $composer
+     * @param Composer    $composer
      * @param IOInterface $io
+     *
      * @return void
      */
     public function activate(Composer $composer, IOInterface $io)
     {
-        $this->composer        = $composer;
-        $this->io              = $io;
+        $this->composer = $composer;
+        $this->io = $io;
         $this->cachedInjectors = [];
+        $this->packageProviderFactory = PackageProviderDetectionFactory::create($composer);
     }
 
     /**
@@ -160,7 +167,7 @@ class ComponentInstaller implements
     public static function getSubscribedEvents()
     {
         return [
-            'post-package-install'   => 'onPostPackageInstall',
+            'post-package-install' => 'onPostPackageInstall',
             'post-package-uninstall' => 'onPostPackageUninstall',
         ];
     }
@@ -182,6 +189,7 @@ class ComponentInstaller implements
      * writing their values into the `modules` list.
      *
      * @param PackageEvent $event
+     *
      * @return void
      */
     public function onPostPackageInstall(PackageEvent $event)
@@ -191,11 +199,11 @@ class ComponentInstaller implements
             return;
         }
 
-        /** @var GenericRule $genericRule */
-        $genericRule = $event->getOperation()->getReason();
-        $package = $event->getOperation()->getPackage();
-        $name    = $package->getName();
-        $extra   = $this->getExtraMetadata($package->getExtra());
+        $operation = $event->getOperation();
+        assert($operation instanceof InstallOperation);
+        $package = $operation->getPackage();
+        $name = $package->getName();
+        $extra = $this->getExtraMetadata($package->getExtra());
 
         if (empty($extra)) {
             // Package does not define anything of interest; do nothing.
@@ -211,13 +219,12 @@ class ComponentInstaller implements
             return;
         }
 
-        $requireDev = $this->isADevDependency($genericRule, $name);
+        $packageProviderDetection = $this->packageProviderFactory->detect($event, $name);
+        $requireDev = $this->isADevDependency($packageProviderDetection, $package);
         $dependencies = $this->loadModuleClassesDependencies($package);
         $applicationModules = $this->findApplicationModules();
 
         $this->marshalInstallableModules($extra, $options)
-            ->each(function ($module) use ($name) {
-            })
             // Create injectors
             ->reduce(function ($injectors, $module) use ($options, $packageTypes, $name, $requireDev) {
                 // Get extra from root package
@@ -232,6 +239,7 @@ class ComponentInstaller implements
                     $whitelist,
                     $requireDev
                 );
+
                 return $injectors;
             }, new Collection([]))
             // Inject modules into configuration
@@ -250,13 +258,15 @@ class ComponentInstaller implements
      * via method `getModuleDependencies` of Module class.
      *
      * These dependencies are used later
+     *
+     * @param PackageInterface $package
+     *
+     * @return array
      * @see \Laminas\ComponentInstaller\Injector\AbstractInjector::injectAfterDependencies
-     * to add component in a correct order on the module list - after dependencies.
+     *      to add component in a correct order on the module list - after dependencies.
      *
      * It works with PSR-0, PSR-4, 'classmap' and 'files' composer autoloading.
      *
-     * @param PackageInterface $package
-     * @return array
      */
     private function loadModuleClassesDependencies(PackageInterface $package)
     {
@@ -313,6 +323,7 @@ class ComponentInstaller implements
      * removing their values from the `modules` list.
      *
      * @param PackageEvent $event
+     *
      * @return void
      */
     public function onPostPackageUninstall(PackageEvent $event)
@@ -334,8 +345,8 @@ class ComponentInstaller implements
         }
 
         $package = $event->getOperation()->getPackage();
-        $name    = $package->getName();
-        $extra   = $this->getExtraMetadata($package->getExtra());
+        $name = $package->getName();
+        $extra = $this->getExtraMetadata($package->getExtra());
         $this->removePackageFromConfig($name, $extra, $options);
     }
 
@@ -343,6 +354,7 @@ class ComponentInstaller implements
      * Retrieve the metadata from the "extra" section
      *
      * @param array $extra
+     *
      * @return array
      */
     private function getExtraMetadata(array $extra)
@@ -354,8 +366,7 @@ class ComponentInstaller implements
         // supports legacy "extra.zf" configuration
         return isset($extra['zf']) && is_array($extra['zf'])
             ? $extra['zf']
-            : []
-        ;
+            : [];
     }
 
     /**
@@ -363,12 +374,14 @@ class ComponentInstaller implements
      * exposes in the extra configuration.
      *
      * @param string[] $extra
+     *
      * @return Collection Collection of Injector\InjectorInterface::TYPE_* constants.
      */
     private function discoverPackageTypes(array $extra)
     {
         $packageTypes = array_flip($this->packageTypes);
-        $knownTypes   = array_keys($packageTypes);
+        $knownTypes = array_keys($packageTypes);
+
         return Collection::create($extra)
             ->filter(function ($packages, $type) use ($knownTypes) {
                 return in_array($type, $knownTypes, true);
@@ -379,6 +392,7 @@ class ComponentInstaller implements
                 foreach ($packages as $package) {
                     $discoveredTypes[$package] = $packageTypes[$type];
                 }
+
                 return $discoveredTypes;
             }, new Collection([]));
     }
@@ -387,6 +401,7 @@ class ComponentInstaller implements
      * Marshal a collection of defined package types.
      *
      * @param array $extra extra.laminas value
+     *
      * @return Collection
      */
     private function marshalPackageTypes(array $extra)
@@ -401,9 +416,10 @@ class ComponentInstaller implements
     /**
      * Marshal a collection of package modules.
      *
-     * @param array $extra extra.laminas value
+     * @param array      $extra   extra.laminas value
      * @param Collection $packageTypes
      * @param Collection $options ConfigOption instances
+     *
      * @return Collection
      */
     private function marshalPackageModules(array $extra, Collection $packageTypes, Collection $options)
@@ -421,6 +437,7 @@ class ComponentInstaller implements
                 if (! in_array($type, $supportedTypes, true)) {
                     return $modules;
                 }
+
                 return $modules->merge((array) $extra[$configKey]);
             }, new Collection([]))
             // Make sure the list is unique
@@ -430,9 +447,10 @@ class ComponentInstaller implements
     /**
      * Prepare a list of modules to install/register with configuration.
      *
-     * @param string[] $extra
+     * @param string[]   $extra
      * @param Collection $options
-     * @return string[] List of packages to install
+     *
+     * @return Collection List of packages to install
      */
     private function marshalInstallableModules(array $extra, Collection $options)
     {
@@ -448,11 +466,12 @@ class ComponentInstaller implements
     /**
      * Prompt for the user to select a configuration location to update.
      *
-     * @param string $name
+     * @param string     $name
      * @param Collection $options
-     * @param int $packageType
-     * @param string $packageName
-     * @param array $whitelist
+     * @param int        $packageType
+     * @param string     $packageName
+     * @param array      $whitelist
+     *
      * @return Injector\InjectorInterface
      */
     private function promptForConfigOption(
@@ -484,6 +503,7 @@ class ComponentInstaller implements
                 $index,
                 $option->getPromptText()
             );
+
             return $ask;
         }, []);
 
@@ -499,6 +519,7 @@ class ComponentInstaller implements
             if (is_numeric($answer) && isset($options[(int) $answer])) {
                 $injector = $options[(int) $answer]->getInjector();
                 $this->promptToRememberOption($injector, $packageType);
+
                 return $injector;
             }
 
@@ -509,10 +530,11 @@ class ComponentInstaller implements
     /**
      * Prompt the user to determine if the selection should be remembered for later packages.
      *
-     * @todo Will need to store selection in filesystem and remove when all packages are complete
      * @param Injector\InjectorInterface $injector
-     * @param int $packageType
+     * @param int                        $packageType
      * return void
+     *
+     * @todo Will need to store selection in filesystem and remove when all packages are complete
      */
     private function promptToRememberOption(Injector\InjectorInterface $injector, $packageType)
     {
@@ -524,6 +546,7 @@ class ComponentInstaller implements
             switch ($answer) {
                 case 'y':
                     $this->cacheInjector($injector, $packageType);
+
                     return;
                 case 'n':
                     // intentionally fall-through
@@ -536,10 +559,11 @@ class ComponentInstaller implements
     /**
      * Inject a module into available configuration.
      *
-     * @param string $package Package name
-     * @param string $module Module to install in configuration
+     * @param string                     $package  Package name
+     * @param string                     $module   Module to install in configuration
      * @param Injector\InjectorInterface $injector Injector to use.
-     * @param int $packageType
+     * @param int                        $packageType
+     *
      * @return void
      */
     private function injectModuleIntoConfig($package, $module, Injector\InjectorInterface $injector, $packageType)
@@ -561,10 +585,11 @@ class ComponentInstaller implements
     /**
      * Remove a package from configuration.
      *
-     * @param string $package Package name
-     * @param array $metadata Metadata pulled from extra.laminas
+     * @param string     $package       Package name
+     * @param array      $metadata      Metadata pulled from extra.laminas
      * @param Collection $configOptions Discovered configuration options from
-     *     which to remove package.
+     *                                  which to remove package.
+     *
      * @return void
      */
     private function removePackageFromConfig($package, array $metadata, Collection $configOptions)
@@ -595,9 +620,10 @@ class ComponentInstaller implements
     /**
      * Remove an individual module defined in a package from configuration.
      *
-     * @param string $module Module to remove
-     * @param string $package Package in which module is defined
+     * @param string     $module    Module to remove
+     * @param string     $package   Package in which module is defined
      * @param Collection $injectors Injectors to use for removal
+     *
      * @return void
      */
     private function removeModuleFromConfig($module, $package, Collection $injectors)
@@ -616,6 +642,7 @@ class ComponentInstaller implements
 
     /**
      * @param InjectorInterface $injector
+     *
      * @return string
      * @todo remove after InjectorInterface has getConfigName defined
      */
@@ -632,6 +659,7 @@ class ComponentInstaller implements
 
     /**
      * @param ConfigInjectorChain $injector
+     *
      * @return string
      * @todo remove after InjectorInterface has getConfigName defined
      */
@@ -644,6 +672,7 @@ class ComponentInstaller implements
 
     /**
      * @param AbstractInjector $injector
+     *
      * @return string
      * @todo remove after InjectorInterface has getConfigName defined
      */
@@ -656,6 +685,7 @@ class ComponentInstaller implements
      * Is a given module name valid?
      *
      * @param string $module
+     *
      * @return bool
      */
     private function moduleIsValid($module)
@@ -667,7 +697,8 @@ class ComponentInstaller implements
      * Is a given metadata value (extra.laminas.*) valid?
      *
      * @param string $key Key to examine in metadata
-     * @param array $metadata
+     * @param array  $metadata
+     *
      * @return bool
      */
     private function metadataForKeyIsValid($key, array $metadata)
@@ -689,6 +720,7 @@ class ComponentInstaller implements
                 if (false === $valid) {
                     return $valid;
                 }
+
                 return $this->moduleIsValid($value);
             }, null);
     }
@@ -697,6 +729,7 @@ class ComponentInstaller implements
      * Attempt to retrieve a cached injector for the current package type.
      *
      * @param int $packageType
+     *
      * @return null|Injector\InjectorInterface
      */
     private function getCachedInjector($packageType)
@@ -712,7 +745,8 @@ class ComponentInstaller implements
      * Cache an injector for later use.
      *
      * @param Injector\InjectorInterface $injector
-     * @param int $packageType
+     * @param int                        $packageType
+     *
      * @return void
      */
     private function cacheInjector(Injector\InjectorInterface $injector, $packageType)
@@ -723,9 +757,10 @@ class ComponentInstaller implements
     /**
      * Iterate through each autoloader type to find dependencies.
      *
-     * @param array $autoload List of autoloader types and associated autoloader definitions.
+     * @param array       $autoload     List of autoloader types and associated autoloader definitions.
      * @param ArrayObject $dependencies Module dependencies defined by the module.
-     * @param string $packagePath Path to the package on the filesystem.
+     * @param string      $packagePath  Path to the package on the filesystem.
+     *
      * @return void
      */
     private function mapAutoloaders(array $autoload, ArrayObject $dependencies, $packagePath)
@@ -738,10 +773,11 @@ class ComponentInstaller implements
     /**
      * Iterate through a single autolaoder type to find dependencies.
      *
-     * @param array $map Map of namespace => path(s) pairs.
-     * @param string $type Type of autoloader being iterated.
+     * @param array       $map          Map of namespace => path(s) pairs.
+     * @param string      $type         Type of autoloader being iterated.
      * @param ArrayObject $dependencies Module dependencies defined by the module.
-     * @param string $packagePath Path to the package on the filesystem.
+     * @param string      $packagePath  Path to the package on the filesystem.
+     *
      * @return void
      */
     private function mapType(array $map, $type, ArrayObject $dependencies, $packagePath)
@@ -755,11 +791,12 @@ class ComponentInstaller implements
     /**
      * Iterate through the paths defined for a given namespace.
      *
-     * @param array $paths Paths defined for the given namespace.
-     * @param string $namespace PHP namespace to which the paths map.
-     * @param string $type Type of autoloader being iterated.
+     * @param array       $paths        Paths defined for the given namespace.
+     * @param string      $namespace    PHP namespace to which the paths map.
+     * @param string      $type         Type of autoloader being iterated.
      * @param ArrayObject $dependencies Module dependencies defined by the module.
-     * @param string $packagePath Path to the package on the filesystem.
+     * @param string      $packagePath  Path to the package on the filesystem.
+     *
      * @return void
      */
     private function mapNamespacePaths(array $paths, $namespace, $type, ArrayObject $dependencies, $packagePath)
@@ -772,11 +809,12 @@ class ComponentInstaller implements
     /**
      * Find module dependencies for a given namespace for a given path.
      *
-     * @param string $path Path to inspect.
-     * @param string $namespace PHP namespace to which the paths map.
-     * @param string $type Type of autoloader being iterated.
+     * @param string      $path         Path to inspect.
+     * @param string      $namespace    PHP namespace to which the paths map.
+     * @param string      $type         Type of autoloader being iterated.
      * @param ArrayObject $dependencies Module dependencies defined by the module.
-     * @param string $packagePath Path to the package on the filesystem.
+     * @param string      $packagePath  Path to the package on the filesystem.
+     *
      * @return void
      */
     private function mapPath($path, $namespace, $type, ArrayObject $dependencies, $packagePath)
@@ -834,6 +872,7 @@ class ComponentInstaller implements
 
     /**
      * @param string $file
+     *
      * @return array
      */
     private function getModuleDependencies($file)
@@ -859,17 +898,30 @@ class ComponentInstaller implements
         return [];
     }
 
-    private function isADevDependency(GenericRule $genericRule, string $name): bool
-    {
-        if (array_key_exists($name, $this->composer->getPackage()->getDevRequires())) {
+    private function isADevDependency(
+        PackageProviderDetectionInterface $packageProviderDetection,
+        PackageInterface $package
+    ): bool {
+        $packageName = $package->getName();
+        $devRequirements = $this->composer->getPackage()->getDevRequires();
+        if (isset($devRequirements[$packageName])) {
             return true;
         }
 
-        $dependentFor = is_string($genericRule->getReasonData())
-            ? $genericRule->getReasonData()
-            : $genericRule->getReasonData()->getSource();
+        $packages = $packageProviderDetection->whatProvides($packageName);
+        if (empty($packages)) {
+            return false;
+        }
 
-        return array_key_exists($dependentFor, $this->composer->getPackage()->getDevRequires());
+        $requirements = $this->composer->getPackage()->getRequires();
+        foreach ($packages as $parent) {
+            // Package is required by any package which is NOT a dev-requirement
+            if (isset($requirements[$parent->getName()])) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function deactivate(Composer $composer, IOInterface $io)
