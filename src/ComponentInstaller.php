@@ -16,7 +16,6 @@ use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Plugin\PluginInterface;
-use Composer\Repository\RootPackageRepository;
 use DirectoryIterator;
 use Laminas\ComponentInstaller\Injector\AbstractInjector;
 use Laminas\ComponentInstaller\Injector\ConfigInjectorChain;
@@ -25,7 +24,6 @@ use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionFactory;
 use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionInterface;
 use function array_filter;
 use function array_flip;
-use function array_key_exists;
 use function array_keys;
 use function array_map;
 use function array_unshift;
@@ -124,19 +122,9 @@ class ComponentInstaller implements
     private $projectRoot;
 
     /**
-     * @var callable(
-     *     Composer $composer,
-     *     PackageEvent $packageEvent,
-     *     ?RootPackageRepository $rootRepository,
-     *     string $packageName
-     * ): PackageProviderDetectionFactory
+     * @var PackageProviderDetectionFactory
      */
     private $packageProviderFactory;
-
-    /**
-     * @var ?RootPackageRepository
-     */
-    private $rootRepository = null;
 
     /**
      * Constructor
@@ -145,20 +133,11 @@ class ComponentInstaller implements
      *
      * @param string $projectRoot
      */
-    public function __construct($projectRoot = '', callable $packageProviderFactory = null)
+    public function __construct($projectRoot = '')
     {
         if (is_string($projectRoot) && ! empty($projectRoot) && is_dir($projectRoot)) {
             $this->projectRoot = $projectRoot;
         }
-        $this->packageProviderFactory = $packageProviderFactory ??
-        static function (
-            Composer $composer,
-            PackageEvent $event,
-            ?RootPackageRepository $rootRepository,
-            string $packageName
-        ): PackageProviderDetectionInterface {
-            return PackageProviderDetectionFactory::create($composer)->detect($event, $packageName, $rootRepository);
-        };
     }
 
     /**
@@ -177,9 +156,7 @@ class ComponentInstaller implements
         $this->composer = $composer;
         $this->io = $io;
         $this->cachedInjectors = [];
-        if (false === PackageProviderDetectionFactory::isComposerV1()) {
-            $this->rootRepository = new RootPackageRepository($this->composer->getPackage());
-        }
+        $this->packageProviderFactory = PackageProviderDetectionFactory::create($composer);
     }
 
     /**
@@ -242,12 +219,7 @@ class ComponentInstaller implements
             return;
         }
 
-        $packageProviderDetection = ($this->packageProviderFactory)(
-            $this->composer,
-            $event,
-            $this->rootRepository,
-            $name
-        );
+        $packageProviderDetection = $this->packageProviderFactory->detect($event, $name);
         $requireDev = $this->isADevDependency($packageProviderDetection, $package);
         $dependencies = $this->loadModuleClassesDependencies($package);
         $applicationModules = $this->findApplicationModules();
