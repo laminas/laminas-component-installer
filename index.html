@@ -148,7 +148,7 @@
             </div>
 
             
-            <div class="col-4 text-sm-right">
+            <div class="col-4 text-right">
                 
                     
 
@@ -230,13 +230,11 @@
     <h1 id="basic-usage">Basic Usage</h1>
 <h2 id="installation">Installation</h2>
 <pre class="highlight"><code class="language-bash">$ composer require --dev laminas/laminas-component-installer</code></pre>
-
 <blockquote>
 <h3>Global Installation</h3>
 <p>You can also install the plugin globally, in which case it will be active for
 every project you manage on your machine.</p>
 <pre class="highlight"><code class="language-bash">$ composer global require laminas/laminas-component-installer</code></pre>
-
 </blockquote>
 <h2 id="installable-packages">Installable Packages</h2>
 <p>How do you define a package for which laminas-component-installer will install
@@ -255,7 +253,6 @@ themselves. These require the following:</p>
         "component": "Some\\Component"
     }
 }</code></pre>
-
 <p>You may also specify multiple components as an array:</p>
 <pre class="highlight"><code class="language-json">"extra": {
     "laminas": {
@@ -265,7 +262,6 @@ themselves. These require the following:</p>
         ]
     }
 }</code></pre>
-
 <p>Your application will need to have one or more of the following configuration
 files, from which you will be prompted to choose which one in which to inject
 the component:</p>
@@ -290,7 +286,6 @@ require the following:</p>
         "module": "Some\\Component"
     }
 }</code></pre>
-
 <p>You may also specify multiple modules as an array:</p>
 <pre class="highlight"><code class="language-json">"extra": {
     "laminas": {
@@ -300,7 +295,6 @@ require the following:</p>
         ]
     }
 }</code></pre>
-
 <p>Your application will need to have one or more of the following configuration
 files, from which you will be prompted to choose which one in which to inject
 the module:</p>
@@ -331,7 +325,6 @@ class ConfigProvider
         return [ /* ... */ ];
     }
 }</code></pre>
-
 <ul>
 <li>An <code>extra.laminas.config-provider</code> entry listing the configuration provider class
   in your <code>composer.json</code>.</li>
@@ -341,7 +334,6 @@ class ConfigProvider
         "config-provider": "Some\\Component\\ConfigProvider"
     }
 }</code></pre>
-
 <p>You may also specify multiple configuration providers as an array:</p>
 <pre class="highlight"><code class="language-json">"extra": {
     "laminas": {
@@ -351,7 +343,6 @@ class ConfigProvider
         ]
     }
 }</code></pre>
-
 <p>Your application will need to define a <code>config/config.php</code> file, and that file
 will need to have a line that instantiates either a
 <code>Mezzio\ConfigManager\ConfigManager</code> instance (deprecated) or
@@ -373,7 +364,6 @@ This value should be an array of package names.</p>
         ]
     }
 }</code></pre>
-
 <p>This setting only works in the root package.</p>
 <h2 id="why">Why?</h2>
 <p>When preparing laminas-mvc's version 3 release, we wanted to reduce the number of
@@ -579,5 +569,5 @@ requirement of the metapackage. As such, it's typically safer to:</p>
 
 <!--
 MkDocs version : 1.1.2
-Build Date UTC : 2020-09-02 15:16:25.336534+00:00
+Build Date UTC : 2020-10-24 18:13:33.745942+00:00
 -->
