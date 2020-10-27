@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#19](https://github.com/laminas/laminas-component-installer/pull/19) provides a change that ensures the plugin re-uses the root package repository within the post-package-install event context, preventing errors in multiple Composer commands when the plugin is present.
 
 ## 2.3.1 - 2020-10-24
 
