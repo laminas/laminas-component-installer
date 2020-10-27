@@ -2,12 +2,33 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 2.4.0 - TBD
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 2.3.2 - 2020-10-27
 
 ### Fixed
 
 - [#19](https://github.com/laminas/laminas-component-installer/pull/19) provides a change that ensures the plugin re-uses the root package repository within the post-package-install event context, preventing errors in multiple Composer commands when the plugin is present.
-
 
 -----
 
