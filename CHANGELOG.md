@@ -24,6 +24,28 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+## 2.3.2 - 2020-10-27
+
+### Fixed
+
+- [#19](https://github.com/laminas/laminas-component-installer/pull/19) provides a change that ensures the plugin re-uses the root package repository within the post-package-install event context, preventing errors in multiple Composer commands when the plugin is present.
+
+-----
+
+### Release Notes for [2.3.2](https://github.com/laminas/laminas-component-installer/milestone/6)
+
+2.3.x bugfix release (patch)
+
+### 2.3.2
+
+- Total issues resolved: **1**
+- Total pull requests resolved: **1**
+- Total contributors: **2**
+
+#### Bug
+
+ - [19: fix erros with composer commands](https://github.com/laminas/laminas-component-installer/pull/19) thanks to @kpicaza and @svycka
+
 ## 2.3.1 - 2020-10-24
 
 ### Fixed
