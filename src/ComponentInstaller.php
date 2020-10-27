@@ -156,7 +156,9 @@ class ComponentInstaller implements
         $this->composer = $composer;
         $this->io = $io;
         $this->cachedInjectors = [];
-        $this->packageProviderFactory = PackageProviderDetectionFactory::create($composer);
+        $this->packageProviderFactory = function () {
+            return PackageProviderDetectionFactory::create($this->composer);
+        };
     }
 
     /**
@@ -218,6 +220,10 @@ class ComponentInstaller implements
             // No configuration options found; do nothing.
             return;
         }
+
+        $this->packageProviderFactory = is_callable($this->packageProviderFactory)
+            ? ($this->packageProviderFactory)()
+            : $this->packageProviderFactory;
 
         $packageProviderDetection = $this->packageProviderFactory->detect($event, $name);
         $requireDev = $this->isADevDependency($packageProviderDetection, $package);
