@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 2.3.3 - TBD
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 2.4.1 - TBD
 
 ### Added
@@ -59,6 +81,28 @@ Feature release (minor)
 
  - [23: Psalm integration](https://github.com/laminas/laminas-component-installer/pull/23) thanks to @weierophinney and @boesing
  - [22: PHP 8 support Fixes #14](https://github.com/laminas/laminas-component-installer/pull/22) thanks to @adamturcsan and @boesing
+
+## 2.3.3 - TBD
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
 
 ## 2.3.2 - 2020-10-27
 
