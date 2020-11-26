@@ -25,7 +25,7 @@
         "class": "Laminas\\ComponentInstaller\\ComponentInstaller"
     },
     "require": {
-        "php": "^7.1",
+        "php": "^7.3 || ~8.0.0",
         "composer-plugin-api": "^1.0 || ^2.0",
         "laminas/laminas-zendframework-bridge": "^1.0"
     },
@@ -34,7 +34,8 @@
         "laminas/laminas-coding-standard": "~1.0.0",
         "malukenho/docheader": "^0.1.6",
         "mikey179/vfsstream": "^1.6.7",
-        "phpunit/phpunit": "^7.5.15 || ^8.3.4"
+        "phpspec/prophecy-phpunit": "^2.0",
+        "phpunit/phpunit": "^9.3"
     },
     "autoload": {
         "psr-4": {

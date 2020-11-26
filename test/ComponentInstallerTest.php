@@ -40,6 +40,8 @@ use function strstr;
 
 class ComponentInstallerTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
+
     /**
      * @var vfsStreamDirectory
      */
@@ -1258,7 +1260,7 @@ CONTENT
         $this->assertNull($this->installer->onPostPackageUninstall($event->reveal()));
 
         $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
-        $this->assertNotContains('Some\Component', $config);
+        $this->assertStringNotContainsString('Some\Component', $config);
     }
 
     public function testOnPostPackageUninstallCanRemovePackageArraysFromConfiguration()
@@ -1305,8 +1307,8 @@ CONTENT
         $this->assertNull($this->installer->onPostPackageUninstall($event->reveal()));
 
         $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
-        $this->assertNotContains('Some\Component', $config);
-        $this->assertNotContains('Other\Component', $config);
+        $this->assertStringNotContainsString('Some\Component', $config);
+        $this->assertStringNotContainsString('Other\Component', $config);
     }
 
     public function testModuleIsAppended()
