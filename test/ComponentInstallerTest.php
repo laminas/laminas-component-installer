@@ -26,6 +26,7 @@ use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionObject;
 
@@ -40,7 +41,7 @@ use function strstr;
 
 class ComponentInstallerTest extends TestCase
 {
-    use \Prophecy\PhpUnit\ProphecyTrait;
+    use ProphecyTrait;
 
     /**
      * @var vfsStreamDirectory

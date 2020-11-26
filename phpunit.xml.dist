@@ -5,7 +5,7 @@
          colors="true">
     <testsuites>
         <testsuite name="Laminas\\ComponentInstaller Tests">
-              <directory>./test</directory>
+            <directory>./test</directory>
         </testsuite>
     </testsuites>
 
