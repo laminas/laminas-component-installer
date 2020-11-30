@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#22](https://github.com/laminas/laminas-component-installer/pull/22) adds support for PHP 8.
 
 ### Changed
 
@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#22](https://github.com/laminas/laminas-component-installer/pull/22) removes support for PHP versions prior to 7.3.
 
 ### Fixed
 
