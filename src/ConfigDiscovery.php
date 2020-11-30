@@ -82,6 +82,7 @@ class ConfigDiscovery
                 // Look up the injector based on the file type
                 $injectorClass = $this->injectors[$file];
                 if (is_array($injectorClass)) {
+                    /** @psalm-suppress MixedArgument */
                     return new Injector\ConfigInjectorChain(
                         $injectorClass,
                         $discovery,

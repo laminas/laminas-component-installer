@@ -26,7 +26,10 @@ class ModulesConfigInjectorTest extends AbstractInjectorTestCase
         ModulesConfigInjector::TYPE_BEFORE_APPLICATION,
     ];
 
-    public function allowedTypes()
+    /**
+     * @psalm-return array<string, array{0: int, 1: bool}>
+     */
+    public function allowedTypes(): array
     {
         return [
             'config-provider'            => [ModulesConfigInjector::TYPE_CONFIG_PROVIDER, false],
@@ -37,7 +40,10 @@ class ModulesConfigInjectorTest extends AbstractInjectorTestCase
         ];
     }
 
-    public function injectComponentProvider()
+    /**
+     * @psalm-return array<string, array{0: int, 1: string, 2: string}>
+     */
+    public function injectComponentProvider(): array
     {
         // @codingStandardsIgnoreStart
         $baseContentsLongArray  = '<' . "?php\nreturn array(\n    'Application',\n);";
@@ -51,7 +57,10 @@ class ModulesConfigInjectorTest extends AbstractInjectorTestCase
         // @codingStandardsIgnoreEnd
     }
 
-    public function packageAlreadyRegisteredProvider()
+    /**
+     * @psalm-return array<string, array{0: string, 1: int}>
+     */
+    public function packageAlreadyRegisteredProvider(): array
     {
         // @codingStandardsIgnoreStart
         return [
@@ -63,7 +72,10 @@ class ModulesConfigInjectorTest extends AbstractInjectorTestCase
         // @codingStandardsIgnoreEnd
     }
 
-    public function emptyConfiguration()
+    /**
+     * @psalm-return array<string, array{0: string}>
+     */
+    public function emptyConfiguration(): array
     {
         // @codingStandardsIgnoreStart
         $baseContentsLongArray  = '<' . "?php\nreturn array(\n    'Application',\n);";
@@ -76,7 +88,10 @@ class ModulesConfigInjectorTest extends AbstractInjectorTestCase
         ];
     }
 
-    public function packagePopulatedInConfiguration()
+    /**
+     * @psalm-return array<string, array{0: string, 1: string}>
+     */
+    public function packagePopulatedInConfiguration(): array
     {
         // @codingStandardsIgnoreStart
         $baseContentsLongArray  = '<' . "?php\nreturn array(\n    'Application',\n);";

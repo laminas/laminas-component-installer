@@ -27,12 +27,15 @@ class ConfigAggregatorInjectorTest extends AbstractInjectorTestCase
         ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER,
     ];
 
-    public function convertToShortArraySyntax($contents)
+    public function convertToShortArraySyntax(string $contents): string
     {
         return preg_replace('/array\(([^)]+)\)/s', '[$1]', $contents);
     }
 
-    public function allowedTypes()
+    /**
+     * @psalm-return array<string, array{0: int, 1: bool}>
+     */
+    public function allowedTypes(): array
     {
         return [
             'config-provider' => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, true],
@@ -41,7 +44,10 @@ class ConfigAggregatorInjectorTest extends AbstractInjectorTestCase
         ];
     }
 
-    public function injectComponentProvider()
+    /**
+     * @psalm-return array<string, array{0: int, 1: string, 2: string}>
+     */
+    public function injectComponentProvider(): array
     {
         // @codingStandardsIgnoreStart
         $baseContentsFqcnLongArray              = file_get_contents(__DIR__ . '/TestAsset/mezzio-application-fqcn.config.php');
@@ -77,7 +83,10 @@ class ConfigAggregatorInjectorTest extends AbstractInjectorTestCase
         // @codingStandardsIgnoreEnd
     }
 
-    public function packageAlreadyRegisteredProvider()
+    /**
+     * @psalm-return array<string, array{0: string, 1: int}>
+     */
+    public function packageAlreadyRegisteredProvider(): array
     {
         // @codingStandardsIgnoreStart
         $fqcnLongArray              = file_get_contents(__DIR__ . '/TestAsset/mezzio-populated-fqcn.config.php');
@@ -99,7 +108,10 @@ class ConfigAggregatorInjectorTest extends AbstractInjectorTestCase
         // @codingStandardsIgnoreEnd
     }
 
-    public function emptyConfiguration()
+    /**
+     * @psalm-return array<string, array{0: string}>
+     */
+    public function emptyConfiguration(): array
     {
         // @codingStandardsIgnoreStart
         $fqcnLongArray              = file_get_contents(__DIR__ . '/TestAsset/mezzio-empty-fqcn.config.php');
@@ -121,7 +133,10 @@ class ConfigAggregatorInjectorTest extends AbstractInjectorTestCase
         ];
     }
 
-    public function packagePopulatedInConfiguration()
+    /**
+     * @psalm-return array<string, array{0: string, 1: string}>
+     */
+    public function packagePopulatedInConfiguration(): array
     {
         // @codingStandardsIgnoreStart
         $baseContentsFqcnLongArray              = file_get_contents(__DIR__ . '/TestAsset/mezzio-populated-fqcn.config.php');
@@ -157,7 +172,7 @@ class ConfigAggregatorInjectorTest extends AbstractInjectorTestCase
         // @codingStandardsIgnoreEnd
     }
 
-    public function testProperlyDetectsExistingConfigProviderInConfigWithMixedRelativeAndGloballyQualifiedNames()
+    public function testProperlyDetectsExistingConfigProviderInConfigWithMixedRelativeAndGloballyQualifiedNames(): void
     {
         $contents = file_get_contents(__DIR__ . '/TestAsset/mezzio-application-from-skeleton.config.php');
         vfsStream::newFile('config/config.php')

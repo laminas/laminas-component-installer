@@ -29,12 +29,12 @@ class MezzioConfigTest extends TestCase
         );
     }
 
-    public function testAbsenceOfFileReturnsFalseOnLocate()
+    public function testAbsenceOfFileReturnsFalseOnLocate(): void
     {
         $this->assertFalse($this->locator->locate());
     }
 
-    public function testLocateReturnsFalseWhenFileDoesNotHaveExpectedContents()
+    public function testLocateReturnsFalseWhenFileDoesNotHaveExpectedContents(): void
     {
         vfsStream::newFile('config/config.php')
             ->at($this->configDir)
@@ -42,7 +42,10 @@ class MezzioConfigTest extends TestCase
         $this->assertFalse($this->locator->locate());
     }
 
-    public function validMezzioConfigContents()
+    /**
+     * @psalm-return array<string, array{0: string}>
+     */
+    public function validMezzioConfigContents(): array
     {
         // @codingStandardsIgnoreStart
         return [
@@ -58,10 +61,8 @@ class MezzioConfigTest extends TestCase
 
     /**
      * @dataProvider validMezzioConfigContents
-     *
-     * @param string $contents
      */
-    public function testLocateReturnsTrueWhenFileExistsAndHasExpectedContent($contents)
+    public function testLocateReturnsTrueWhenFileExistsAndHasExpectedContent(string $contents): void
     {
         vfsStream::newFile('config/config.php')
             ->at($this->configDir)

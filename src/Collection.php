@@ -36,7 +36,7 @@ class Collection implements
     protected $items;
 
     /**
-     * @param array|Traversable $items
+     * @param iterable $items
      * @throws InvalidArgumentException
      */
     public function __construct($items)
@@ -55,10 +55,10 @@ class Collection implements
     /**
      * Factory method
      *
-     * @param array|Traversable
+     * @param iterable $items
      * @return static
      */
-    public static function create($items)
+    public static function create($items): self
     {
         return new static($items);
     }

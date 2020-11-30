@@ -394,8 +394,8 @@ abstract class AbstractInjector implements InjectorInterface
     /**
      * Is the code item registered in the configuration already?
      *
-     * @var string $package Package name
-     * @var string $config
+     * @param string $package Package name
+     * @param string $config
      * @return bool
      */
     protected function isRegisteredInConfig($package, $config)

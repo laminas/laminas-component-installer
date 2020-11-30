@@ -37,7 +37,7 @@ class ConfigInjectorChain implements InjectorInterface
      * Optionally accept the project root directory; if non-empty, it is used
      * to prefix the $configFile.
      *
-     * @param mixed $injectors
+     * @param iterable $injectors
      * @param DiscoveryChainInterface $discoveryChain
      * @param Collection $availableTypes
      * @param string $projectRoot
