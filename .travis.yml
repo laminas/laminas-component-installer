@@ -33,6 +33,7 @@ matrix:
       env:
         - DEPS=latest
         - COMPOSER_VERSION=2
+        - STATIC_ANALYSIS=true
     - php: nightly
       env:
         - DEPS=lowest
@@ -62,6 +63,7 @@ install:
 
 script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then composer run-script test-coverage --timeout=400 -- --verbose ; else composer run-script test --timeout=300 -- --verbose ; fi
+  - if [[ $STATIC_ANALYSIS == 'true' ]]; then composer static-analysis ; fi
   - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi
   - if [[ $CS_CHECK == 'true' ]]; then composer license-check ; fi
 

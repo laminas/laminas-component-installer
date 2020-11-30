@@ -25,8 +25,8 @@ class DiscoveryChain implements DiscoveryInterface, DiscoveryChainInterface
      * Optionally specify project directory; $configFile will be relative to
      * this value.
      *
-     * @param mixed  $discovery
-     * @param string $projectDirectory
+     * @param iterable $discovery
+     * @param string   $projectDirectory
      */
     public function __construct($discovery, $projectDirectory = '')
     {

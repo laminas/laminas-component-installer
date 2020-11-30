@@ -42,35 +42,37 @@ abstract class AbstractInjectorTestCase extends TestCase
         );
     }
 
-    abstract public function allowedTypes();
+    /**
+     * @psalm-return array<string, array{0: int, 1: bool}>
+     */
+    abstract public function allowedTypes(): array;
 
     /**
      * @dataProvider allowedTypes
-     *
-     * @param string $type
-     * @param bool $expected
      */
-    public function testRegistersTypesReturnsExpectedBooleanBasedOnType($type, $expected)
+    public function testRegistersTypesReturnsExpectedBooleanBasedOnType(int $type, bool $expected): void
     {
         $this->assertSame($expected, $this->injector->registersType($type));
     }
 
-    public function testGetTypesAllowedReturnsListOfAllExpectedTypes()
+    public function testGetTypesAllowedReturnsListOfAllExpectedTypes(): void
     {
         $this->assertEquals($this->injectorTypesAllowed, $this->injector->getTypesAllowed());
     }
 
-    abstract public function injectComponentProvider();
+    /**
+     * @psalm-return array<string, array{0: int, 1: string, 2: string}>
+     */
+    abstract public function injectComponentProvider(): array;
 
     /**
      * @dataProvider injectComponentProvider
-     *
-     * @param string $type
-     * @param string $initialContents
-     * @param string $expectedContents
      */
-    public function testInjectAddsPackageToModulesListInAppropriateLocation($type, $initialContents, $expectedContents)
-    {
+    public function testInjectAddsPackageToModulesListInAppropriateLocation(
+        int $type,
+        string $initialContents,
+        string $expectedContents
+    ): void {
         vfsStream::newFile($this->configFile)
             ->at($this->configDir)
             ->setContent($initialContents);
@@ -82,15 +84,15 @@ abstract class AbstractInjectorTestCase extends TestCase
         $this->assertTrue($injected);
     }
 
-    abstract public function packageAlreadyRegisteredProvider();
+    /**
+     * @psalm-return array<string, array{0: string, 1: int}>
+     */
+    abstract public function packageAlreadyRegisteredProvider(): array;
 
     /**
      * @dataProvider packageAlreadyRegisteredProvider
-     *
-     * @param string $contents
-     * @param string $type
      */
-    public function testInjectDoesNotModifyContentsIfPackageIsAlreadyRegistered($contents, $type)
+    public function testInjectDoesNotModifyContentsIfPackageIsAlreadyRegistered(string $contents, int $type): void
     {
         vfsStream::newFile($this->configFile)
             ->at($this->configDir)
@@ -103,14 +105,15 @@ abstract class AbstractInjectorTestCase extends TestCase
         $this->assertFalse($injected);
     }
 
-    abstract public function emptyConfiguration();
+    /**
+     * @psalm-return array<string, array{0: string}>
+     */
+    abstract public function emptyConfiguration(): array;
 
     /**
      * @dataProvider emptyConfiguration
-     *
-     * @param string $contents
      */
-    public function testRemoveDoesNothingIfPackageIsNotInConfigFile($contents)
+    public function testRemoveDoesNothingIfPackageIsNotInConfigFile(string $contents): void
     {
         vfsStream::newFile($this->configFile)
             ->at($this->configDir)
@@ -120,16 +123,18 @@ abstract class AbstractInjectorTestCase extends TestCase
         $this->assertFalse($removed);
     }
 
-    abstract public function packagePopulatedInConfiguration();
+    /**
+     * @psalm-return array<string, array{0: string, 1: string}>
+     */
+    abstract public function packagePopulatedInConfiguration(): array;
 
     /**
      * @dataProvider packagePopulatedInConfiguration
-     *
-     * @param string $initialContents
-     * @param string $expectedContents
      */
-    public function testRemoveRemovesPackageFromConfigurationWhenFound($initialContents, $expectedContents)
-    {
+    public function testRemoveRemovesPackageFromConfigurationWhenFound(
+        string $initialContents,
+        string $expectedContents
+    ): void {
         vfsStream::newFile($this->configFile)
             ->at($this->configDir)
             ->setContent($initialContents);

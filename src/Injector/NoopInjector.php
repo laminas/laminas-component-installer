@@ -13,6 +13,7 @@ class NoopInjector implements InjectorInterface
     /**
      * {@inheritDoc}
      *
+     * @param int $type
      * @return true
      */
     public function registersType($type)

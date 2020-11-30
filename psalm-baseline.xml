@@ -1,0 +1,1069 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="4.2.1@ea9cb72143b77e7520c52fa37290bd8d8bc88fd9">
+  <file src="src/Collection.php">
+    <DocblockTypeContradiction occurrences="2">
+      <code>is_array($items)</code>
+      <code>null === $offset</code>
+    </DocblockTypeContradiction>
+    <MissingClosureParamType occurrences="9">
+      <code>$filtered</code>
+      <code>$filtered</code>
+      <code>$item</code>
+      <code>$item</code>
+      <code>$item</code>
+      <code>$key</code>
+      <code>$key</code>
+      <code>$key</code>
+      <code>$results</code>
+    </MissingClosureParamType>
+    <MissingPropertyType occurrences="1">
+      <code>$items</code>
+    </MissingPropertyType>
+    <MixedArgument occurrences="6">
+      <code>$this-&gt;items</code>
+      <code>$this-&gt;items</code>
+      <code>$this-&gt;items</code>
+      <code>$this-&gt;items</code>
+      <code>$this-&gt;items</code>
+      <code>$this-&gt;items</code>
+    </MixedArgument>
+    <MixedArrayAccess occurrences="2">
+      <code>$this-&gt;items[$offset]</code>
+      <code>$this-&gt;items[$offset]</code>
+    </MixedArrayAccess>
+    <MixedArrayAssignment occurrences="5">
+      <code>$filtered[$key]</code>
+      <code>$filtered[$key]</code>
+      <code>$results[$key]</code>
+      <code>$this-&gt;items[$offset]</code>
+      <code>$this-&gt;items[]</code>
+    </MixedArrayAssignment>
+    <MixedArrayOffset occurrences="3">
+      <code>$filtered[$key]</code>
+      <code>$filtered[$key]</code>
+      <code>$results[$key]</code>
+    </MixedArrayOffset>
+    <MixedAssignment occurrences="9">
+      <code>$accumulator</code>
+      <code>$accumulator</code>
+      <code>$filtered[$key]</code>
+      <code>$filtered[$key]</code>
+      <code>$item</code>
+      <code>$item</code>
+      <code>$key</code>
+      <code>$key</code>
+      <code>$results[$key]</code>
+    </MixedAssignment>
+    <MixedInferredReturnType occurrences="4">
+      <code>array</code>
+      <code>static</code>
+      <code>static</code>
+      <code>static</code>
+    </MixedInferredReturnType>
+    <MixedReturnStatement occurrences="4">
+      <code>$this-&gt;items</code>
+    </MixedReturnStatement>
+    <UnsafeInstantiation occurrences="5">
+      <code>new static($items)</code>
+      <code>new static([])</code>
+      <code>new static([])</code>
+      <code>new static([])</code>
+      <code>new static(array_unique($this-&gt;items))</code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/ComponentInstaller.php">
+    <DocblockTypeContradiction occurrences="1">
+      <code>is_callable($this-&gt;packageProviderFactory)</code>
+    </DocblockTypeContradiction>
+    <InvalidPropertyAssignmentValue occurrences="1"/>
+    <InvalidScalarArgument occurrences="1">
+      <code>$default</code>
+    </InvalidScalarArgument>
+    <MissingClosureParamType occurrences="30">
+      <code>$allowed</code>
+      <code>$ask</code>
+      <code>$configKey</code>
+      <code>$configKey</code>
+      <code>$configOption</code>
+      <code>$discoveredTypes</code>
+      <code>$index</code>
+      <code>$injector</code>
+      <code>$injector</code>
+      <code>$injectors</code>
+      <code>$key</code>
+      <code>$module</code>
+      <code>$module</code>
+      <code>$module</code>
+      <code>$module</code>
+      <code>$modules</code>
+      <code>$option</code>
+      <code>$option</code>
+      <code>$option</code>
+      <code>$packages</code>
+      <code>$packages</code>
+      <code>$registered</code>
+      <code>$registered</code>
+      <code>$type</code>
+      <code>$type</code>
+      <code>$type</code>
+      <code>$type</code>
+      <code>$type</code>
+      <code>$valid</code>
+      <code>$value</code>
+    </MissingClosureParamType>
+    <MissingClosureReturnType occurrences="5">
+      <code>function ($allowed, $option) {</code>
+      <code>function ($configOption) {</code>
+      <code>function ($injector) use ($packageTypes) {</code>
+      <code>function ($module) use ($options) {</code>
+      <code>function ($modules, $configKey, $type) use ($extra, $supportedTypes) {</code>
+    </MissingClosureReturnType>
+    <MixedArgument occurrences="23">
+      <code>$ask</code>
+      <code>$ask</code>
+      <code>$configKey</code>
+      <code>$index</code>
+      <code>$injector</code>
+      <code>$injector</code>
+      <code>$item</code>
+      <code>$map</code>
+      <code>$module</code>
+      <code>$module</code>
+      <code>$module</code>
+      <code>$module</code>
+      <code>$module</code>
+      <code>$name</code>
+      <code>$option-&gt;getPromptText()</code>
+      <code>$package-&gt;getExtra()</code>
+      <code>$packageProviderDetection</code>
+      <code>$packageType</code>
+      <code>$packageTypes[$module]</code>
+      <code>$path</code>
+      <code>$supportedTypes</code>
+      <code>$value</code>
+      <code>$whitelist</code>
+    </MixedArgument>
+    <MixedArgumentTypeCoercion occurrences="4">
+      <code>$extra</code>
+      <code>$extra</code>
+      <code>$namespace</code>
+      <code>$type</code>
+    </MixedArgumentTypeCoercion>
+    <MixedArrayAssignment occurrences="4">
+      <code>$ask[]</code>
+      <code>$ask[]</code>
+      <code>$discoveredTypes[$package]</code>
+      <code>$injectors[$module]</code>
+    </MixedArrayAssignment>
+    <MixedArrayOffset occurrences="6">
+      <code>$dependencies[$module]</code>
+      <code>$discoveredTypes[$package]</code>
+      <code>$extra[$configKey]</code>
+      <code>$packageTypes[$module]</code>
+      <code>$packageTypes[$module]</code>
+      <code>$packageTypes[$type]</code>
+    </MixedArrayOffset>
+    <MixedAssignment occurrences="13">
+      <code>$ask</code>
+      <code>$injector</code>
+      <code>$map</code>
+      <code>$name</code>
+      <code>$package</code>
+      <code>$package</code>
+      <code>$packageProviderDetection</code>
+      <code>$packageType</code>
+      <code>$path</code>
+      <code>$paths</code>
+      <code>$supportedTypes</code>
+      <code>$this-&gt;packageProviderFactory</code>
+      <code>$whitelist</code>
+    </MixedAssignment>
+    <MixedFunctionCall occurrences="1">
+      <code>($this-&gt;packageProviderFactory)()</code>
+    </MixedFunctionCall>
+    <MixedInferredReturnType occurrences="4">
+      <code>Collection</code>
+      <code>Collection</code>
+      <code>Injector\InjectorInterface</code>
+      <code>bool</code>
+    </MixedInferredReturnType>
+    <MixedMethodCall occurrences="20">
+      <code>getExtra</code>
+      <code>getInjector</code>
+      <code>getInjector</code>
+      <code>getInjector</code>
+      <code>getInjector</code>
+      <code>getInjector</code>
+      <code>getInjector</code>
+      <code>getInjector</code>
+      <code>getName</code>
+      <code>getPromptText</code>
+      <code>getTypesAllowed</code>
+      <code>isRegistered</code>
+      <code>merge</code>
+      <code>merge</code>
+      <code>registersType</code>
+      <code>setApplicationModules</code>
+      <code>setModuleDependencies</code>
+      <code>toArray</code>
+      <code>unique</code>
+      <code>unique</code>
+    </MixedMethodCall>
+    <MixedReturnStatement occurrences="5">
+      <code>$options[1]-&gt;getInjector()</code>
+      <code>isset($options[2]) ? $options[2]-&gt;getInjector() : $options[1]-&gt;getInjector()</code>
+    </MixedReturnStatement>
+    <PossiblyNullArgument occurrences="1">
+      <code>$this-&gt;io-&gt;ask(implode($ask), 'y')</code>
+    </PossiblyNullArgument>
+    <PropertyNotSetInConstructor occurrences="4">
+      <code>$composer</code>
+      <code>$io</code>
+      <code>$packageProviderFactory</code>
+      <code>$projectRoot</code>
+    </PropertyNotSetInConstructor>
+    <RedundantConditionGivenDocblockType occurrences="3">
+      <code>is_string($module)</code>
+      <code>is_string($projectRoot)</code>
+      <code>is_string($this-&gt;projectRoot)</code>
+    </RedundantConditionGivenDocblockType>
+    <UndefinedInterfaceMethod occurrences="1">
+      <code>getPackage</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="src/ConfigDiscovery.php">
+    <DocblockTypeContradiction occurrences="1">
+      <code>is_array($injectorClass)</code>
+    </DocblockTypeContradiction>
+    <InvalidPropertyAssignmentValue occurrences="2"/>
+    <InvalidStringClass occurrences="1">
+      <code>new $injectorClass($projectRoot)</code>
+    </InvalidStringClass>
+    <MissingClosureParamType occurrences="9">
+      <code>$discovery</code>
+      <code>$discovery</code>
+      <code>$discoveryClass</code>
+      <code>$file</code>
+      <code>$file</code>
+      <code>$flag</code>
+      <code>$injector</code>
+      <code>$injector</code>
+      <code>$type</code>
+    </MissingClosureParamType>
+    <MissingClosureReturnType occurrences="2">
+      <code>function ($discovery) {</code>
+      <code>function ($injector) use ($availableTypes) {</code>
+    </MissingClosureReturnType>
+    <MixedArgument occurrences="2">
+      <code>$file</code>
+      <code>$injector</code>
+    </MixedArgument>
+    <MixedArrayOffset occurrences="1">
+      <code>$this-&gt;injectors[$file]</code>
+    </MixedArrayOffset>
+    <MixedMethodCall occurrences="3">
+      <code>locate</code>
+      <code>new $discoveryClass($projectRoot)</code>
+      <code>registersType</code>
+    </MixedMethodCall>
+    <NullArgument occurrences="1">
+      <code>$discovered</code>
+    </NullArgument>
+  </file>
+  <file src="src/ConfigDiscovery/AbstractDiscovery.php">
+    <PossiblyNullArgument occurrences="1">
+      <code>$this-&gt;configFile</code>
+    </PossiblyNullArgument>
+    <PropertyNotSetInConstructor occurrences="2">
+      <code>$configFile</code>
+      <code>$expected</code>
+    </PropertyNotSetInConstructor>
+    <UninitializedProperty occurrences="1">
+      <code>$this-&gt;configFile</code>
+    </UninitializedProperty>
+  </file>
+  <file src="src/ConfigDiscovery/ConfigAggregator.php">
+    <MissingParamType occurrences="1">
+      <code>$projectDirectory</code>
+    </MissingParamType>
+    <MixedArgument occurrences="1">
+      <code>$projectDirectory</code>
+    </MixedArgument>
+  </file>
+  <file src="src/ConfigDiscovery/DiscoveryChain.php">
+    <MissingClosureParamType occurrences="2">
+      <code>$discovery</code>
+      <code>$discoveryClass</code>
+    </MissingClosureParamType>
+    <MissingClosureReturnType occurrences="1">
+      <code>function ($discovery) {</code>
+    </MissingClosureReturnType>
+    <MixedMethodCall occurrences="2">
+      <code>locate</code>
+      <code>new $discoveryClass($projectDirectory)</code>
+    </MixedMethodCall>
+  </file>
+  <file src="src/ConfigDiscovery/MezzioConfig.php">
+    <MissingParamType occurrences="1">
+      <code>$projectDirectory</code>
+    </MissingParamType>
+    <MixedArgument occurrences="1">
+      <code>$projectDirectory</code>
+    </MixedArgument>
+  </file>
+  <file src="src/Injector/AbstractInjector.php">
+    <InvalidArrayOffset occurrences="6">
+      <code>$this-&gt;injectionPatterns[$type]['pattern']</code>
+      <code>$this-&gt;injectionPatterns[$type]['replacement']</code>
+      <code>$this-&gt;injectionPatterns[self::TYPE_BEFORE_APPLICATION]['pattern']</code>
+      <code>$this-&gt;injectionPatterns[self::TYPE_BEFORE_APPLICATION]['replacement']</code>
+      <code>$this-&gt;injectionPatterns[self::TYPE_DEPENDENCY]['pattern']</code>
+      <code>$this-&gt;injectionPatterns[self::TYPE_DEPENDENCY]['replacement']</code>
+    </InvalidArrayOffset>
+    <MissingPropertyType occurrences="1">
+      <code>$allowedTypes</code>
+    </MissingPropertyType>
+    <MixedArgument occurrences="12">
+      <code>$dependency</code>
+      <code>$dependency</code>
+      <code>$dependency</code>
+      <code>$module</code>
+      <code>$module</code>
+      <code>$pattern</code>
+      <code>$this-&gt;allowedTypes</code>
+      <code>$this-&gt;injectionPatterns[$type]['replacement']</code>
+      <code>$this-&gt;injectionPatterns[self::TYPE_BEFORE_APPLICATION]['pattern']</code>
+      <code>$this-&gt;injectionPatterns[self::TYPE_BEFORE_APPLICATION]['replacement']</code>
+      <code>$this-&gt;injectionPatterns[self::TYPE_DEPENDENCY]['pattern']</code>
+      <code>$this-&gt;injectionPatterns[self::TYPE_DEPENDENCY]['replacement']</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="6">
+      <code>$dependency</code>
+      <code>$dependency</code>
+      <code>$first</code>
+      <code>$last</code>
+      <code>$module</code>
+      <code>$pattern</code>
+    </MixedAssignment>
+    <MixedInferredReturnType occurrences="3">
+      <code>getTypesAllowed</code>
+      <code>string</code>
+      <code>string|null</code>
+    </MixedInferredReturnType>
+    <MixedReturnStatement occurrences="4">
+      <code>$first</code>
+      <code>$last</code>
+      <code>$this-&gt;allowedTypes</code>
+      <code>reset($dependencies)</code>
+    </MixedReturnStatement>
+    <NullableReturnStatement occurrences="1">
+      <code>$last</code>
+    </NullableReturnStatement>
+    <PossiblyNullArgument occurrences="1">
+      <code>$this-&gt;configFile</code>
+    </PossiblyNullArgument>
+    <PropertyNotSetInConstructor occurrences="2">
+      <code>$configFile</code>
+      <code>$isRegisteredPattern</code>
+    </PropertyNotSetInConstructor>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>is_string($projectRoot)</code>
+    </RedundantConditionGivenDocblockType>
+    <UninitializedProperty occurrences="1">
+      <code>$this-&gt;configFile</code>
+    </UninitializedProperty>
+  </file>
+  <file src="src/Injector/ApplicationConfigInjector.php">
+    <InvalidPropertyAssignmentValue occurrences="1"/>
+  </file>
+  <file src="src/Injector/ConditionalDiscoveryTrait.php">
+    <InvalidStringClass occurrences="1">
+      <code>new $discoveryClass($this-&gt;getProjectRoot())</code>
+    </InvalidStringClass>
+    <MixedInferredReturnType occurrences="1">
+      <code>bool</code>
+    </MixedInferredReturnType>
+    <MixedMethodCall occurrences="1">
+      <code>locate</code>
+    </MixedMethodCall>
+    <MixedOperand occurrences="1">
+      <code>static::DEFAULT_CONFIG_FILE</code>
+    </MixedOperand>
+  </file>
+  <file src="src/Injector/ConfigAggregatorInjector.php">
+    <InvalidArrayOffset occurrences="1">
+      <code>$this-&gt;injectionPatterns[self::TYPE_CONFIG_PROVIDER]['pattern']</code>
+    </InvalidArrayOffset>
+    <InvalidPropertyAssignmentValue occurrences="2">
+      <code>$this-&gt;injectionPatterns</code>
+    </InvalidPropertyAssignmentValue>
+    <MissingParamType occurrences="1">
+      <code>$projectRoot</code>
+    </MissingParamType>
+    <MissingPropertyType occurrences="1">
+      <code>$allowedTypes</code>
+    </MissingPropertyType>
+    <MixedArgument occurrences="1">
+      <code>$projectRoot</code>
+    </MixedArgument>
+  </file>
+  <file src="src/Injector/ConfigInjectorChain.php">
+    <MissingClosureParamType occurrences="9">
+      <code>$file</code>
+      <code>$flag</code>
+      <code>$injector</code>
+      <code>$injector</code>
+      <code>$injector</code>
+      <code>$injector</code>
+      <code>$injector</code>
+      <code>$injector</code>
+      <code>$type</code>
+    </MissingClosureParamType>
+    <MissingClosureReturnType occurrences="2">
+      <code>function ($injector) use ($availableTypes) {</code>
+      <code>function ($injector) use ($package) {</code>
+    </MissingClosureReturnType>
+    <MissingPropertyType occurrences="1">
+      <code>$allowedTypes</code>
+    </MissingPropertyType>
+    <MixedArgument occurrences="1">
+      <code>$file</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="2">
+      <code>$allowedTypes</code>
+      <code>$injector</code>
+    </MixedAssignment>
+    <MixedInferredReturnType occurrences="3">
+      <code>getTypesAllowed</code>
+      <code>inject</code>
+      <code>remove</code>
+    </MixedInferredReturnType>
+    <MixedMethodCall occurrences="6">
+      <code>getTypesAllowed</code>
+      <code>inject</code>
+      <code>isRegistered</code>
+      <code>new $injector($projectRoot)</code>
+      <code>registersType</code>
+      <code>remove</code>
+    </MixedMethodCall>
+    <MixedOperand occurrences="1">
+      <code>$injector-&gt;getTypesAllowed()</code>
+    </MixedOperand>
+    <MixedReturnStatement occurrences="4">
+      <code>$allowedTypes</code>
+      <code>$injected</code>
+      <code>$removed</code>
+      <code>$this-&gt;allowedTypes</code>
+    </MixedReturnStatement>
+  </file>
+  <file src="src/Injector/MezzioConfigInjector.php">
+    <InvalidArrayOffset occurrences="1">
+      <code>$this-&gt;injectionPatterns[self::TYPE_CONFIG_PROVIDER]['pattern']</code>
+    </InvalidArrayOffset>
+    <InvalidPropertyAssignmentValue occurrences="2">
+      <code>$this-&gt;injectionPatterns</code>
+    </InvalidPropertyAssignmentValue>
+    <MissingParamType occurrences="1">
+      <code>$projectRoot</code>
+    </MissingParamType>
+    <MissingPropertyType occurrences="1">
+      <code>$allowedTypes</code>
+    </MissingPropertyType>
+    <MixedArgument occurrences="1">
+      <code>$projectRoot</code>
+    </MixedArgument>
+  </file>
+  <file src="src/PackageProvider/ComposerV2.php">
+    <InvalidPropertyAssignmentValue occurrences="1">
+      <code>$installedRepository</code>
+    </InvalidPropertyAssignmentValue>
+    <MixedInferredReturnType occurrences="1">
+      <code>array</code>
+    </MixedInferredReturnType>
+    <MixedReturnStatement occurrences="1">
+      <code>$this-&gt;installedRepository-&gt;findPackagesWithReplacersAndProviders($packageName)</code>
+    </MixedReturnStatement>
+    <UndefinedInterfaceMethod occurrences="1">
+      <code>findPackagesWithReplacersAndProviders</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="src/PackageProvider/PackageProviderDetectionFactory.php">
+    <MixedArgument occurrences="2">
+      <code>$event-&gt;getPool()</code>
+      <code>$platformOverrides</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="1">
+      <code>$platformOverrides</code>
+    </MixedAssignment>
+    <UndefinedMethod occurrences="1">
+      <code>getPool</code>
+    </UndefinedMethod>
+  </file>
+  <file src="test/ComponentInstallerTest.php">
+    <ImplicitToStringCast occurrences="47">
+      <code>Argument::any()</code>
+      <code>Argument::that($askValidator)</code>
+      <code>Argument::that($askValidator)</code>
+    </ImplicitToStringCast>
+    <InvalidArgument occurrences="4">
+      <code>Argument::exact($package-&gt;reveal())</code>
+      <code>Argument::exact($package-&gt;reveal())</code>
+      <code>Argument::that([$package, 'reveal'])</code>
+      <code>Argument::type(RootPackageRepository::class)</code>
+    </InvalidArgument>
+    <InvalidScalarArgument occurrences="31">
+      <code>1</code>
+      <code>1</code>
+      <code>1</code>
+      <code>1</code>
+      <code>1</code>
+      <code>1</code>
+      <code>1</code>
+      <code>1</code>
+      <code>1</code>
+      <code>1</code>
+      <code>1</code>
+      <code>1</code>
+      <code>1</code>
+      <code>1</code>
+    </InvalidScalarArgument>
+    <MissingClosureParamType occurrences="45">
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+    </MissingClosureParamType>
+    <MissingParamType occurrences="1">
+      <code>$argument</code>
+    </MissingParamType>
+    <MixedArgument occurrences="40">
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$argument</code>
+      <code>$configName</code>
+      <code>$event-&gt;reveal()</code>
+      <code>$event-&gt;reveal()</code>
+      <code>$event-&gt;reveal()</code>
+      <code>$event-&gt;reveal()</code>
+      <code>$event-&gt;reveal()</code>
+      <code>$event-&gt;reveal()</code>
+      <code>$event-&gt;reveal()</code>
+      <code>$event-&gt;reveal()</code>
+      <code>$event-&gt;reveal()</code>
+      <code>$event-&gt;reveal()</code>
+      <code>$event-&gt;reveal()</code>
+      <code>$event-&gt;reveal()</code>
+      <code>$event-&gt;reveal()</code>
+      <code>$event-&gt;reveal()</code>
+      <code>$event-&gt;reveal()</code>
+      <code>$event-&gt;reveal()</code>
+      <code>$pathToModule</code>
+      <code>$this-&gt;composer-&gt;reveal()</code>
+      <code>$this-&gt;io-&gt;reveal()</code>
+    </MixedArgument>
+    <MixedArgumentTypeCoercion occurrences="1">
+      <code>[$package, 'reveal']</code>
+    </MixedArgumentTypeCoercion>
+    <MixedArrayAccess occurrences="8">
+      <code>$config['modules']</code>
+      <code>$config['modules']</code>
+      <code>$config['modules']</code>
+      <code>$config['modules']</code>
+      <code>$config['modules']</code>
+      <code>$config['modules']</code>
+      <code>$config['modules']</code>
+      <code>$config['modules']</code>
+    </MixedArrayAccess>
+    <MixedAssignment occurrences="19">
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$configName</code>
+      <code>$dependencies</code>
+      <code>$dependencies</code>
+      <code>$modules</code>
+      <code>$modules</code>
+      <code>$modules</code>
+      <code>$modules</code>
+      <code>$modules</code>
+      <code>$modules</code>
+      <code>$modules</code>
+      <code>$modules</code>
+    </MixedAssignment>
+    <MixedInferredReturnType occurrences="1">
+      <code>array</code>
+    </MixedInferredReturnType>
+    <MixedMethodCall occurrences="90">
+      <code>shouldBeCalledTimes</code>
+      <code>shouldNotBeCalled</code>
+      <code>will</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+    </MixedMethodCall>
+    <PossiblyInvalidMethodCall occurrences="3">
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+    </PossiblyInvalidMethodCall>
+    <PossiblyUndefinedMethod occurrences="2">
+      <code>reveal</code>
+      <code>reveal</code>
+    </PossiblyUndefinedMethod>
+    <PossiblyUndefinedVariable occurrences="2">
+      <code>$autoload</code>
+      <code>$pathToModule</code>
+    </PossiblyUndefinedVariable>
+    <UnresolvableInclude occurrences="8">
+      <code>include vfsStream::url('project/config/application.config.php')</code>
+      <code>include vfsStream::url('project/config/application.config.php')</code>
+      <code>include vfsStream::url('project/config/application.config.php')</code>
+      <code>include vfsStream::url('project/config/application.config.php')</code>
+      <code>include vfsStream::url('project/config/application.config.php')</code>
+      <code>include vfsStream::url('project/config/development.config.php')</code>
+      <code>include vfsStream::url('project/config/modules.config.php')</code>
+      <code>include vfsStream::url('project/config/modules.config.php')</code>
+    </UnresolvableInclude>
+  </file>
+  <file src="test/ConfigDiscoveryTest.php">
+    <InternalClass occurrences="6">
+      <code>new ExpectationFailedException('Options array does not contain a NoopInjector!')</code>
+      <code>new ExpectationFailedException('Options array is empty; no NoopInjector found!')</code>
+    </InternalClass>
+    <InvalidPropertyAssignmentValue occurrences="1">
+      <code>new ConfigDiscovery()</code>
+    </InvalidPropertyAssignmentValue>
+    <MixedArgument occurrences="4">
+      <code>$options</code>
+      <code>$options</code>
+      <code>$options</code>
+      <code>$options</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="2">
+      <code>$options</code>
+      <code>$options</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getInjector</code>
+    </MixedMethodCall>
+    <UndefinedDocblockClass occurrences="5">
+      <code>$this-&gt;discovery</code>
+      <code>$this-&gt;discovery</code>
+      <code>$this-&gt;discovery</code>
+      <code>$this-&gt;discovery</code>
+      <code>ConfigDiscovery\</code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="test/Injector/AbstractInjectorTestCase.php">
+    <InvalidStringClass occurrences="1"/>
+    <PropertyTypeCoercion occurrences="1"/>
+  </file>
+  <file src="test/Injector/TestAsset/legacy-mezzio-application-fqcn.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$configManager</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="2">
+      <code>Application\ConfigProvider</code>
+      <code>Mezzio\ConfigManager\ConfigManager</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/legacy-mezzio-application-globally-qualified.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$configManager</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="2">
+      <code>\Application\ConfigProvider</code>
+      <code>\Mezzio\ConfigManager\ConfigManager</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/legacy-mezzio-application-import.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$configManager</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="2">
+      <code>Application\ConfigProvider</code>
+      <code>ConfigManager</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/legacy-mezzio-empty-fqcn.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$configManager</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="1">
+      <code>Mezzio\ConfigManager\ConfigManager</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/legacy-mezzio-empty-globally-qualified.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$configManager</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="1">
+      <code>\Mezzio\ConfigManager\ConfigManager</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/legacy-mezzio-empty-import.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$configManager</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="1">
+      <code>ConfigManager</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/legacy-mezzio-populated-fqcn.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$configManager</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="3">
+      <code>Application\ConfigProvider</code>
+      <code>Mezzio\ConfigManager\ConfigManager</code>
+      <code>\Foo\Bar</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/legacy-mezzio-populated-globally-qualified.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$configManager</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="3">
+      <code>\Application\ConfigProvider</code>
+      <code>\Foo\Bar</code>
+      <code>\Mezzio\ConfigManager\ConfigManager</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/legacy-mezzio-populated-import.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$configManager</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="3">
+      <code>Application\ConfigProvider</code>
+      <code>ConfigManager</code>
+      <code>\Foo\Bar</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/mezzio-application-fqcn.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$aggregator</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="2">
+      <code>Application\ConfigProvider</code>
+      <code>Laminas\ConfigAggregator\ConfigAggregator</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/mezzio-application-from-skeleton.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$aggregator</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="10">
+      <code>App\ConfigProvider</code>
+      <code>ArrayProvider</code>
+      <code>ConfigAggregator</code>
+      <code>PhpFileProvider</code>
+      <code>PhpFileProvider</code>
+      <code>\Contact\ConfigProvider</code>
+      <code>\Laminas\Filter\ConfigProvider</code>
+      <code>\Laminas\InputFilter\ConfigProvider</code>
+      <code>\Laminas\Mail\ConfigProvider</code>
+      <code>\Laminas\Validator\ConfigProvider</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/mezzio-application-globally-qualified.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$aggregator</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="2">
+      <code>\Application\ConfigProvider</code>
+      <code>\Laminas\ConfigAggregator\ConfigAggregator</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/mezzio-application-import-alt-indent.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$aggregator</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="2">
+      <code>Application\ConfigProvider</code>
+      <code>ConfigAggregator</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/mezzio-application-import.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$aggregator</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="2">
+      <code>Application\ConfigProvider</code>
+      <code>ConfigAggregator</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/mezzio-empty-fqcn.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$aggregator</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="1">
+      <code>Laminas\ConfigAggregator\ConfigAggregator</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/mezzio-empty-globally-qualified.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$aggregator</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="1">
+      <code>\Laminas\ConfigAggregator\ConfigAggregator</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/mezzio-empty-import.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$aggregator</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="1">
+      <code>ConfigAggregator</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/mezzio-populated-fqcn.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$aggregator</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="3">
+      <code>Application\ConfigProvider</code>
+      <code>Laminas\ConfigAggregator\ConfigAggregator</code>
+      <code>\Foo\Bar</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/mezzio-populated-globally-qualified.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$aggregator</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="3">
+      <code>\Application\ConfigProvider</code>
+      <code>\Foo\Bar</code>
+      <code>\Laminas\ConfigAggregator\ConfigAggregator</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/mezzio-populated-import-alt-indent.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$aggregator</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="3">
+      <code>Application\ConfigProvider</code>
+      <code>ConfigAggregator</code>
+      <code>\Foo\Bar</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/Injector/TestAsset/mezzio-populated-import.config.php">
+    <MixedAssignment occurrences="1">
+      <code>$aggregator</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getMergedConfig</code>
+    </MixedMethodCall>
+    <UndefinedClass occurrences="3">
+      <code>Application\ConfigProvider</code>
+      <code>ConfigAggregator</code>
+      <code>\Foo\Bar</code>
+    </UndefinedClass>
+  </file>
+</files>

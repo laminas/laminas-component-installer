@@ -29,12 +29,12 @@ class ModulesConfigTest extends TestCase
         );
     }
 
-    public function testAbsenceOfFileReturnsFalseOnLocate()
+    public function testAbsenceOfFileReturnsFalseOnLocate(): void
     {
         $this->assertFalse($this->locator->locate());
     }
 
-    public function testLocateReturnsFalseWhenFileDoesNotHaveExpectedContents()
+    public function testLocateReturnsFalseWhenFileDoesNotHaveExpectedContents(): void
     {
         vfsStream::newFile('config/modules.config.php')
             ->at($this->configDir)
@@ -42,7 +42,10 @@ class ModulesConfigTest extends TestCase
         $this->assertFalse($this->locator->locate());
     }
 
-    public function validModulesConfigContents()
+    /**
+     * @psalm-return array<string, array{0: string}>
+     */
+    public function validModulesConfigContents(): array
     {
         return [
             'long-array'  => ['<' . "?php\nreturn array(\n);"],
@@ -52,10 +55,8 @@ class ModulesConfigTest extends TestCase
 
     /**
      * @dataProvider validModulesConfigContents
-     *
-     * @param string $contents
      */
-    public function testLocateReturnsTrueWhenFileExistsAndHasExpectedContent($contents)
+    public function testLocateReturnsTrueWhenFileExistsAndHasExpectedContent(string $contents): void
     {
         vfsStream::newFile('config/modules.config.php')
             ->at($this->configDir)

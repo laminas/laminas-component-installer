@@ -49,27 +49,31 @@ class ComponentInstallerTest extends TestCase
     private $projectRoot;
 
     /**
-     * @var ComponentInstaller|ObjectProphecy
+     * @var ComponentInstaller
      */
     private $installer;
 
     /**
      * @var Composer|ObjectProphecy
+     * @psalm-var Composer&ObjectProphecy
      */
     private $composer;
 
     /**
      * @var RootPackageInterface|ObjectProphecy
+     * @psalm-var RootPackageInterface&ObjectProphecy
      */
     private $rootPackage;
 
     /**
      * @var IOInterface|ObjectProphecy
+     * @psalm-var IOInterface&ObjectProphecy
      */
     private $io;
 
     /**
      * @var InstallationManager|ObjectProphecy
+     * @psalm-var InstallationManager&ObjectProphecy
      */
     private $installationManager;
 
@@ -80,9 +84,17 @@ class ComponentInstallerTest extends TestCase
             vfsStream::url('project')
         );
 
-        $this->composer = $this->prophesize(Composer::class);
-        $this->rootPackage = $this->prophesize(RootPackageInterface::class);
-        $this->io = $this->prophesize(IOInterface::class);
+        /** @psalm-var Composer&ObjectProphecy $composer */
+        $composer = $this->prophesize(Composer::class);
+        $this->composer = $composer;
+
+        /** @psalm-var RootPackageInterface&ObjectProphecy $rootPackage */
+        $rootPackage = $this->prophesize(RootPackageInterface::class);
+        $this->rootPackage = $rootPackage;
+
+        /** @psalm-var IOInterface&ObjectProphecy $io */
+        $io = $this->prophesize(IOInterface::class);
+        $this->io = $io;
 
         $this->rootPackage->getDevRequires()->willReturn([]);
         $this->rootPackage->getExtra()->willReturn([]);
@@ -105,11 +117,14 @@ class ComponentInstallerTest extends TestCase
             $this->io->reveal()
         );
 
-        $this->installationManager = $this->prophesize(InstallationManager::class);
-        $this->composer->getInstallationManager()->willReturn($this->installationManager->reveal());
+        /** @psalm-var InstallationManager&ObjectProphecy $installationManager */
+        $installationManager = $this->prophesize(InstallationManager::class);
+        $this->installationManager = $installationManager;
+
+        $this->composer->getInstallationManager()->willReturn($installationManager->reveal());
     }
 
-    public static function assertPrompt($argument, $packageName = null)
+    public static function assertPrompt($argument, ?string $packageName = null): bool
     {
         if (! is_string($argument)) {
             return false;
@@ -141,7 +156,7 @@ class ComponentInstallerTest extends TestCase
         return true;
     }
 
-    public function createApplicationConfig($contents = null)
+    public function createApplicationConfig(?string $contents = null): void
     {
         $contents = $contents ?: '<' . "?php\nreturn [\n    'modules' => [\n    ]\n];";
         vfsStream::newFile('config/application.config.php')
@@ -149,7 +164,7 @@ class ComponentInstallerTest extends TestCase
             ->setContent($contents);
     }
 
-    protected function createModuleClass($path, $contents)
+    protected function createModuleClass(string $path, string $contents): void
     {
         vfsStream::newDirectory(dirname($path))
             ->at($this->projectRoot);
@@ -159,7 +174,7 @@ class ComponentInstallerTest extends TestCase
             ->setContent($contents);
     }
 
-    public function testMissingDependency()
+    public function testMissingDependency(): void
     {
         $installPath = 'install/path';
         $this->createApplicationConfig(
@@ -201,6 +216,7 @@ CONTENT
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
 
+        /** @psalm-var PackageEvent&ObjectProphecy $event */
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
@@ -233,7 +249,17 @@ CONTENT
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
     }
 
-    public function dependency()
+    /**
+     * @psalm-return array<array-key, array{
+     *     0: string,
+     *     1: array<array-key, string>,
+     *     2: array<array-key, string>,
+     *     3: array<array-key, string>,
+     *     4: "psr-0"|"psr-4"|"classmap"|"files",
+     *     5: null|string
+     * }>
+     */
+    public function dependency(): array
     {
         return [
             // 'description' => [
@@ -250,6 +276,7 @@ CONTENT
                 ['D1'],
                 ['D1', 'MyPackage1', 'App'],
                 'psr-0',
+                null,
             ],
             'one-dependency-on-bottom-psr-0' => [
                 'MyPackage2',
@@ -257,6 +284,7 @@ CONTENT
                 ['D1'],
                 ['App', 'D1', 'MyPackage2'],
                 'psr-0',
+                null,
             ],
             'no-dependencies-psr-0' => [
                 'MyPackage3',
@@ -264,6 +292,7 @@ CONTENT
                 [],
                 ['MyPackage3', 'App'],
                 'psr-0',
+                null,
             ],
             'two-dependencies-psr-0' => [
                 'MyPackage4',
@@ -271,6 +300,7 @@ CONTENT
                 ['D1', 'D2'],
                 ['D1', 'D2', 'MyPackage4', 'App'],
                 'psr-0',
+                null,
             ],
             'two-dependencies-in-reverse-order-psr-0' => [
                 'MyPackage5',
@@ -278,6 +308,7 @@ CONTENT
                 ['D1', 'D2'],
                 ['D2', 'D1', 'MyPackage5', 'App'],
                 'psr-0',
+                null,
             ],
             'two-dependencies-with-more-packages-psr-0' => [
                 'MyPackage6',
@@ -285,6 +316,7 @@ CONTENT
                 ['D1', 'D2'],
                 ['D1', 'App1', 'D2', 'MyPackage6', 'App2'],
                 'psr-0',
+                null,
             ],
             // PSR-4 autoloading
             'one-dependency-on-top-psr-4' => [
@@ -293,6 +325,7 @@ CONTENT
                 ['D1'],
                 ['D1', 'MyPackage11', 'App'],
                 'psr-4',
+                null,
             ],
             'one-dependency-on-bottom-psr-4' => [
                 'MyPackage12',
@@ -300,6 +333,7 @@ CONTENT
                 ['D1'],
                 ['App', 'D1', 'MyPackage12'],
                 'psr-4',
+                null,
             ],
             'no-dependencies-psr-4' => [
                 'MyPackage13',
@@ -307,6 +341,7 @@ CONTENT
                 [],
                 ['MyPackage13', 'App'],
                 'psr-4',
+                null,
             ],
             'two-dependencies-psr-4' => [
                 'MyPackage14',
@@ -314,6 +349,7 @@ CONTENT
                 ['D1', 'D2'],
                 ['D1', 'D2', 'MyPackage14', 'App'],
                 'psr-4',
+                null,
             ],
             'two-dependencies-in-reverse-order-psr-4' => [
                 'MyPackage15',
@@ -321,6 +357,7 @@ CONTENT
                 ['D1', 'D2'],
                 ['D2', 'D1', 'MyPackage15', 'App'],
                 'psr-4',
+                null,
             ],
             'two-dependencies-with-more-packages-psr-4' => [
                 'MyPackage16',
@@ -328,6 +365,7 @@ CONTENT
                 ['D1', 'D2'],
                 ['D1', 'App1', 'D2', 'MyPackage16', 'App2'],
                 'psr-4',
+                null,
             ],
             // classmap autoloading - dir
             'one-dependency-on-top-classmap' => [
@@ -434,6 +472,7 @@ CONTENT
                 ['D1'],
                 ['D1', 'MyPackage41', 'App'],
                 'files',
+                null,
             ],
             'one-dependency-on-bottom-files' => [
                 'MyPackage42',
@@ -441,6 +480,7 @@ CONTENT
                 ['D1'],
                 ['App', 'D1', 'MyPackage42'],
                 'files',
+                null,
             ],
             'no-dependencies-files' => [
                 'MyPackage43',
@@ -448,6 +488,7 @@ CONTENT
                 [],
                 ['MyPackage43', 'App'],
                 'files',
+                null,
             ],
             'two-dependencies-files' => [
                 'MyPackage44',
@@ -455,6 +496,7 @@ CONTENT
                 ['D1', 'D2'],
                 ['D1', 'D2', 'MyPackage44', 'App'],
                 'files',
+                null,
             ],
             'two-dependencies-in-reverse-order-files' => [
                 'MyPackage45',
@@ -462,6 +504,7 @@ CONTENT
                 ['D1', 'D2'],
                 ['D2', 'D1', 'MyPackage45', 'App'],
                 'files',
+                null,
             ],
             'two-dependencies-with-more-packages-files' => [
                 'MyPackage46',
@@ -469,6 +512,7 @@ CONTENT
                 ['D1', 'D2'],
                 ['D1', 'App1', 'D2', 'MyPackage46', 'App2'],
                 'files',
+                null,
             ],
         ];
     }
@@ -482,15 +526,19 @@ CONTENT
      * @param array $result
      * @param string $autoloading classmap|files|psr-0|psr-4
      * @param null|string $autoloadPath
+     *
+     * @psalm-param array<array-key, string> $enabledModules
+     * @psalm-param array<array-key, string> $dependencies
+     * @psalm-param array<array-key, string> $result
      */
     public function testInjectModuleWithDependencies(
-        $packageName,
+        string $packageName,
         array $enabledModules,
         array $dependencies,
         array $result,
-        $autoloading,
-        $autoloadPath = null
-    ) {
+        string $autoloading,
+        ?string $autoloadPath = null
+    ): void {
         $installPath = 'install/path';
         $modules = "\n        '" . implode("',\n        '", $enabledModules) . "',";
         $this->createApplicationConfig(
@@ -528,19 +576,19 @@ CONTENT
         $this->createModuleClass(
             sprintf('%s/%s/Module.php', $installPath, $pathToModule),
             <<<CONTENT
-<?php
-namespace $packageName;
-
-class Module {
-    public function getModuleDependencies()
-    {
-        return [$dependenciesStr];
-    }
-}
-CONTENT
+                <?php
+                namespace $packageName;
+                
+                class Module {
+                    public function getModuleDependencies()
+                    {
+                        return [$dependenciesStr];
+                    }
+                }
+                CONTENT
         );
 
-        /** @var PackageInterface|ObjectProphecy $package */
+        /** @psalm-var PackageInterface&ObjectProphecy $package */
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
         $package->getExtra()->willReturn([
@@ -558,6 +606,7 @@ CONTENT
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
 
+        /** @psalm-var PackageEvent&ObjectProphecy $event */
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
@@ -587,7 +636,14 @@ CONTENT
         $this->assertEquals($result, $modules);
     }
 
-    public function modules()
+    /**
+     * @psalm-return array<array-key, array{
+     *     0: array<array-key, string>,
+     *     1: array<array-key, string>,
+     *     2: array<array-key, string>,
+     * }>
+     */
+    public function modules(): array
     {
         return [
             // 'description' => [
@@ -634,9 +690,16 @@ CONTENT
      * @param array $availableModules
      * @param array $enabledModules
      * @param array $result
+     *
+     * @psalm-param array<array-key, string> $availableModules
+     * @psalm-param array<array-key, string> $enabledModules
+     * @psalm-param array<array-key, string> $result
      */
-    public function testModuleBeforeApplicationModules(array $availableModules, array $enabledModules, array $result)
-    {
+    public function testModuleBeforeApplicationModules(
+        array $availableModules,
+        array $enabledModules,
+        array $result
+    ): void {
         $modulePath = vfsStream::newDirectory('module')->at($this->projectRoot);
         foreach ($availableModules as $module) {
             vfsStream::newDirectory($module)->at($modulePath);
@@ -647,7 +710,7 @@ CONTENT
             '<' . "?php\nreturn [\n    'modules' => [" . $modules . "\n    ],\n];"
         );
 
-        /** @var PackageInterface|ObjectProphecy $package */
+        /** @psalm-var PackageInterface&ObjectProphecy $package */
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/module');
         $package->getExtra()->willReturn([
@@ -660,12 +723,11 @@ CONTENT
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
 
+        /** @psalm-var PackageEvent&ObjectProphecy $event */
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
         $this->prepareEventForPackageProviderDetection($event, 'some/module');
-        $this->prepareEventForPackageProviderDetection($event, 'some/module');
-
 
         $this->rootPackage->getRequires()->willReturn([]);
         $this->rootPackage->getName()->willReturn('some/component');
@@ -689,7 +751,7 @@ CONTENT
         $this->assertEquals($result, $modules);
     }
 
-    public function testSubscribesToExpectedEvents()
+    public function testSubscribesToExpectedEvents(): void
     {
         $this->assertEquals([
             'post-package-install'   => 'onPostPackageInstall',
@@ -697,7 +759,7 @@ CONTENT
         ], $this->installer->getSubscribedEvents());
     }
 
-    public function testOnPostPackageInstallReturnsEarlyIfEventIsNotInDevMode()
+    public function testOnPostPackageInstallReturnsEarlyIfEventIsNotInDevMode(): void
     {
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(false);
@@ -706,7 +768,7 @@ CONTENT
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
     }
 
-    public function testPostPackageInstallDoesNothingIfComposerExtraIsEmpty()
+    public function testPostPackageInstallDoesNothingIfComposerExtraIsEmpty(): void
     {
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
@@ -722,7 +784,7 @@ CONTENT
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
     }
 
-    public function testOnPostPackageInstallReturnsEarlyIfApplicationConfigIsMissing()
+    public function testOnPostPackageInstallReturnsEarlyIfApplicationConfigIsMissing(): void
     {
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
@@ -742,7 +804,7 @@ CONTENT
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
     }
 
-    public function testPostPackageInstallDoesNothingIfLaminasExtraSectionDoesNotContainComponentOrModule()
+    public function testPostPackageInstallDoesNothingIfLaminasExtraSectionDoesNotContainComponentOrModule(): void
     {
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
@@ -758,7 +820,7 @@ CONTENT
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
     }
 
-    public function testOnPostPackageInstallDoesNotPromptIfPackageIsAlreadyInConfiguration()
+    public function testOnPostPackageInstallDoesNotPromptIfPackageIsAlreadyInConfiguration(): void
     {
         $this->createApplicationConfig(
             '<' . "?php\nreturn [\n    'modules' => [\n        'Some\Component',\n    ]\n];"
@@ -774,6 +836,7 @@ CONTENT
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
 
+        /** @psalm-var PackageEvent&ObjectProphecy $event */
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
@@ -788,7 +851,7 @@ CONTENT
         $this->assertStringContainsString("'Some\Component'", $config);
     }
 
-    public function testOnPostPackageInstallDoesNotPromptForWhitelistedPackages()
+    public function testOnPostPackageInstallDoesNotPromptForWhitelistedPackages(): void
     {
         $this->createApplicationConfig();
 
@@ -802,6 +865,7 @@ CONTENT
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
 
+        /** @psalm-var PackageEvent&ObjectProphecy $event */
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
@@ -823,7 +887,7 @@ CONTENT
         $this->assertStringContainsString("'Some\Component'", $config);
     }
 
-    public function testOnPostPackageInstallPromptsForConfigOptions()
+    public function testOnPostPackageInstallPromptsForConfigOptions(): void
     {
         $this->createApplicationConfig();
 
@@ -837,6 +901,7 @@ CONTENT
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
 
+        /** @psalm-var PackageEvent&ObjectProphecy $event */
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
@@ -888,7 +953,7 @@ CONTENT
         $this->assertStringContainsString("'Some\Component'", $config);
     }
 
-    public function testOnPostPackageInstallPromptsForConfigOptionsWhenDefinedAsArrays()
+    public function testOnPostPackageInstallPromptsForConfigOptionsWhenDefinedAsArrays(): void
     {
         $this->createApplicationConfig();
 
@@ -905,6 +970,7 @@ CONTENT
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
 
+        /** @psalm-var PackageEvent&ObjectProphecy $event */
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
@@ -960,7 +1026,7 @@ CONTENT
         }), 1)->willReturn(1);
 
         $io = $this->io;
-        $askValidator = function ($argument) {
+        $askValidator = function ($argument): bool {
             if (! is_string($argument)) {
                     return false;
             }
@@ -993,7 +1059,7 @@ CONTENT
         $this->assertStringContainsString("'Other\Component'", $config);
     }
 
-    public function testMultipleInvocationsOfOnPostPackageInstallCanPromptMultipleTimes()
+    public function testMultipleInvocationsOfOnPostPackageInstallCanPromptMultipleTimes(): void
     {
         // Do a first pass, with an initial package
         $this->createApplicationConfig();
@@ -1008,6 +1074,7 @@ CONTENT
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
 
+        /** @psalm-var PackageEvent&ObjectProphecy $event */
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
@@ -1066,6 +1133,7 @@ CONTENT
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
 
+        /** @psalm-var PackageEvent&ObjectProphecy $event */
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
@@ -1117,7 +1185,7 @@ CONTENT
         $this->assertStringContainsString("'Other\Component'", $config);
     }
 
-    public function testMultipleInvocationsOfOnPostPackageInstallCanReuseOptions()
+    public function testMultipleInvocationsOfOnPostPackageInstallCanReuseOptions(): void
     {
         // Do a first pass, with an initial package
         $this->createApplicationConfig();
@@ -1132,6 +1200,7 @@ CONTENT
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
 
+        /** @psalm-var PackageEvent&ObjectProphecy $event */
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
@@ -1190,6 +1259,7 @@ CONTENT
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
 
+        /** @psalm-var PackageEvent&ObjectProphecy $event */
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
@@ -1207,7 +1277,7 @@ CONTENT
         $this->assertStringContainsString("'Other\Component'", $config);
     }
 
-    public function testOnPostPackageUninstallReturnsEarlyIfEventIsNotInDevMode()
+    public function testOnPostPackageUninstallReturnsEarlyIfEventIsNotInDevMode(): void
     {
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(false);
@@ -1216,7 +1286,7 @@ CONTENT
         $this->assertNull($this->installer->onPostPackageUninstall($event->reveal()));
     }
 
-    public function testOnPostPackageUninstallReturnsEarlyIfNoRelevantConfigFilesAreFound()
+    public function testOnPostPackageUninstallReturnsEarlyIfNoRelevantConfigFilesAreFound(): void
     {
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
@@ -1225,7 +1295,7 @@ CONTENT
         $this->assertNull($this->installer->onPostPackageUninstall($event->reveal()));
     }
 
-    public function testOnPostPackageUninstallRemovesPackageFromConfiguration()
+    public function testOnPostPackageUninstallRemovesPackageFromConfiguration(): void
     {
         $this->createApplicationConfig(
             '<' . "?php\nreturn [\n    'modules' => [\n        'Some\Component',\n    ]\n];"
@@ -1264,7 +1334,7 @@ CONTENT
         $this->assertStringNotContainsString('Some\Component', $config);
     }
 
-    public function testOnPostPackageUninstallCanRemovePackageArraysFromConfiguration()
+    public function testOnPostPackageUninstallCanRemovePackageArraysFromConfiguration(): void
     {
         $this->createApplicationConfig(
             '<' . "?php\nreturn [\n    'modules' => [\n        'Some\Component',\n    'Other\Component',\n    ]\n];"
@@ -1312,7 +1382,7 @@ CONTENT
         $this->assertStringNotContainsString('Other\Component', $config);
     }
 
-    public function testModuleIsAppended()
+    public function testModuleIsAppended(): void
     {
         $this->createApplicationConfig(
             '<' . "?php\nreturn [\n    'modules' => [\n        'Some\Component',\n    ]\n];"
@@ -1328,6 +1398,7 @@ CONTENT
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
 
+        /** @psalm-var PackageEvent&ObjectProphecy $event */
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
@@ -1384,7 +1455,7 @@ CONTENT
         ], $modules);
     }
 
-    public function testAppendModuleAndPrependComponent()
+    public function testAppendModuleAndPrependComponent(): void
     {
         $this->createApplicationConfig(
             '<' . "?php\nreturn [\n    'modules' => [\n        'SomeApplication',\n    ]\n];"
@@ -1401,6 +1472,7 @@ CONTENT
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
 
+        /** @psalm-var PackageEvent&ObjectProphecy $event */
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
@@ -1484,7 +1556,7 @@ CONTENT
         ], $modules);
     }
 
-    public function testPrependComponentAndAppendModule()
+    public function testPrependComponentAndAppendModule(): void
     {
         $this->createApplicationConfig(
             '<' . "?php\nreturn [\n    'modules' => [\n        'SomeApplication',\n    ]\n];"
@@ -1501,6 +1573,7 @@ CONTENT
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
 
+        /** @psalm-var PackageEvent&ObjectProphecy $event */
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
@@ -1586,7 +1659,13 @@ CONTENT
         ], $modules);
     }
 
-    public function moduleClass()
+    /**
+     * @psalm-return array<array-key, array{
+     *     0: string,
+     *     1: array<string, array<array-key, string>>
+     * }>
+     */
+    public function moduleClass(): array
     {
         return [
             [__DIR__ . '/TestAsset/ModuleBadlyFormatted.php', ['BadlyFormatted\Application' => ['Dependency1']]],
@@ -1600,10 +1679,9 @@ CONTENT
     /**
      * @dataProvider moduleClass
      *
-     * @param string $file
-     * @param array $result
+     * @psalm-param array<string, array<array-key, string>> $result
      */
-    public function testGetModuleDependenciesFromModuleClass($file, $result)
+    public function testGetModuleDependenciesFromModuleClass(string $file, array $result): void
     {
         $r = new ReflectionObject($this->installer);
         $rm = $r->getMethod('getModuleDependencies');
@@ -1614,7 +1692,7 @@ CONTENT
         $this->assertEquals($result, $dependencies);
     }
 
-    public function testGetModuleClassesDependenciesHandlesAutoloadersWithMultiplePathsMappedToSameNamespace()
+    public function testGetModuleClassesDependenciesHandlesAutoloadersWithMultiplePathsMappedToSameNamespace(): void
     {
         $installPath = 'install/path';
         $this->setUpModuleDependencies($installPath);
@@ -1662,7 +1740,7 @@ CONTENT
         ], $dependencies);
     }
 
-    public function setUpModuleDependencies($path)
+    public function setUpModuleDependencies(string $path): void
     {
         $this->createModuleClass(
             $path . '/src/Psr0Too/DoesNotExist/Module.php',
@@ -1736,8 +1814,10 @@ CONTENT
      * @param string $configContents
      * @param array $configNames
      * @param string $expectedName
+     *
+     * @return void
      */
-    public function testUninstallMessageWithDifferentInjectors($configContents, array $configNames, $expectedName)
+    public function testUninstallMessageWithDifferentInjectors($configContents, array $configNames, $expectedName): void
     {
         foreach ($configNames as $configName) {
             $this->createConfigFile($configName, $configContents);
@@ -1780,7 +1860,7 @@ CONTENT
         $this->installer->onPostPackageUninstall($event->reveal());
     }
 
-    public function testInstallWhitelistedDevModuleWithDifferentInjectors()
+    public function testInstallWhitelistedDevModuleWithDifferentInjectors(): void
     {
         $moduleConfigContent = <<<'CONFIG'
 <?php
@@ -1829,6 +1909,7 @@ CONFIG;
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
 
+        /** @psalm-var PackageEvent&ObjectProphecy $event */
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
@@ -1849,7 +1930,7 @@ CONFIG;
         $this->assertEquals(['Some\Component'], $modules);
     }
 
-    public function testInstallWhitelistedDevModuleWithUniqueInjector()
+    public function testInstallWhitelistedDevModuleWithUniqueInjector(): void
     {
         $moduleConfigContent = <<<'CONFIG'
 <?php
@@ -1884,6 +1965,7 @@ CONFIG;
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
 
+        /** @psalm-var PackageEvent&ObjectProphecy $event */
         $event = $this->prophesize(PackageEvent::class);
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
@@ -1938,8 +2020,10 @@ CONFIG;
      *
      * @param string $name
      * @param string $contents
+     *
+     * @return void
      */
-    private function createConfigFile($name, $contents)
+    private function createConfigFile($name, $contents): void
     {
         vfsStream::newFile('config/' . $name)
             ->at($this->projectRoot)
@@ -1947,11 +2031,10 @@ CONFIG;
     }
 
     /**
-     * @param ObjectProphecy|PackageEvent $event
-     * @param string $packageName
-     * @return ObjectProphecy
+     * @param PackageEvent|ObjectProphecy $event
+     * @psalm-param PackageEvent&ObjectProphecy $event
      */
-    private function prepareEventForPackageProviderDetection(ObjectProphecy $event, string $packageName): void
+    private function prepareEventForPackageProviderDetection($event, string $packageName): void
     {
         if (method_exists(PackageEvent::class, 'getPool')) {
             $pool = $this->prophesize(Pool::class);

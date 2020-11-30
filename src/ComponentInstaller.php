@@ -156,7 +156,7 @@ class ComponentInstaller implements
         $this->composer = $composer;
         $this->io = $io;
         $this->cachedInjectors = [];
-        $this->packageProviderFactory = function () {
+        $this->packageProviderFactory = function (): PackageProvider\PackageProviderDetectionFactory {
             return PackageProviderDetectionFactory::create($this->composer);
         };
     }
@@ -538,11 +538,10 @@ class ComponentInstaller implements
      *
      * @param Injector\InjectorInterface $injector
      * @param int                        $packageType
-     * return void
      *
      * @todo Will need to store selection in filesystem and remove when all packages are complete
      */
-    private function promptToRememberOption(Injector\InjectorInterface $injector, $packageType)
+    private function promptToRememberOption(Injector\InjectorInterface $injector, $packageType): void
     {
         $ask = ["\n  <question>Remember this option for other packages of the same type? (Y/n)</question>"];
 
@@ -930,11 +929,11 @@ class ComponentInstaller implements
         return true;
     }
 
-    public function deactivate(Composer $composer, IOInterface $io)
+    public function deactivate(Composer $composer, IOInterface $io): void
     {
     }
 
-    public function uninstall(Composer $composer, IOInterface $io)
+    public function uninstall(Composer $composer, IOInterface $io): void
     {
     }
 }

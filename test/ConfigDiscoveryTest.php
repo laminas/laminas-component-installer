@@ -59,14 +59,14 @@ class ConfigDiscoveryTest extends TestCase
         ];
     }
 
-    public function createApplicationConfig()
+    public function createApplicationConfig(): void
     {
         vfsStream::newFile('config/application.config.php')
             ->at($this->projectRoot)
             ->setContent('<' . "?php\nreturn [\n    'modules' => [\n    ]\n];");
     }
 
-    public function createDevelopmentConfig($dist = true)
+    public function createDevelopmentConfig(bool $dist = true): void
     {
         $configFileName = 'config/development.config.php' . ($dist ? '.dist' : '');
         vfsStream::newFile($configFileName)
@@ -74,33 +74,33 @@ class ConfigDiscoveryTest extends TestCase
             ->setContent('<' . "?php\nreturn [\n    'modules' => [\n    ]\n];");
     }
 
-    public function createDevelopmentWorkConfig()
+    public function createDevelopmentWorkConfig(): void
     {
         $this->createDevelopmentConfig(false);
     }
 
-    public function createAggregatorConfig()
+    public function createAggregatorConfig(): void
     {
         vfsStream::newFile('config/config.php')
             ->at($this->projectRoot)
             ->setContent('<' . "?php\n\$aggregator = new ConfigAggregator([\n]);");
     }
 
-    public function createMezzioConfig()
+    public function createMezzioConfig(): void
     {
         vfsStream::newFile('config/config.php')
             ->at($this->projectRoot)
             ->setContent('<' . "?php\n\$configManager = new ConfigManager([\n]);");
     }
 
-    public function createModulesConfig()
+    public function createModulesConfig(): void
     {
         vfsStream::newFile('config/modules.config.php')
             ->at($this->projectRoot)
             ->setContent('<' . "?php\nreturn [\n]);");
     }
 
-    public function assertOptionsContainsNoopInjector(Collection $options)
+    public function assertOptionsContainsNoopInjector(Collection $options): void
     {
         if ($options->isEmpty()) {
             throw new ExpectationFailedException('Options array is empty; no NoopInjector found!');
@@ -114,7 +114,7 @@ class ConfigDiscoveryTest extends TestCase
         }
     }
 
-    public function assertOptionsContainsInjector($injectorType, Collection $options)
+    public function assertOptionsContainsInjector(string $injectorType, Collection $options): InjectorInterface
     {
         foreach ($options as $option) {
             if (! $option instanceof ConfigOption) {
@@ -135,9 +135,10 @@ class ConfigDiscoveryTest extends TestCase
         ));
     }
 
-    public function assertOptionsContainsInjectorInChain($injectorType, Collection $options)
+    public function assertOptionsContainsInjectorInChain(string $injectorType, Collection $options): void
     {
         $chain = $this->assertOptionsContainsInjector(Injector\ConfigInjectorChain::class, $options);
+        $this->assertInstanceOf(Injector\ConfigInjectorChain::class, $chain);
 
         foreach ($chain->getCollection() as $injector) {
             if (! $injector instanceof InjectorInterface) {
@@ -158,14 +159,14 @@ class ConfigDiscoveryTest extends TestCase
         ));
     }
 
-    public function testGetAvailableConfigOptionsReturnsEmptyArrayWhenNoConfigFilesPresent()
+    public function testGetAvailableConfigOptionsReturnsEmptyArrayWhenNoConfigFilesPresent(): void
     {
         $result = $this->discovery->getAvailableConfigOptions($this->allTypes);
         $this->assertInstanceOf(Collection::class, $result);
         $this->assertTrue($result->isEmpty());
     }
 
-    public function testGetAvailableConfigOptionsReturnsOptionsForEachSupportedPackageType()
+    public function testGetAvailableConfigOptionsReturnsOptionsForEachSupportedPackageType(): void
     {
         $this->createApplicationConfig();
         $this->createDevelopmentConfig();
@@ -182,7 +183,15 @@ class ConfigDiscoveryTest extends TestCase
         }
     }
 
-    public function configFileSubset()
+    /**
+     * @psalm-return array<array-key, array{
+     *     seedMethod: string,
+     *     type: int,
+     *     expected: string,
+     *     chain: bool
+     * }>
+     */
+    public function configFileSubset(): array
     {
         return [
             [
@@ -262,18 +271,13 @@ class ConfigDiscoveryTest extends TestCase
 
     /**
      * @dataProvider configFileSubset
-     *
-     * @param string $seedMethod
-     * @param string $type
-     * @param string $expected
-     * @param bool $chain
      */
     public function testGetAvailableConfigOptionsCanReturnsSubsetOfOptionsBaseOnPackageType(
-        $seedMethod,
-        $type,
-        $expected,
-        $chain
-    ) {
+        string $seedMethod,
+        int $type,
+        string $expected,
+        bool $chain
+    ): void {
         $this->{$seedMethod}();
         $options = $this->discovery->getAvailableConfigOptions(new Collection([$type]), vfsStream::url('project'));
         $this->assertCount(2, $options);
@@ -286,7 +290,7 @@ class ConfigDiscoveryTest extends TestCase
         }
     }
 
-    public function testNoOptionReturnedIfInjectorCannotRegisterType()
+    public function testNoOptionReturnedIfInjectorCannotRegisterType(): void
     {
         $this->createApplicationConfig();
         $options = $this->discovery->getAvailableConfigOptions(
