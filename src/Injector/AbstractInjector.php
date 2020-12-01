@@ -199,7 +199,7 @@ abstract class AbstractInjector implements InjectorInterface
             $package
         );
 
-        $config = preg_replace($pattern, $replacement, $config);
+        $config = preg_replace($pattern, $replacement, $config, 1);
         file_put_contents($this->configFile, $config);
 
         return true;
@@ -238,7 +238,7 @@ abstract class AbstractInjector implements InjectorInterface
             $package
         );
 
-        $config = preg_replace($pattern, $replacement, $config);
+        $config = preg_replace($pattern, $replacement, $config, 1);
         file_put_contents($this->configFile, $config);
 
         return true;
@@ -293,7 +293,7 @@ abstract class AbstractInjector implements InjectorInterface
             $package
         );
 
-        $config = preg_replace($pattern, $replacement, $config);
+        $config = preg_replace($pattern, $replacement, $config, 1);
         file_put_contents($this->configFile, $config);
 
         return true;
