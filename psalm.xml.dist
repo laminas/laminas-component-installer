@@ -12,6 +12,7 @@
         <ignoreFiles>
             <directory name="vendor"/>
             <directory name="test/TestAsset/"/>
+            <directory name="test/Injector/TestAsset/"/>
         </ignoreFiles>
     </projectFiles>
 
