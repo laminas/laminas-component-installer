@@ -70,6 +70,9 @@ class ConfigAggregatorInjectorTest extends AbstractInjectorTestCase
         $expectedContentsImportShortArray            = $this->convertToShortArraySyntax($expectedContentsImportLongArray);
         $expectedContentsImportShortArrayAltIndent   = $this->convertToShortArraySyntax($expectedContentsImportLongArrayAltIndent);
 
+        $injectOnlyFirstOccurrenceInitial  = file_get_contents(__DIR__ . '/TestAsset/mezzio-with-postprocessor.config.php');
+        $injectOnlyFirstOccurrenceExpected = file_get_contents(__DIR__ . '/TestAsset/mezzio-with-postprocessor-post-injection.config.php');
+
         return [
             'fqcn-long-array'               => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $baseContentsFqcnLongArray,               $expectedContentsFqcnLongArray],
             'global-long-array'             => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $baseContentsGloballyQualifiedLongArray,  $expectedContentsGloballyQualifiedLongArray],
@@ -79,6 +82,8 @@ class ConfigAggregatorInjectorTest extends AbstractInjectorTestCase
             'global-short-array'            => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $baseContentsGloballyQualifiedShortArray, $expectedContentsGloballyQualifiedShortArray],
             'import-short-array'            => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $baseContentsImportShortArray,            $expectedContentsImportShortArray],
             'import-short-array-alt-indent' => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $baseContentsImportShortArrayAltIndent,   $expectedContentsImportShortArrayAltIndent],
+            // see https://github.com/laminas/laminas-component-installer/issues/21
+            'inject-only-first-occurence'   => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $injectOnlyFirstOccurrenceInitial, $injectOnlyFirstOccurrenceExpected],
         ];
         // @codingStandardsIgnoreEnd
     }
