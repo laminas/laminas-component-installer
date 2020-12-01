@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#24](https://github.com/laminas/laminas-component-installer/pull/24) fixes an issue whereby a config file that contains multiple points of possible injection was having the component/module injected multiple times. It now will inject only at the first matching location. If you maintain such a configuration file and need injection to occur multiple times or at a location other than the first match, you will need to do so manually.
 
 ## 2.3.2 - 2020-10-27
 
