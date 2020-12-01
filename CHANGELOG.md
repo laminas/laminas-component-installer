@@ -2,19 +2,11 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 2.4.0 - TBD
+## 2.4.0 - 2020-12-01
 
 ### Added
 
 - [#22](https://github.com/laminas/laminas-component-installer/pull/22) adds support for PHP 8.
-
-### Changed
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
 
 ### Removed
 
@@ -23,6 +15,28 @@ All notable changes to this project will be documented in this file, in reverse 
 ### Fixed
 
 - [#24](https://github.com/laminas/laminas-component-installer/pull/24) fixes an issue whereby a config file that contains multiple points of possible injection was having the component/module injected multiple times. It now will inject only at the first matching location. If you maintain such a configuration file and need injection to occur multiple times or at a location other than the first match, you will need to do so manually.
+
+
+-----
+
+### Release Notes for [2.4.0](https://github.com/laminas/laminas-component-installer/milestone/4)
+
+Feature release (minor)
+
+### 2.4.0
+
+- Total issues resolved: **3**
+- Total pull requests resolved: **3**
+- Total contributors: **3**
+
+#### Bug
+
+ - [24: Prevent multiple injections of a component/module](https://github.com/laminas/laminas-component-installer/pull/24) thanks to @weierophinney and @boesing
+
+#### Enhancement
+
+ - [23: Psalm integration](https://github.com/laminas/laminas-component-installer/pull/23) thanks to @weierophinney and @boesing
+ - [22: PHP 8 support Fixes #14](https://github.com/laminas/laminas-component-installer/pull/22) thanks to @adamturcsan and @boesing
 
 ## 2.3.2 - 2020-10-27
 
