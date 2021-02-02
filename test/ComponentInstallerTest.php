@@ -249,7 +249,7 @@ CONTENT
             return strstr($argument, 'Dependency SomeDependency is not registered in the configuration');
         }))->shouldBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
+        $this->installer->onPostPackageInstall($event->reveal());
     }
 
     /**
@@ -628,7 +628,7 @@ CONTENT
             return strstr($argument, sprintf('Installing %s from package some/component', $packageName));
         }))->shouldBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
+        $this->installer->onPostPackageInstall($event->reveal());
 
         $config  = include vfsStream::url('project/config/application.config.php');
         $modules = $config['modules'];
@@ -741,7 +741,7 @@ CONTENT
             return strstr($argument, 'Installing SomeModule from package some/module');
         }))->shouldBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
+        $this->installer->onPostPackageInstall($event->reveal());
 
         $config  = include vfsStream::url('project/config/application.config.php');
         $modules = $config['modules'];
@@ -762,7 +762,7 @@ CONTENT
         $event->isDevMode()->willReturn(false);
         $event->getOperation()->shouldNotBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
+        $this->installer->onPostPackageInstall($event->reveal());
     }
 
     public function testPostPackageInstallDoesNothingIfComposerExtraIsEmpty(): void
@@ -778,7 +778,7 @@ CONTENT
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
+        $this->installer->onPostPackageInstall($event->reveal());
     }
 
     public function testOnPostPackageInstallReturnsEarlyIfApplicationConfigIsMissing(): void
@@ -800,7 +800,7 @@ CONTENT
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
+        $this->installer->onPostPackageInstall($event->reveal());
     }
 
     public function testPostPackageInstallDoesNothingIfLaminasExtraSectionDoesNotContainComponentOrModule(): void
@@ -816,7 +816,7 @@ CONTENT
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->willReturn($operation->reveal());
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
+        $this->installer->onPostPackageInstall($event->reveal());
     }
 
     public function testOnPostPackageInstallDoesNotPromptIfPackageIsAlreadyInConfiguration(): void
@@ -847,7 +847,7 @@ CONTENT
 
         $this->io->ask(Argument::any())->shouldNotBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
+        $this->installer->onPostPackageInstall($event->reveal());
         $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
         $this->assertStringContainsString("'Some\Component'", $config);
     }
@@ -887,7 +887,7 @@ CONTENT
             return strpos($argument, 'Installing Some\Component from package some/component');
         }))->shouldBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
+        $this->installer->onPostPackageInstall($event->reveal());
         $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
         $this->assertStringContainsString("'Some\Component'", $config);
     }
@@ -957,7 +957,7 @@ CONTENT
             return strstr($argument, 'Installing Some\Component from package some/component');
         }))->shouldBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
+        $this->installer->onPostPackageInstall($event->reveal());
         $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
         $this->assertStringContainsString("'Some\Component'", $config);
     }
@@ -1068,7 +1068,7 @@ CONTENT
             return strstr($argument, 'Installing Other\Component from package some/component');
         }))->shouldBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
+        $this->installer->onPostPackageInstall($event->reveal());
         $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
         $this->assertStringContainsString("'Some\Component'", $config);
         $this->assertStringContainsString("'Other\Component'", $config);
@@ -1137,7 +1137,7 @@ CONTENT
             return strstr($argument, 'Installing Some\Component from package some/component');
         }))->shouldBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
+        $this->installer->onPostPackageInstall($event->reveal());
         $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
         $this->assertStringContainsString("'Some\Component'", $config);
 
@@ -1203,7 +1203,7 @@ CONTENT
             return strstr($argument, 'Installing Other\Component from package other/component');
         }))->shouldBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
+        $this->installer->onPostPackageInstall($event->reveal());
         $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
         $this->assertStringContainsString("'Other\Component'", $config);
     }
@@ -1271,7 +1271,7 @@ CONTENT
             return strstr($argument, 'Installing Some\Component from package some/component');
         }))->shouldBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
+        $this->installer->onPostPackageInstall($event->reveal());
         $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
         $this->assertStringContainsString("'Some\Component'", $config);
 
@@ -1301,7 +1301,7 @@ CONTENT
             return strstr($argument, 'Installing Other\Component from package other/component');
         }))->shouldBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
+        $this->installer->onPostPackageInstall($event->reveal());
         $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
         $this->assertStringContainsString("'Other\Component'", $config);
     }
@@ -1312,7 +1312,7 @@ CONTENT
         $event->isDevMode()->willReturn(false);
         $event->getOperation()->shouldNotBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageUninstall($event->reveal()));
+        $this->installer->onPostPackageUninstall($event->reveal());
     }
 
     public function testOnPostPackageUninstallReturnsEarlyIfNoRelevantConfigFilesAreFound(): void
@@ -1321,7 +1321,7 @@ CONTENT
         $event->isDevMode()->willReturn(true);
         $event->getOperation()->shouldNotBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageUninstall($event->reveal()));
+        $this->installer->onPostPackageUninstall($event->reveal());
     }
 
     public function testOnPostPackageUninstallRemovesPackageFromConfiguration(): void
@@ -1359,7 +1359,7 @@ CONTENT
             }))
             ->shouldBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageUninstall($event->reveal()));
+        $this->installer->onPostPackageUninstall($event->reveal());
 
         $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
         $this->assertStringNotContainsString('Some\Component', $config);
@@ -1408,7 +1408,7 @@ CONTENT
             }))
             ->shouldBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageUninstall($event->reveal()));
+        $this->installer->onPostPackageUninstall($event->reveal());
 
         $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
         $this->assertStringNotContainsString('Some\Component', $config);
@@ -1482,8 +1482,8 @@ CONTENT
             return strstr($argument, 'Installing Some\Module from package some/module');
         }))->shouldBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
-        $config  = include vfsStream::url('project/config/application.config.php');
+        $this->installer->onPostPackageInstall($event->reveal());
+        $config = include vfsStream::url('project/config/application.config.php');
         $modules = $config['modules'];
         $this->assertEquals([
             'Some\Component',
@@ -1588,8 +1588,8 @@ CONTENT
             return strstr($argument, 'Installing Some\Component from package some/package');
         }))->shouldBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
-        $config  = include vfsStream::url('project/config/application.config.php');
+        $this->installer->onPostPackageInstall($event->reveal());
+        $config = include vfsStream::url('project/config/application.config.php');
         $modules = $config['modules'];
         $this->assertEquals([
             'Some\Component',
@@ -1697,8 +1697,8 @@ CONTENT
             return strstr($argument, 'Installing Some\Component from package some/package');
         }))->shouldBeCalled();
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
-        $config  = include vfsStream::url('project/config/application.config.php');
+        $this->installer->onPostPackageInstall($event->reveal());
+        $config = include vfsStream::url('project/config/application.config.php');
         $modules = $config['modules'];
         $this->assertEquals([
             'Some\Component',
@@ -1961,8 +1961,8 @@ CONFIG;
 
         $this->rootPackage->getRequires()->willReturn([]);
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
-        $config  = include vfsStream::url('project/config/modules.config.php');
+        $this->installer->onPostPackageInstall($event->reveal());
+        $config = include vfsStream::url('project/config/modules.config.php');
         $modules = $config['modules'];
         $this->assertEquals([
             'Laminas\Router',
@@ -2020,8 +2020,8 @@ CONFIG;
             ->willReturn('some/module');
         $this->rootPackage->getRequires()->willReturn([]);
 
-        $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
-        $config  = include vfsStream::url('project/config/modules.config.php');
+        $this->installer->onPostPackageInstall($event->reveal());
+        $config = include vfsStream::url('project/config/modules.config.php');
         $modules = $config['modules'];
         $this->assertEquals([
             'Laminas\Router',
