@@ -12,12 +12,14 @@ use Composer\Composer;
 use Composer\Config;
 use Composer\DependencyResolver\Operation\InstallOperation;
 use Composer\DependencyResolver\Operation\UninstallOperation;
+use Composer\DependencyResolver\Operation\UpdateOperation;
 use Composer\DependencyResolver\Pool;
 use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
 use Composer\Repository\PlatformRepository;
 use Composer\Repository\RepositoryManager;
 use Composer\Repository\RootPackageRepository;
+use Generator;
 use Laminas\ComponentInstaller\ComponentInstaller;
 use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionFactory;
 use LaminasTest\ComponentInstaller\TestAsset\NativeTypehintedInstallationManager as InstallationManager;
@@ -41,7 +43,11 @@ use function preg_quote;
 use function sprintf;
 use function strpos;
 
-class ComponentInstallerTest extends TestCase
+/**
+ * @psalm-type ComponentInstallerConfiguration array{component?:string,module?:string}
+ * @psalm-type ComposerExtraLaminasConfiguration array{laminas?:ComponentInstallerConfiguration}
+ */
+final class ComponentInstallerTest extends TestCase
 {
     /** @var vfsStreamDirectory */
     private $projectRoot;
@@ -182,7 +188,7 @@ class ComponentInstallerTest extends TestCase
 
     public function createApplicationConfig(?string $contents = null): void
     {
-        $contents = $contents ?: '<' . "?php\nreturn [\n    'modules' => [\n    ]\n];";
+        $contents = $contents ?: $this->createApplicationConfigWithModules([]);
         vfsStream::newFile('config/application.config.php')
             ->at($this->projectRoot)
             ->setContent($contents);
@@ -274,11 +280,24 @@ class ComponentInstallerTest extends TestCase
             ->willReturnOnConsecutiveCalls(...$consecutiveReturnValues);
     }
 
+    /**
+     * @psalm-param list<non-empty-string> $modulesToRegister
+     * @psalm-return non-empty-string
+     */
+    private function createApplicationConfigWithModules(array $modulesToRegister): string
+    {
+        $modules = "";
+        if ($modulesToRegister) {
+            $modules = "\n        '" . implode("',\n        '", $modulesToRegister) . "',";
+        }
+        return '<' . "?php\nreturn [\n    'modules' => [" . $modules . "\n    ],\n];";
+    }
+
     public function testMissingDependency(): void
     {
         $installPath = 'install/path';
         $this->createApplicationConfig(
-            '<' . "?php\nreturn [\n    'modules' => [\n        'SomeApplication',\n    ]\n];"
+            $this->createApplicationConfigWithModules(['SomeApplication']),
         );
 
         $this->createModuleClass(
@@ -352,11 +371,11 @@ CONTENT
     }
 
     /**
-     * @psalm-return array<array-key, array{
+     * @psalm-return array<non-empty-string, array{
      *     0: string,
-     *     1: array<array-key, string>,
-     *     2: array<array-key, string>,
-     *     3: array<array-key, string>,
+     *     1: list<non-empty-string>,
+     *     2: list<non-empty-string>,
+     *     3: list<non-empty-string>,
      *     4: "psr-0"|"psr-4"|"classmap"|"files",
      *     5: null|string
      * }>
@@ -621,13 +640,10 @@ CONTENT
 
     /**
      * @dataProvider dependency
-     * @param array $enabledModules
-     * @param array $dependencies
-     * @param array $result
      * @param string $autoloading classmap|files|psr-0|psr-4
-     * @psalm-param array<array-key, string> $enabledModules
-     * @psalm-param array<array-key, string> $dependencies
-     * @psalm-param array<array-key, string> $result
+     * @psalm-param list<non-empty-string> $enabledModules
+     * @psalm-param list<non-empty-string> $dependencies
+     * @psalm-param list<non-empty-string> $result
      */
     public function testInjectModuleWithDependencies(
         string $packageName,
@@ -638,10 +654,8 @@ CONTENT
         ?string $autoloadPath = null
     ): void {
         $installPath = 'install/path';
-        $modules     = "\n        '" . implode("',\n        '", $enabledModules) . "',";
-        $this->createApplicationConfig(
-            '<' . "?php\nreturn [\n    'modules' => [" . $modules . "\n    ],\n];"
-        );
+
+        $this->createApplicationConfig($this->createApplicationConfigWithModules($enabledModules));
 
         switch ($autoloading) {
             case 'classmap':
@@ -731,10 +745,10 @@ CONTENT
     }
 
     /**
-     * @psalm-return array<array-key, array{
-     *     0: array<array-key, string>,
-     *     1: array<array-key, string>,
-     *     2: array<array-key, string>,
+     * @psalm-return array<non-empty-string, array{
+     *     0: list<non-empty-string>,
+     *     1: list<non-empty-string>,
+     *     2: list<non-empty-string>
      * }>
      */
     public function modules(): array
@@ -783,9 +797,9 @@ CONTENT
      * @param array $availableModules
      * @param array $enabledModules
      * @param array $result
-     * @psalm-param array<array-key, string> $availableModules
-     * @psalm-param array<array-key, string> $enabledModules
-     * @psalm-param array<array-key, string> $result
+     * @psalm-param list<non-empty-string> $availableModules
+     * @psalm-param list<non-empty-string> $enabledModules
+     * @psalm-param list<non-empty-string> $result
      */
     public function testModuleBeforeApplicationModules(
         array $availableModules,
@@ -797,9 +811,8 @@ CONTENT
             vfsStream::newDirectory($module)->at($modulePath);
         }
 
-        $modules = "\n        '" . implode("',\n        '", $enabledModules) . "',";
         $this->createApplicationConfig(
-            '<' . "?php\nreturn [\n    'modules' => [" . $modules . "\n    ],\n];"
+            $this->createApplicationConfigWithModules($enabledModules)
         );
 
         $package = $this->createMock(PackageInterface::class);
@@ -842,6 +855,7 @@ CONTENT
         self::assertEquals([
             'post-package-install'   => 'onPostPackageInstall',
             'post-package-uninstall' => 'onPostPackageUninstall',
+            'post-package-update'    => 'onPostPackageUpdate',
         ], ComponentInstaller::getSubscribedEvents());
     }
 
@@ -920,9 +934,7 @@ CONTENT
 
     public function testOnPostPackageInstallDoesNotPromptIfPackageIsAlreadyInConfiguration(): void
     {
-        $this->createApplicationConfig(
-            '<' . "?php\nreturn [\n    'modules' => [\n        'Some\Component',\n    ]\n];"
-        );
+        $this->createApplicationConfig($this->createApplicationConfigWithModules(['Some\Component']));
 
         $package = $this->createMock(PackageInterface::class);
         $package->method('getName')->willReturn('some/component');
@@ -1221,9 +1233,7 @@ CONTENT
 
     public function testOnPostPackageUninstallRemovesPackageFromConfiguration(): void
     {
-        $this->createApplicationConfig(
-            '<' . "?php\nreturn [\n    'modules' => [\n        'Some\Component',\n    ]\n];"
-        );
+        $this->createApplicationConfig($this->createApplicationConfigWithModules(['Some\Component']));
 
         $package = $this->createMock(PackageInterface::class);
         $package->method('getName')->willReturn('some/component');
@@ -1253,9 +1263,10 @@ CONTENT
 
     public function testOnPostPackageUninstallCanRemovePackageArraysFromConfiguration(): void
     {
-        $this->createApplicationConfig(
-            '<' . "?php\nreturn [\n    'modules' => [\n        'Some\Component',\n    'Other\Component',\n    ]\n];"
-        );
+        $this->createApplicationConfig($this->createApplicationConfigWithModules([
+            'Some\Component',
+            'Other\Component',
+        ]));
 
         $package = $this->createMock(PackageInterface::class);
         $package->method('getName')->willReturn('some/component');
@@ -1291,9 +1302,7 @@ CONTENT
 
     public function testModuleIsAppended(): void
     {
-        $this->createApplicationConfig(
-            '<' . "?php\nreturn [\n    'modules' => [\n        'Some\Component',\n    ]\n];"
-        );
+        $this->createApplicationConfig($this->createApplicationConfigWithModules(['Some\Component']));
 
         $package = $this->createMock(PackageInterface::class);
         $package->method('getName')->willReturn('some/module');
@@ -1336,9 +1345,7 @@ CONTENT
 
     public function testAppendModuleAndPrependComponent(): void
     {
-        $this->createApplicationConfig(
-            '<' . "?php\nreturn [\n    'modules' => [\n        'SomeApplication',\n    ]\n];"
-        );
+        $this->createApplicationConfig($this->createApplicationConfigWithModules(['SomeApplication']));
 
         $package = $this->createMock(PackageInterface::class);
         $package->method('getName')->willReturn('some/package');
@@ -1725,6 +1732,242 @@ CONFIG;
                 $config,
                 ['development.config.php.dist', 'development.config.php'],
                 '.*?config/development.config.php.dist.*?config/development.config.php',
+            ],
+        ];
+    }
+
+    public function testOnPostPackageUpdateReturnsEarlyIfEventIsNotInDevMode(): void
+    {
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(false);
+        $event->expects(self::never())->method('getOperation');
+
+        $this->installer->onPostPackageUpdate($event);
+    }
+
+    public function testOnPostPackageUpdateDoesNothingIfComposerExtraIsEmpty(): void
+    {
+        $initialPackage = $this->createMock(PackageInterface::class);
+        $initialPackage->method('getName')->willReturn('some/component');
+        $targetPackage = $this->createMock(PackageInterface::class);
+        $targetPackage->method('getName')->willReturn('some/component');
+
+        $operation = $this->createMock(UpdateOperation::class);
+        $operation->method('getInitialPackage')->willReturn($initialPackage);
+        $operation->method('getTargetPackage')->willReturn($targetPackage);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+
+        $this->io
+            ->expects(self::never())
+            ->method(self::anything());
+
+        $this->installer->onPostPackageUpdate($event);
+    }
+
+    public function testOnPostPackageUpdateDoesNothingIfComposerExtraEquals(): void
+    {
+        $initialPackage = $this->createMock(PackageInterface::class);
+        $initialPackage
+            ->expects(self::once())
+            ->method('getExtra')
+            ->willReturn(['laminas' => ['component' => 'Some\Component']]);
+        $targetPackage = $this->createMock(PackageInterface::class);
+        $targetPackage
+            ->expects(self::once())
+            ->method('getExtra')
+            ->willReturn(['laminas' => ['component' => 'Some\Component']]);
+
+        $operation = $this->createMock(UpdateOperation::class);
+        $operation->method('getInitialPackage')->willReturn($initialPackage);
+        $operation->method('getTargetPackage')->willReturn($targetPackage);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+
+        $this->io
+            ->expects(self::never())
+            ->method(self::anything());
+
+        $this->installer->onPostPackageUpdate($event);
+    }
+
+    public function testOnPostPackageUpdateRemovesPackageWhenNewerVersionDoesNotContainExtraAnymore(): void
+    {
+        $this->createApplicationConfig($this->createApplicationConfigWithModules(['Some\Component']));
+
+        $initialPackage = $this->createMock(PackageInterface::class);
+        $initialPackage
+            ->expects(self::once())
+            ->method('getExtra')
+            ->willReturn(['laminas' => ['component' => 'Some\Component']]);
+        $targetPackage = $this->createMock(PackageInterface::class);
+
+        $operation = $this->createMock(UpdateOperation::class);
+        $operation->method('getInitialPackage')->willReturn($initialPackage);
+        $operation->method('getTargetPackage')->willReturn($targetPackage);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+
+        $this->createOutputAssertions([
+            '<info>    Removing Some\Component from package some/component</info>',
+            'Removed package from .*?config/application.config.php',
+        ]);
+
+        $this->installer->onPostPackageUpdate($event);
+
+        $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
+        self::assertStringNotContainsString('Some\Component', $config);
+    }
+
+    /**
+     * @psalm-param list<non-empty-string> $installedModules
+     * @psalm-param ComposerExtraLaminasConfiguration $previousExtra
+     * @psalm-param ComposerExtraLaminasConfiguration $newExtra
+     * @psalm-param list<AbstractQuestionAssertion> $inputAssertions
+     * @psalm-param list<non-empty-string> $outputAssertions
+     * @psalm-param list<non-empty-string> $expectedInstalledModules
+     * @dataProvider packageUpdateScenarios
+     */
+    public function testOnPostPackageUpdateAddsPackageWhenNewerVersionContainsDifferentInformationsThanPreviousVersion(
+        array $installedModules,
+        array $previousExtra,
+        array $newExtra,
+        array $inputAssertions,
+        array $outputAssertions,
+        array $expectedInstalledModules
+    ): void {
+        $this->createApplicationConfig($this->createApplicationConfigWithModules($installedModules));
+
+        $previousPackage = $this->createMock(PackageInterface::class);
+        $previousPackage->method('getName')->willReturn('some/module');
+        $previousPackage->method('getExtra')->willReturn($previousExtra);
+
+        $newPackage = $this->createMock(PackageInterface::class);
+        $newPackage->method('getName')->willReturn('some/module');
+        $newPackage->method('getExtra')->willReturn($newExtra);
+
+        $operation = $this->createMock(UpdateOperation::class);
+        $operation->method('getInitialPackage')->willReturn($previousPackage);
+        $operation->method('getTargetPackage')->willReturn($newPackage);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+        $this->prepareEventForPackageProviderDetection($event, 'some/module');
+
+        $this->rootPackage->method('getName')->willReturn('some/component');
+
+        $this->createOutputAssertions($outputAssertions);
+        $this->createInputAssertions($inputAssertions);
+
+        $this->installer->onPostPackageUpdate($event);
+        /**
+         * @psalm-suppress UnresolvableInclude
+         * @psalm-var array{modules:list<non-empty-string>} $config
+         */
+        $config  = require vfsStream::url('project/config/application.config.php');
+        $modules = $config['modules'];
+        self::assertEquals($expectedInstalledModules, $modules);
+    }
+
+    /**
+     * @psalm-return Generator<non-empty-string,array{
+     *     0:list<non-empty-string>,
+     *     1:ComposerExtraLaminasConfiguration,
+     *     2:ComposerExtraLaminasConfiguration,
+     *     3:list<AbstractQuestionAssertion>,
+     *     4:list<non-empty-string>,
+     *     5:list<non-empty-string>
+     * }>
+     */
+    public function packageUpdateScenarios(): Generator
+    {
+        yield 'package introduces module' => [
+            [], // Initially installed application modules
+            [], // Initial configuration had no composer extra information for this component
+            [
+                'laminas' => [
+                    'module' => 'Some\Module',
+                ],
+            ],
+            [
+                RememberedAnswerQuestionAssertion::inject('Some\Module', 1, true),
+            ],
+            [
+                'Installing Some\Module from package',
+            ],
+            [
+                'Some\Module',
+            ],
+        ];
+
+        yield 'package introduces component' => [
+            [], // Initially installed application modules
+            [], // Initial configuration had no composer extra information for this component
+            [
+                'laminas' => [
+                    'component' => 'Some\Component',
+                ],
+            ],
+            [
+                RememberedAnswerQuestionAssertion::inject('Some\Component', 1, true),
+            ],
+            [
+                'Installing Some\Component from package',
+            ],
+            [
+                'Some\Component',
+            ],
+        ];
+
+        yield 'new version drops module but keeps component' => [
+            ['Some\Component', 'Some\Module'],
+            [
+                'laminas' => [
+                    'module'    => 'Some\Module',
+                    'component' => 'Some\Component',
+                ],
+            ],
+            [
+                'laminas' => [
+                    'component' => 'Some\Component',
+                ],
+            ],
+            [],
+            [
+                '<info>    Removing Some\Module from package',
+                'Removed package from .*?config/application.config.php',
+            ],
+            [
+                'Some\Component',
+            ],
+        ];
+        yield 'new version drops component but keeps module' => [
+            ['Some\Component', 'Some\Module'],
+            [
+                'laminas' => [
+                    'module'    => 'Some\Module',
+                    'component' => 'Some\Component',
+                ],
+            ],
+            [
+                'laminas' => [
+                    'module' => 'Some\Module',
+                ],
+            ],
+            [],
+            [
+                '<info>    Removing Some\Component from package',
+                'Removed package from .*?config/application.config.php',
+            ],
+            [
+                'Some\Module',
             ],
         ];
     }

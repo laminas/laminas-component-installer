@@ -12,6 +12,7 @@ use ArrayObject;
 use Composer\Composer;
 use Composer\DependencyResolver\Operation\InstallOperation;
 use Composer\DependencyResolver\Operation\UninstallOperation;
+use Composer\DependencyResolver\Operation\UpdateOperation;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\Installer\PackageEvent;
 use Composer\Installer\PackageEvents;
@@ -25,6 +26,7 @@ use Laminas\ComponentInstaller\Injector\InjectorInterface;
 use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionFactory;
 use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionInterface;
 
+use function array_diff_assoc;
 use function array_filter;
 use function array_flip;
 use function array_keys;
@@ -176,6 +178,7 @@ class ComponentInstaller implements
     {
         return [
             PackageEvents::POST_PACKAGE_INSTALL   => 'onPostPackageInstall',
+            PackageEvents::POST_PACKAGE_UPDATE    => 'onPostPackageUpdate',
             PackageEvents::POST_PACKAGE_UNINSTALL => 'onPostPackageUninstall',
         ];
     }
@@ -220,6 +223,48 @@ class ComponentInstaller implements
         }
 
         $this->addPackageToConfig($name, $extra, $event, $package);
+    }
+
+    public function onPostPackageUpdate(PackageEvent $event): void
+    {
+        if (! $event->isDevMode()) {
+            // Do nothing in production mode.
+            return;
+        }
+
+        $operation = $event->getOperation();
+        assert($operation instanceof UpdateOperation);
+
+        $previousVersion = $operation->getInitialPackage();
+        $newVersion      = $operation->getTargetPackage();
+        /** @var array<string,mixed> $previousPackageExtra */
+        $previousPackageExtra = $previousVersion->getExtra();
+        $previousExtra        = $this->getExtraMetadata($previousPackageExtra);
+        /** @var array<string,mixed> $newPackageExtra */
+        $newPackageExtra = $newVersion->getExtra();
+        $newExtra        = $this->getExtraMetadata($newPackageExtra);
+
+        if ($previousExtra === $newExtra) {
+            return;
+        }
+
+        // Looks like the newer version of the package does not contain component installer informations anymore
+        if (empty($newExtra)) {
+            $this->removePackageFromConfig($previousVersion->getName(), $previousExtra);
+            return;
+        }
+
+        $removed  = array_diff_assoc($previousExtra, $newExtra);
+        $appended = array_diff_assoc($newExtra, $previousExtra);
+
+        if ($appended) {
+            // Newer version of the package contains component installer informations
+            $this->addPackageToConfig($newVersion->getName(), $appended, $event, $newVersion);
+        }
+
+        if ($removed) {
+            $this->removePackageFromConfig($newVersion->getName(), $removed);
+        }
     }
 
     /**
