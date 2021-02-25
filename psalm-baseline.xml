@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.2.1@ea9cb72143b77e7520c52fa37290bd8d8bc88fd9">
+<files psalm-version="4.6.1@e93e532e4eaad6d68c4d7b606853800eaceccc72">
   <file src="src/Collection.php">
     <DocblockTypeContradiction occurrences="2">
       <code>is_array($items)</code>
@@ -312,69 +312,32 @@
     </MixedArgument>
   </file>
   <file src="src/Injector/AbstractInjector.php">
-    <InvalidArrayOffset occurrences="6">
-      <code>$this-&gt;injectionPatterns[$type]['pattern']</code>
-      <code>$this-&gt;injectionPatterns[$type]['replacement']</code>
-      <code>$this-&gt;injectionPatterns[self::TYPE_BEFORE_APPLICATION]['pattern']</code>
-      <code>$this-&gt;injectionPatterns[self::TYPE_BEFORE_APPLICATION]['replacement']</code>
-      <code>$this-&gt;injectionPatterns[self::TYPE_DEPENDENCY]['pattern']</code>
-      <code>$this-&gt;injectionPatterns[self::TYPE_DEPENDENCY]['replacement']</code>
-    </InvalidArrayOffset>
-    <MissingPropertyType occurrences="1">
-      <code>$allowedTypes</code>
-    </MissingPropertyType>
-    <MixedArgument occurrences="12">
+    <MixedArgument occurrences="3">
       <code>$dependency</code>
       <code>$dependency</code>
       <code>$dependency</code>
       <code>$module</code>
       <code>$module</code>
-      <code>$pattern</code>
-      <code>$this-&gt;allowedTypes</code>
-      <code>$this-&gt;injectionPatterns[$type]['replacement']</code>
-      <code>$this-&gt;injectionPatterns[self::TYPE_BEFORE_APPLICATION]['pattern']</code>
-      <code>$this-&gt;injectionPatterns[self::TYPE_BEFORE_APPLICATION]['replacement']</code>
-      <code>$this-&gt;injectionPatterns[self::TYPE_DEPENDENCY]['pattern']</code>
-      <code>$this-&gt;injectionPatterns[self::TYPE_DEPENDENCY]['replacement']</code>
     </MixedArgument>
-    <MixedAssignment occurrences="6">
+    <MixedAssignment occurrences="4">
       <code>$dependency</code>
       <code>$dependency</code>
       <code>$first</code>
       <code>$last</code>
       <code>$module</code>
-      <code>$pattern</code>
     </MixedAssignment>
-    <MixedInferredReturnType occurrences="3">
-      <code>getTypesAllowed</code>
+    <MixedInferredReturnType occurrences="2">
       <code>string</code>
       <code>string|null</code>
     </MixedInferredReturnType>
-    <MixedReturnStatement occurrences="4">
+    <MixedReturnStatement occurrences="3">
       <code>$first</code>
       <code>$last</code>
-      <code>$this-&gt;allowedTypes</code>
       <code>reset($dependencies)</code>
     </MixedReturnStatement>
     <NullableReturnStatement occurrences="1">
       <code>$last</code>
     </NullableReturnStatement>
-    <PossiblyNullArgument occurrences="1">
-      <code>$this-&gt;configFile</code>
-    </PossiblyNullArgument>
-    <PropertyNotSetInConstructor occurrences="2">
-      <code>$configFile</code>
-      <code>$isRegisteredPattern</code>
-    </PropertyNotSetInConstructor>
-    <RedundantConditionGivenDocblockType occurrences="1">
-      <code>is_string($projectRoot)</code>
-    </RedundantConditionGivenDocblockType>
-    <UninitializedProperty occurrences="1">
-      <code>$this-&gt;configFile</code>
-    </UninitializedProperty>
-  </file>
-  <file src="src/Injector/ApplicationConfigInjector.php">
-    <InvalidPropertyAssignmentValue occurrences="1"/>
   </file>
   <file src="src/Injector/ConditionalDiscoveryTrait.php">
     <InvalidStringClass occurrences="1">
@@ -391,18 +354,9 @@
     </MixedOperand>
   </file>
   <file src="src/Injector/ConfigAggregatorInjector.php">
-    <InvalidArrayOffset occurrences="1">
-      <code>$this-&gt;injectionPatterns[self::TYPE_CONFIG_PROVIDER]['pattern']</code>
-    </InvalidArrayOffset>
-    <InvalidPropertyAssignmentValue occurrences="2">
-      <code>$this-&gt;injectionPatterns</code>
-    </InvalidPropertyAssignmentValue>
     <MissingParamType occurrences="1">
       <code>$projectRoot</code>
     </MissingParamType>
-    <MissingPropertyType occurrences="1">
-      <code>$allowedTypes</code>
-    </MissingPropertyType>
     <MixedArgument occurrences="1">
       <code>$projectRoot</code>
     </MixedArgument>
@@ -457,18 +411,9 @@
     </MixedReturnStatement>
   </file>
   <file src="src/Injector/MezzioConfigInjector.php">
-    <InvalidArrayOffset occurrences="1">
-      <code>$this-&gt;injectionPatterns[self::TYPE_CONFIG_PROVIDER]['pattern']</code>
-    </InvalidArrayOffset>
-    <InvalidPropertyAssignmentValue occurrences="2">
-      <code>$this-&gt;injectionPatterns</code>
-    </InvalidPropertyAssignmentValue>
     <MissingParamType occurrences="1">
       <code>$projectRoot</code>
     </MissingParamType>
-    <MissingPropertyType occurrences="1">
-      <code>$allowedTypes</code>
-    </MissingPropertyType>
     <MixedArgument occurrences="1">
       <code>$projectRoot</code>
     </MixedArgument>
@@ -800,270 +745,5 @@
       <code>$this-&gt;discovery</code>
       <code>ConfigDiscovery\</code>
     </UndefinedDocblockClass>
-  </file>
-  <file src="test/Injector/AbstractInjectorTestCase.php">
-    <InvalidStringClass occurrences="1"/>
-    <PropertyTypeCoercion occurrences="1"/>
-  </file>
-  <file src="test/Injector/TestAsset/legacy-mezzio-application-fqcn.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$configManager</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="2">
-      <code>Application\ConfigProvider</code>
-      <code>Mezzio\ConfigManager\ConfigManager</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/legacy-mezzio-application-globally-qualified.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$configManager</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="2">
-      <code>\Application\ConfigProvider</code>
-      <code>\Mezzio\ConfigManager\ConfigManager</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/legacy-mezzio-application-import.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$configManager</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="2">
-      <code>Application\ConfigProvider</code>
-      <code>ConfigManager</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/legacy-mezzio-empty-fqcn.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$configManager</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="1">
-      <code>Mezzio\ConfigManager\ConfigManager</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/legacy-mezzio-empty-globally-qualified.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$configManager</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="1">
-      <code>\Mezzio\ConfigManager\ConfigManager</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/legacy-mezzio-empty-import.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$configManager</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="1">
-      <code>ConfigManager</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/legacy-mezzio-populated-fqcn.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$configManager</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="3">
-      <code>Application\ConfigProvider</code>
-      <code>Mezzio\ConfigManager\ConfigManager</code>
-      <code>\Foo\Bar</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/legacy-mezzio-populated-globally-qualified.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$configManager</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="3">
-      <code>\Application\ConfigProvider</code>
-      <code>\Foo\Bar</code>
-      <code>\Mezzio\ConfigManager\ConfigManager</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/legacy-mezzio-populated-import.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$configManager</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="3">
-      <code>Application\ConfigProvider</code>
-      <code>ConfigManager</code>
-      <code>\Foo\Bar</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/mezzio-application-fqcn.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$aggregator</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="2">
-      <code>Application\ConfigProvider</code>
-      <code>Laminas\ConfigAggregator\ConfigAggregator</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/mezzio-application-from-skeleton.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$aggregator</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="10">
-      <code>App\ConfigProvider</code>
-      <code>ArrayProvider</code>
-      <code>ConfigAggregator</code>
-      <code>PhpFileProvider</code>
-      <code>PhpFileProvider</code>
-      <code>\Contact\ConfigProvider</code>
-      <code>\Laminas\Filter\ConfigProvider</code>
-      <code>\Laminas\InputFilter\ConfigProvider</code>
-      <code>\Laminas\Mail\ConfigProvider</code>
-      <code>\Laminas\Validator\ConfigProvider</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/mezzio-application-globally-qualified.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$aggregator</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="2">
-      <code>\Application\ConfigProvider</code>
-      <code>\Laminas\ConfigAggregator\ConfigAggregator</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/mezzio-application-import-alt-indent.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$aggregator</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="2">
-      <code>Application\ConfigProvider</code>
-      <code>ConfigAggregator</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/mezzio-application-import.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$aggregator</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="2">
-      <code>Application\ConfigProvider</code>
-      <code>ConfigAggregator</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/mezzio-empty-fqcn.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$aggregator</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="1">
-      <code>Laminas\ConfigAggregator\ConfigAggregator</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/mezzio-empty-globally-qualified.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$aggregator</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="1">
-      <code>\Laminas\ConfigAggregator\ConfigAggregator</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/mezzio-empty-import.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$aggregator</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="1">
-      <code>ConfigAggregator</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/mezzio-populated-fqcn.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$aggregator</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="3">
-      <code>Application\ConfigProvider</code>
-      <code>Laminas\ConfigAggregator\ConfigAggregator</code>
-      <code>\Foo\Bar</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/mezzio-populated-globally-qualified.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$aggregator</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="3">
-      <code>\Application\ConfigProvider</code>
-      <code>\Foo\Bar</code>
-      <code>\Laminas\ConfigAggregator\ConfigAggregator</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/mezzio-populated-import-alt-indent.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$aggregator</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="3">
-      <code>Application\ConfigProvider</code>
-      <code>ConfigAggregator</code>
-      <code>\Foo\Bar</code>
-    </UndefinedClass>
-  </file>
-  <file src="test/Injector/TestAsset/mezzio-populated-import.config.php">
-    <MixedAssignment occurrences="1">
-      <code>$aggregator</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>getMergedConfig</code>
-    </MixedMethodCall>
-    <UndefinedClass occurrences="3">
-      <code>Application\ConfigProvider</code>
-      <code>ConfigAggregator</code>
-      <code>\Foo\Bar</code>
-    </UndefinedClass>
   </file>
 </files>

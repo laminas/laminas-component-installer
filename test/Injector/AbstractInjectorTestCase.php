@@ -9,6 +9,7 @@
 namespace LaminasTest\ComponentInstaller\Injector;
 
 use Laminas\ComponentInstaller\Injector\AbstractInjector;
+use Laminas\ComponentInstaller\Injector\InjectorInterface;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
@@ -17,19 +18,34 @@ use function file_get_contents;
 
 abstract class AbstractInjectorTestCase extends TestCase
 {
-    /** @var vfsStreamDirectory */
+    /**
+     * @psalm-suppress MissingConstructor
+     * @var vfsStreamDirectory
+     */
     protected $configDir;
 
-    /** @var string */
+    /**
+     * @var string
+     * @psalm-var non-empty-string
+     */
     protected $configFile;
 
-    /** @var AbstractInjector */
+    /**
+     * @psalm-suppress MissingConstructor
+     * @var AbstractInjector
+     */
     protected $injector;
 
-    /** @var string */
+    /**
+     * @var string
+     * @psalm-var class-string<AbstractInjector>
+     */
     protected $injectorClass;
 
-    /** @var int[] */
+    /**
+     * @var array<int,int>
+     * @psalm-var list<InjectorInterface::TYPE_*>
+     */
     protected $injectorTypesAllowed = [];
 
     protected function setUp() : void
@@ -37,17 +53,20 @@ abstract class AbstractInjectorTestCase extends TestCase
         $this->configDir = vfsStream::setup('project');
 
         $injectorClass = $this->injectorClass;
+        /** @psalm-suppress UnsafeInstantiation */
         $this->injector = new $injectorClass(
             vfsStream::url('project')
         );
     }
 
     /**
-     * @psalm-return array<string, array{0: int, 1: bool}>
+     * @see InjectorInterface
+     * @psalm-return array<non-empty-string, array{0: InjectorInterface::TYPE_*, 1: bool}>
      */
     abstract public function allowedTypes(): array;
 
     /**
+     * @psalm-param InjectorInterface::TYPE_* $type
      * @dataProvider allowedTypes
      */
     public function testRegistersTypesReturnsExpectedBooleanBasedOnType(int $type, bool $expected): void
@@ -61,11 +80,12 @@ abstract class AbstractInjectorTestCase extends TestCase
     }
 
     /**
-     * @psalm-return array<string, array{0: int, 1: string, 2: string}>
+     * @psalm-return array<non-empty-string, array{0: InjectorInterface::TYPE_*, 1: string, 2: string}>
      */
     abstract public function injectComponentProvider(): array;
 
     /**
+     * @psalm-param InjectorInterface::TYPE_* $type
      * @dataProvider injectComponentProvider
      */
     public function testInjectAddsPackageToModulesListInAppropriateLocation(

@@ -31,6 +31,7 @@ abstract class AbstractInjector implements InjectorInterface
      * Implementations MAY overwrite this value.
      *
      * @param int[]
+     * @psalm-var list<InjectorInterface::TYPE_*>
      */
     protected $allowedTypes = [
         self::TYPE_COMPONENT,
@@ -53,7 +54,8 @@ abstract class AbstractInjector implements InjectorInterface
      * ],
      * ```
      *
-     * @var string[]
+     * @var array<string,string>
+     * @psalm-var array{pattern:non-empty-string,replacement:non-empty-string}
      */
     protected $cleanUpPatterns = [
         'pattern' => "/(array\(|\[|,)(\r?\n){2}/s",
@@ -66,8 +68,9 @@ abstract class AbstractInjector implements InjectorInterface
      * Implementations MUST overwrite this value.
      *
      * @var string
+     * @psalm-param non-empty-string
      */
-    protected $configFile;
+    protected $configFile = 'to-be-overridden';
 
     /**
      * Patterns and replacements to use when registering a code item.
@@ -85,7 +88,8 @@ abstract class AbstractInjector implements InjectorInterface
      * ]
      * ```
      *
-     * @var string[]
+     * @var array<int,array<string,string>>
+     * @psalm-var array<InjectorInterface::TYPE_*,array{pattern:non-empty-string,replacement:non-empty-string}>
      */
     protected $injectionPatterns = [];
 
@@ -95,8 +99,9 @@ abstract class AbstractInjector implements InjectorInterface
      * Implementations MUST overwrite this value.
      *
      * @var string
+     * @psalm-var non-empty-string
      */
-    protected $isRegisteredPattern;
+    protected $isRegisteredPattern = 'to-be-overridden';
 
     /**
      * Patterns and replacements to use when removing a code item.
@@ -112,21 +117,27 @@ abstract class AbstractInjector implements InjectorInterface
      * ],
      * ```
      *
-     * @var string[]
+     * @var array<string,string>
+     * @psalm-var array{pattern:non-empty-string,replacement:string}
      */
-    protected $removalPatterns = [];
+    protected $removalPatterns = [
+        'pattern' => 'to-be-overridden',
+        'replacement' => '',
+    ];
 
     /**
      * Modules of the application.
      *
-     * @var array
+     * @var array<int,string>
+     * @psalm-var list<non-empty-string>
      */
     protected $applicationModules = [];
 
     /**
      * Dependencies of the module.
      *
-     * @var array
+     * @var array<int,string>
+     * @psalm-var list<non-empty-string>
      */
     protected $moduleDependencies = [];
 
@@ -140,7 +151,8 @@ abstract class AbstractInjector implements InjectorInterface
      */
     public function __construct($projectRoot = '')
     {
-        if (is_string($projectRoot) && ! empty($projectRoot)) {
+        /** @psalm-suppress RedundantConditionGivenDocblockType */
+        if (is_string($projectRoot) && trim($projectRoot) !== '') {
             $this->configFile = sprintf('%s/%s', $projectRoot, $this->configFile);
         }
     }

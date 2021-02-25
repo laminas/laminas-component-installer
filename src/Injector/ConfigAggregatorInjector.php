@@ -9,7 +9,6 @@
 namespace Laminas\ComponentInstaller\Injector;
 
 use Laminas\ComponentInstaller\ConfigDiscovery\ConfigAggregator as ConfigAggregatorDiscovery;
-
 use function preg_quote;
 use function sprintf;
 
@@ -19,18 +18,10 @@ class ConfigAggregatorInjector extends AbstractInjector
 
     const DEFAULT_CONFIG_FILE = 'config/config.php';
 
-    /**
-     * {@inheritDoc}
-     */
     protected $allowedTypes = [
         self::TYPE_CONFIG_PROVIDER,
     ];
 
-    /**
-     * Configuration file to update.
-     *
-     * @var string
-     */
     protected $configFile = self::DEFAULT_CONFIG_FILE;
 
     /**
@@ -38,6 +29,7 @@ class ConfigAggregatorInjector extends AbstractInjector
      * configuration.
      *
      * @var string
+     * @psalm-var non-empty-string
      */
     protected $discoveryClass = ConfigAggregatorDiscovery::class;
 
@@ -45,30 +37,18 @@ class ConfigAggregatorInjector extends AbstractInjector
      * Patterns and replacements to use when registering a code item.
      *
      * Pattern is set in constructor due to PCRE quoting issues.
-     *
-     * @var string[]
+     * @var array<int,array<string,string>>
+     * @psalm-var array<InjectorInterface::TYPE_*,array{pattern:non-empty-string,replacement:non-empty-string}>
      */
-    protected $injectionPatterns = [
-        self::TYPE_CONFIG_PROVIDER => [
-            'pattern'     => '',
-            'replacement' => "\$1\n\$2%s::class,\n\$2",
-        ],
-    ];
+    protected $injectionPatterns = [];
 
     /**
      * Pattern to use to determine if the code item is registered.
      *
      * Set in constructor due to PCRE quoting issues.
-     *
-     * @var string
      */
-    protected $isRegisteredPattern = '';
+    protected $isRegisteredPattern = 'overridden-by-constructor';
 
-    /**
-     * Patterns and replacements to use when removing a code item.
-     *
-     * @var string[]
-     */
     protected $removalPatterns = [
         'pattern'     => '/^\s+%s::class,\s*$/m',
         'replacement' => '',
@@ -91,11 +71,16 @@ class ConfigAggregatorInjector extends AbstractInjector
             . $ns
             . '?%s::class/s';
 
-        $this->injectionPatterns[self::TYPE_CONFIG_PROVIDER]['pattern'] = sprintf(
+        $pattern = sprintf(
             "/(new (?:%s?%s)?ConfigAggregator\(\s*(?:array\(|\[)\s*)(?:\r|\n|\r\n)(\s*)/",
             preg_quote('\\'),
             preg_quote('Laminas\ConfigAggregator\\')
         );
+        assert($pattern !== '');
+        $this->injectionPatterns[self::TYPE_CONFIG_PROVIDER] = [
+            'pattern' => $pattern,
+            'replacement' => "\$1\n\$2%s::class,\n\$2",
+        ];
 
         parent::__construct($projectRoot);
     }
