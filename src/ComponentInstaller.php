@@ -756,8 +756,13 @@ class ComponentInstaller implements
      * @psalm-param list<string> $paths
      * @psalm-param ArrayObject<non-empty-string,list<string>> $dependencies
      */
-    private function mapNamespacePaths(array $paths, $namespace, string $type, ArrayObject $dependencies, string $packagePath): void
-    {
+    private function mapNamespacePaths(
+        array $paths,
+        $namespace,
+        string $type,
+        ArrayObject $dependencies,
+        string $packagePath
+    ): void {
         foreach ($paths as $path) {
             $this->mapPath($path, $namespace, $type, $dependencies, $packagePath);
         }
@@ -921,7 +926,9 @@ class ComponentInstaller implements
 
         $this->marshalInstallableModules($extra, $options)
             // Create injectors
+            // @codingStandardsIgnoreStart
             ->reduce(function (Collection $injectors, string $module) use ($options, $packageTypes, $name, $requireDev) {
+                // @codingStandardsIgnoreEnd
                 // Get extra from root package
                 /** @var array<string,mixed> $rootPackageExtra */
                 $rootPackageExtra = $this->composer->getPackage()->getExtra();
