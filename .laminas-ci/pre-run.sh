@@ -5,12 +5,13 @@ set -e
 function get_composer() {
     wget https://getcomposer.org/composer-1.phar
     chmod a+x composer-1.phar
-    mv composer-1.phar /usr/local/bin/composer
+    mv composer-1.phar /usr/local/bin/composer-1
 }
 
 JOB=$3
-COMPOSER_VERSION=$(echo "${JOB}" | jq -r ".composer")
+COMMAND=$(echo "${JOB}" | jq -r ".command")
+PATTERN="composer-1 install"
 
-if [[ "${COMPOSER_VERSION}" == "1" ]];then
+if [[ "${COMMAND}" =~ ${PATTERN} ]];then
     get_composer
 fi
