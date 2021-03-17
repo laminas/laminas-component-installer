@@ -14,13 +14,10 @@ use function preg_replace;
 
 class MezzioConfigInjectorTest extends AbstractInjectorTestCase
 {
-    /** @var string */
     protected $configFile = 'config/config.php';
 
-    /** @var string */
     protected $injectorClass = MezzioConfigInjector::class;
 
-    /** @var int[] */
     protected $injectorTypesAllowed = [
         MezzioConfigInjector::TYPE_CONFIG_PROVIDER,
     ];
@@ -30,9 +27,6 @@ class MezzioConfigInjectorTest extends AbstractInjectorTestCase
         return preg_replace('/array\(([^)]+)\)/s', '[$1]', $contents);
     }
 
-    /**
-     * @psalm-return array<string, array{0: int, 1: bool}>
-     */
     public function allowedTypes(): array
     {
         return [
@@ -42,9 +36,6 @@ class MezzioConfigInjectorTest extends AbstractInjectorTestCase
         ];
     }
 
-    /**
-     * @psalm-return array<string, array{0: int, 1: string, 2: string}>
-     */
     public function injectComponentProvider(): array
     {
         // @codingStandardsIgnoreStart

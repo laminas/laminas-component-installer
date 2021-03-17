@@ -10,17 +10,13 @@ namespace Laminas\ComponentInstaller\Injector;
 
 class ApplicationConfigInjector extends AbstractInjector
 {
-    /**
-     * Configuration file to update.
-     *
-     * @var string
-     */
     protected $configFile = 'config/application.config.php';
 
     /**
      * Patterns and replacements to use when registering a code item.
      *
-     * @var string[]
+     * @var array<int,array<string,string>>
+     * @psalm-var array<InjectorInterface::TYPE_*,array{pattern:non-empty-string,replacement:non-empty-string}>
      */
     protected $injectionPatterns = [
         self::TYPE_COMPONENT => [
@@ -41,18 +37,8 @@ class ApplicationConfigInjector extends AbstractInjector
         ],
     ];
 
-    /**
-     * Pattern to use to determine if the code item is registered.
-     *
-     * @var string
-     */
     protected $isRegisteredPattern = '/\'modules\'\s*\=\>\s*(?:array\(|\[)[^)\]]*\'%s\'/s';
 
-    /**
-     * Patterns and replacements to use when removing a code item.
-     *
-     * @var string[]
-     */
     protected $removalPatterns = [
         'pattern' => '/^\s+\'%s\',\s*$/m',
         'replacement' => '',

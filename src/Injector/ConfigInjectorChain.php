@@ -27,17 +27,16 @@ class ConfigInjectorChain implements InjectorInterface
      *
      * Implementations MAY overwrite this value.
      *
-     * @param int[]
+     * @param array<int,int>
+     * @psalm-param list<InjectorInterface::TYPE_*>
      */
-    protected $allowedTypes;
+    protected $allowedTypes = [];
 
     /**
-     * Constructor
-     *
      * Optionally accept the project root directory; if non-empty, it is used
      * to prefix the $configFile.
      *
-     * @param iterable $injectors
+     * @param iterable<array-key,InjectorInterface> $injectors
      * @param DiscoveryChainInterface $discoveryChain
      * @param Collection $availableTypes
      * @param string $projectRoot

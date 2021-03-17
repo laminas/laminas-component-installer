@@ -10,10 +10,5 @@ namespace Laminas\ComponentInstaller\Injector;
 
 class DevelopmentWorkConfigInjector extends ApplicationConfigInjector
 {
-    /**
-     * Configuration file to update.
-     *
-     * @var string
-     */
     protected $configFile = 'config/development.config.php';
 }

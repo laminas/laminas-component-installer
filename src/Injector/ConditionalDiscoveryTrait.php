@@ -8,15 +8,19 @@
 
 namespace Laminas\ComponentInstaller\Injector;
 
+use Laminas\ComponentInstaller\Exception;
 use function str_replace;
 
 trait ConditionalDiscoveryTrait
 {
     /**
-     * {@inheritDoc}
-     *
      * Prepends the package with a `\\` in order to ensure it is fully
      * qualified, preventing issues in config files that are namespaced.
+     *
+     * @param string $package Package to inject into configuration.
+     * @param int $type One of the TYPE_* constants.
+     * @return bool
+     * @throws Exception\RuntimeException
      */
     public function inject($package, $type)
     {
@@ -28,10 +32,12 @@ trait ConditionalDiscoveryTrait
     }
 
     /**
-     * {@inheritDoc}
-     *
      * Prepends the package with a `\\` in order to ensure it is fully
      * qualified, preventing issues in config files that are namespaced.
+     *
+     * @param string $package Package to remove.
+     * @return bool
+     * @throws Exception\RuntimeException
      */
     public function remove($package)
     {
@@ -61,9 +67,12 @@ trait ConditionalDiscoveryTrait
      */
     private function getProjectRoot()
     {
-        if (static::DEFAULT_CONFIG_FILE === $this->configFile) {
+        $configFile = (string) $this->configFile;
+        if (static::DEFAULT_CONFIG_FILE === $configFile) {
             return '';
         }
-        return str_replace('/' . static::DEFAULT_CONFIG_FILE, '', $this->configFile);
+
+
+        return str_replace('/' . static::DEFAULT_CONFIG_FILE, '', $configFile);
     }
 }

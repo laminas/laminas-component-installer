@@ -12,13 +12,10 @@ use Laminas\ComponentInstaller\Injector\DevelopmentConfigInjector;
 
 class DevelopmentConfigInjectorTest extends AbstractInjectorTestCase
 {
-    /** @var string */
     protected $configFile = 'config/development.config.php.dist';
 
-    /** @var string */
     protected $injectorClass = DevelopmentConfigInjector::class;
 
-    /** @var int[] */
     protected $injectorTypesAllowed = [
         DevelopmentConfigInjector::TYPE_COMPONENT,
         DevelopmentConfigInjector::TYPE_MODULE,
@@ -26,9 +23,6 @@ class DevelopmentConfigInjectorTest extends AbstractInjectorTestCase
         DevelopmentConfigInjector::TYPE_BEFORE_APPLICATION,
     ];
 
-    /**
-     * @psalm-return array<string, array{0: int, 1: bool}>
-     */
     public function allowedTypes(): array
     {
         return [
@@ -40,9 +34,6 @@ class DevelopmentConfigInjectorTest extends AbstractInjectorTestCase
         ];
     }
 
-    /**
-     * @psalm-return array<string, array{0: int, 1: string, 2: string}>
-     */
     public function injectComponentProvider(): array
     {
         // @codingStandardsIgnoreStart

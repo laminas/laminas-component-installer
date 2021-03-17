@@ -25,6 +25,7 @@ interface InjectorInterface
      * Whether or not the injector can handle the given type.
      *
      * @param int $type One of the TYPE_* constants.
+     * @psalm-param InjectorInterface::TYPE_* $type
      * @return bool
      */
     public function registersType($type);
@@ -66,7 +67,8 @@ interface InjectorInterface
     /**
      * Set modules of the application.
      *
-     * @param array $modules
+     * @param array<int,string> $modules
+     * @psalm-param list<non-empty-string> $modules
      * @return self
      */
     public function setApplicationModules(array $modules);
@@ -74,7 +76,8 @@ interface InjectorInterface
     /**
      * Set dependencies for the module.
      *
-     * @param array $modules
+     * @param array<int,string> $modules
+     * @psalm-param list<non-empty-string> $modules
      * @return self
      */
     public function setModuleDependencies(array $modules);
