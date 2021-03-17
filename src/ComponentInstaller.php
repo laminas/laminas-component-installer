@@ -234,7 +234,7 @@ class ComponentInstaller implements
      * @param PackageInterface $package
      *
      * @return array
-     * @psalm-return array<non-empty-string,list<string>>
+     * @psalm-return array<non-empty-string,list<non-empty-string>>
      * @see \Laminas\ComponentInstaller\Injector\AbstractInjector::injectAfterDependencies
      *      to add component in a correct order on the module list - after dependencies.
      *
@@ -258,6 +258,7 @@ class ComponentInstaller implements
      * Find all modules of the application.
      *
      * @return array
+     * @psalm-return list<non-empty-string>
      */
     private function findApplicationModules()
     {
@@ -274,7 +275,12 @@ class ComponentInstaller implements
                     continue;
                 }
 
-                $modules[] = $file->getBasename();
+                $module = $file->getBaseName();
+                if (empty($module)) {
+                    continue;
+                }
+
+                $modules[] = $module;
             }
         }
 
@@ -839,7 +845,7 @@ class ComponentInstaller implements
     }
 
     /**
-     * @return array<string,array<int,string>>
+     * @psalm-return array<string,list<non-empty-string>>
      */
     private function getModuleDependencies(string $file): array
     {
@@ -857,6 +863,7 @@ class ComponentInstaller implements
                 );
 
                 if ($dependencies) {
+                    /** @psalm-var list<non-empty-string> $dependencies */
                     return [$moduleName => $dependencies];
                 }
             }
@@ -924,31 +931,36 @@ class ComponentInstaller implements
         $dependencies = $this->loadModuleClassesDependencies($package);
         $applicationModules = $this->findApplicationModules();
 
-        $this->marshalInstallableModules($extra, $options)
+        $modules = $this->marshalInstallableModules($extra, $options)
             // Create injectors
-            // @codingStandardsIgnoreStart
-            ->reduce(function (Collection $injectors, string $module) use ($options, $packageTypes, $name, $requireDev) {
-                // @codingStandardsIgnoreEnd
-                // Get extra from root package
-                /** @var array<string,mixed> $rootPackageExtra */
-                $rootPackageExtra = $this->composer->getPackage()->getExtra();
-                $rootExtra = $this->getExtraMetadata($rootPackageExtra);
-                $whitelist = $rootExtra['component-whitelist'] ?? [];
-                assert(is_array($whitelist));
-                $packageType = $packageTypes[$module];
-                $injectors[$module] = $this->promptForConfigOption(
-                    $module,
-                    $options,
-                    $packageType,
-                    $name,
-                    $whitelist,
-                    $requireDev
-                );
+            ->reduce(
+                function (Collection $injectors, string $module) use ($options, $packageTypes, $name, $requireDev): Collection {
+                    // @codingStandardsIgnoreEnd
+                    // Get extra from root package
+                    /** @var array<string,mixed> $rootPackageExtra */
+                    $rootPackageExtra = $this->composer->getPackage()->getExtra();
+                    $rootExtra = $this->getExtraMetadata($rootPackageExtra);
+                    $whitelist = $rootExtra['component-whitelist'] ?? [];
+                    assert(is_array($whitelist));
+                    $packageType = $packageTypes[$module];
+                    $injectors[$module] = $this->promptForConfigOption(
+                        $module,
+                        $options,
+                        $packageType,
+                        $name,
+                        $whitelist,
+                        $requireDev
+                    );
 
-                return $injectors;
-            }, new Collection([]))
-            // Inject modules into configuration
-            ->each(function (
+                    return $injectors;
+                },
+                new Collection([])
+            );
+
+        assert($modules instanceof Collection);
+
+        // Inject modules into configuration
+        $modules->each(function (
                 InjectorInterface $injector,
                 string $module
             ) use (
@@ -956,7 +968,7 @@ class ComponentInstaller implements
                 $packageTypes,
                 $applicationModules,
                 $dependencies
-) {
+            ) {
                 if (isset($dependencies[$module])) {
                     $injector->setModuleDependencies($dependencies[$module]);
                 }
