@@ -29,7 +29,9 @@ use function array_filter;
 use function array_flip;
 use function array_keys;
 use function array_map;
+use function array_merge;
 use function array_unshift;
+use function array_values;
 use function assert;
 use function explode;
 use function file_exists;
@@ -37,7 +39,6 @@ use function file_get_contents;
 use function implode;
 use function in_array;
 use function is_array;
-use function is_callable;
 use function is_dir;
 use function is_numeric;
 use function is_string;
@@ -122,14 +123,10 @@ class ComponentInstaller implements
      */
     private $projectRoot;
 
-    /**
-     * @var Closure():PackageProviderDetectionFactory
-     */
+    /** @var Closure():PackageProviderDetectionFactory */
     private $packageProviderFactory;
 
-    /**
-     * @var Collection|null
-     */
+    /** @var Collection|null */
     private $discovered;
 
     /**
@@ -231,16 +228,13 @@ class ComponentInstaller implements
      *
      * These dependencies are used later
      *
-     * @param PackageInterface $package
-     *
-     * @return array
-     * @psalm-return array<non-empty-string,list<non-empty-string>>
      * @see \Laminas\ComponentInstaller\Injector\AbstractInjector::injectAfterDependencies
      *      to add component in a correct order on the module list - after dependencies.
      *
      * It works with PSR-0, PSR-4, 'classmap' and 'files' composer autoloading.
      *
      * @return array
+     * @psalm-return array<non-empty-string,list<non-empty-string>>
      */
     private function loadModuleClassesDependencies(PackageInterface $package)
     {
@@ -339,6 +333,7 @@ class ComponentInstaller implements
 
         /**
          * supports legacy "extra.zf" configuration
+         *
          * @var array<string,mixed> $deprecatedConfiguration
          */
         $deprecatedConfiguration = isset($extra['zf']) && is_array($extra['zf'])
@@ -916,7 +911,7 @@ class ComponentInstaller implements
         PackageInterface $package
     ): void {
         $packageTypes = $this->discoverPackageTypes($extra);
-        $options = (new ConfigDiscovery())
+        $options      = (new ConfigDiscovery())
             ->getAvailableConfigOptions($packageTypes, $this->projectRoot);
 
         if ($options->isEmpty()) {
@@ -927,9 +922,9 @@ class ComponentInstaller implements
         $packageProvider = ($this->packageProviderFactory)();
 
         $packageProviderDetection = $packageProvider->detect($event, $name);
-        $requireDev = $this->isADevDependency($packageProviderDetection, $package);
-        $dependencies = $this->loadModuleClassesDependencies($package);
-        $applicationModules = $this->findApplicationModules();
+        $requireDev               = $this->isADevDependency($packageProviderDetection, $package);
+        $dependencies             = $this->loadModuleClassesDependencies($package);
+        $applicationModules       = $this->findApplicationModules();
 
         $modules = $this->marshalInstallableModules($extra, $options)
             // Create injectors
@@ -940,10 +935,10 @@ class ComponentInstaller implements
                     // Get extra from root package
                     /** @var array<string,mixed> $rootPackageExtra */
                     $rootPackageExtra = $this->composer->getPackage()->getExtra();
-                    $rootExtra = $this->getExtraMetadata($rootPackageExtra);
-                    $whitelist = $rootExtra['component-whitelist'] ?? [];
+                    $rootExtra        = $this->getExtraMetadata($rootPackageExtra);
+                    $whitelist        = $rootExtra['component-whitelist'] ?? [];
                     assert(is_array($whitelist));
-                    $packageType = $packageTypes[$module];
+                    $packageType        = $packageTypes[$module];
                     $injectors[$module] = $this->promptForConfigOption(
                         $module,
                         $options,

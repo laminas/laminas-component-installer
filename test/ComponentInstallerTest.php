@@ -15,7 +15,6 @@ use Composer\DependencyResolver\Operation\UninstallOperation;
 use Composer\DependencyResolver\Pool;
 use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
-use LaminasTest\ComponentInstaller\TestAsset\NativeTypehintedRootPackageInterface as RootPackageInterface;
 use Composer\Repository\PlatformRepository;
 use Composer\Repository\RepositoryManager;
 use Composer\Repository\RootPackageRepository;
@@ -23,12 +22,14 @@ use Laminas\ComponentInstaller\ComponentInstaller;
 use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionFactory;
 use LaminasTest\ComponentInstaller\TestAsset\NativeTypehintedInstallationManager as InstallationManager;
 use LaminasTest\ComponentInstaller\TestAsset\NativeTypehintedPackageInterface as PackageInterface;
+use LaminasTest\ComponentInstaller\TestAsset\NativeTypehintedRootPackageInterface as RootPackageInterface;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
 use Webmozart\Assert\Assert;
+
 use function count;
 use function dirname;
 use function file_get_contents;
@@ -43,9 +44,7 @@ use function strpos;
 
 class ComponentInstallerTest extends TestCase
 {
-    /**
-     * @var vfsStreamDirectory
-     */
+    /** @var vfsStreamDirectory */
     private $projectRoot;
 
     /** @var ComponentInstaller */
@@ -75,9 +74,7 @@ class ComponentInstallerTest extends TestCase
      */
     private $installationManager;
 
-    /**
-     * @var array{laminas?:array{component-whitelist?:list<non-empty-string>}}
-     */
+    /** @var array{laminas?:array{component-whitelist?:list<non-empty-string>}} */
     private $rootPackageExtra = [];
 
     protected function setUp(): void
@@ -269,12 +266,12 @@ CONTENT
         ]);
 
         $this->createInputAssertions([
-             RememberedAnswerQuestionAssertion::inject(
-                 'SomeComponent',
-                 1,
-                 true
-             )
-         ]);
+            RememberedAnswerQuestionAssertion::inject(
+                'SomeComponent',
+                1,
+                true
+            ),
+        ]);
 
         $this->installer->onPostPackageInstall($event);
     }
@@ -752,7 +749,7 @@ CONTENT
             'Installing SomeModule from package some/module',
         ]);
         $this->createInputAssertions([
-            RememberedAnswerQuestionAssertion::inject('SomeModule', 1, true)
+            RememberedAnswerQuestionAssertion::inject('SomeModule', 1, true),
         ]);
 
         $this->installer->onPostPackageInstall($event);
@@ -812,6 +809,13 @@ CONTENT
                 'module'          => 'Some\\Component',
             ],
         ]);
+
+        $operation = $this->createMock(InstallOperation::class);
+        $operation->method('getPackage')->willReturn($package);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
 
         $this->io
             ->expects(self::never())
@@ -922,13 +926,315 @@ CONTENT
             ],
         ]);
 
-        $this->installer->onPostPackageUninstall($event);
+                $operation = $this->createMock(InstallOperation::class);
+        $operation->method('getPackage')->willReturn($package);
 
         $event = $this->createMock(PackageEvent::class);
         $event->method('isDevMode')->willReturn(true);
         $event->method('getOperation')->willReturn($operation);
         $this->prepareEventForPackageProviderDetection($event, 'some/component');
 
+        $this->rootPackage->method('getName')->willReturn('some/component');
+
+        $this->createInputAssertions([
+            RememberedAnswerQuestionAssertion::inject('Some\\Component', 1, true),
+        ]);
+        $this->createOutputAssertions([
+            'Installing Some\Component from package some/component',
+        ]);
+
+        $this->installer->onPostPackageInstall($event);
+        $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
+        self::assertStringContainsString("'Some\Component'", $config);
+    }
+
+    public function testOnPostPackageInstallPromptsForConfigOptionsWhenDefinedAsArrays(): void
+    {
+        $this->createApplicationConfig();
+
+        $package = $this->createMock(PackageInterface::class);
+        $package->method('getName')->willReturn('some/component');
+        $package->method('getExtra')->willReturn([
+            'laminas' => [
+                'component' => [
+                    'Some\\Component',
+                    'Other\\Component',
+                ],
+            ],
+        ]);
+
+        $operation = $this->createMock(InstallOperation::class);
+        $operation->method('getPackage')->willReturn($package);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
+
+        $this->rootPackage->method('getName')->willReturn('some/component');
+
+        $this->createInputAssertions([
+            RememberedAnswerQuestionAssertion::inject('Some\Component', 1, false),
+            RememberedAnswerQuestionAssertion::inject('Other\Component', 1, false),
+        ]);
+        $this->createOutputAssertions([
+            'Installing Some\Component from package some/component',
+            'Installing Other\Component from package some/component',
+        ]);
+
+        $this->installer->onPostPackageInstall($event);
+        $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
+        self::assertStringContainsString("'Some\Component'", $config);
+        self::assertStringContainsString("'Other\Component'", $config);
+    }
+
+    public function testMultipleInvocationsOfOnPostPackageInstallCanPromptMultipleTimes(): void
+    {
+        // Do a first pass, with an initial package
+        $this->createApplicationConfig();
+
+        $package = $this->createMock(PackageInterface::class);
+        $package->method('getName')->willReturn('some/component');
+        $package->method('getExtra')->willReturn([
+            'laminas' => [
+                'component' => 'Some\\Component',
+            ],
+        ]);
+
+        $operation = $this->createMock(InstallOperation::class);
+        $operation->method('getPackage')->willReturn($package);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
+
+        $this->createInputAssertions([
+            RememberedAnswerQuestionAssertion::inject('Some\\Component', 1, false),
+            RememberedAnswerQuestionAssertion::inject('Other\\Component', 1, true),
+        ]);
+        $this->createOutputAssertions([
+            'Installing Some\Component from package some/component',
+            'Installing Other\Component from package other/component',
+        ]);
+
+        $this->installer->onPostPackageInstall($event);
+        $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
+        self::assertStringContainsString("'Some\Component'", $config);
+
+        // Now do a second pass, with another package
+        $package = $this->createMock(PackageInterface::class);
+        $package->method('getName')->willReturn('other/component');
+        $package->method('getExtra')->willReturn([
+            'laminas' => [
+                'component' => 'Other\\Component',
+            ],
+        ]);
+
+        $operation = $this->createMock(InstallOperation::class);
+        $operation->method('getPackage')->willReturn($package);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+        $this->prepareEventForPackageProviderDetection($event, 'other/component');
+
+        $this->rootPackage->method('getName')->willReturn('other/component');
+
+        $this->installer->onPostPackageInstall($event);
+        $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
+        self::assertStringContainsString("'Other\Component'", $config);
+    }
+
+    public function testMultipleInvocationsOfOnPostPackageInstallCanReuseOptions(): void
+    {
+        // Do a first pass, with an initial package
+        $this->createApplicationConfig();
+
+        $package = $this->createMock(PackageInterface::class);
+        $package->method('getName')->willReturn('some/component');
+        $package->method('getExtra')->willReturn([
+            'laminas' => [
+                'component' => 'Some\\Component',
+            ],
+        ]);
+
+        $operation = $this->createMock(InstallOperation::class);
+        $operation->method('getPackage')->willReturn($package);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
+
+        $this->createInputAssertions([
+            RememberedAnswerQuestionAssertion::inject('Some\Component', 1, true),
+        ]);
+
+        $this->createOutputAssertions([
+            'Installing Some\Component from package some/component',
+            'Installing Other\Component from package other/component',
+        ]);
+
+        $this->installer->onPostPackageInstall($event);
+        $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
+        self::assertStringContainsString("'Some\Component'", $config);
+
+        // Now do a second pass, with another package
+        $package = $this->createMock(PackageInterface::class);
+        $package->method('getName')->willReturn('other/component');
+        $package->method('getExtra')->willReturn([
+            'laminas' => [
+                'component' => 'Other\\Component',
+            ],
+        ]);
+
+        $operation = $this->createMock(InstallOperation::class);
+        $operation->method('getPackage')->willReturn($package);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+        $this->prepareEventForPackageProviderDetection($event, 'other/component');
+
+        $this->rootPackage->method('getName')->willReturn('some/component');
+
+        $this->installer->onPostPackageInstall($event);
+        $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
+        self::assertStringContainsString("'Other\Component'", $config);
+    }
+
+    public function testOnPostPackageUninstallReturnsEarlyIfEventIsNotInDevMode(): void
+    {
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(false);
+        $event
+            ->expects(self::never())
+            ->method('getOperation');
+
+        $this->installer->onPostPackageUninstall($event);
+    }
+
+    public function testOnPostPackageUninstallReturnsEarlyIfNoRelevantConfigFilesAreFound(): void
+    {
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $operation = $this->createMock(UninstallOperation::class);
+        $this->io
+            ->expects(self::never())
+            ->method(self::anything());
+
+        $event
+            ->method('getOperation')
+            ->willReturn($operation);
+
+        $package = $this->createMock(PackageInterface::class);
+        $package
+            ->method('getName')
+            ->willReturn('some/component');
+
+        $operation
+            ->method('getPackage')
+            ->willReturn($package);
+
+        $package
+            ->method('getExtra')
+            ->willReturn(['laminas' => ['component' => 'Some\Component']]);
+
+        $this->installer->onPostPackageUninstall($event);
+    }
+
+    public function testOnPostPackageUninstallRemovesPackageFromConfiguration(): void
+    {
+        $this->createApplicationConfig(
+            '<' . "?php\nreturn [\n    'modules' => [\n        'Some\Component',\n    ]\n];"
+        );
+
+        $package = $this->createMock(PackageInterface::class);
+        $package->method('getName')->willReturn('some/component');
+        $package->method('getExtra')->willReturn([
+            'laminas' => [
+                'component' => 'Some\\Component',
+            ],
+        ]);
+
+        $operation = $this->createMock(UninstallOperation::class);
+        $operation->method('getPackage')->willReturn($package);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+
+        $this->createOutputAssertions([
+            '<info>    Removing Some\Component from package some/component</info>',
+            'Removed package from .*?config/application.config.php',
+        ]);
+
+        $this->installer->onPostPackageUninstall($event);
+
+        $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
+        self::assertStringNotContainsString('Some\Component', $config);
+    }
+
+    public function testOnPostPackageUninstallCanRemovePackageArraysFromConfiguration(): void
+    {
+        $this->createApplicationConfig(
+            '<' . "?php\nreturn [\n    'modules' => [\n        'Some\Component',\n    'Other\Component',\n    ]\n];"
+        );
+
+        $package = $this->createMock(PackageInterface::class);
+        $package->method('getName')->willReturn('some/component');
+        $package->method('getExtra')->willReturn([
+            'laminas' => [
+                'component' => [
+                    'Some\\Component',
+                    'Other\\Component',
+                ],
+            ],
+        ]);
+
+        $operation = $this->createMock(UninstallOperation::class);
+        $operation->method('getPackage')->willReturn($package);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+
+        $this->createOutputAssertions([
+            '<info>    Removing Some\Component from package some/component</info>',
+            '<info>    Removing Other\Component from package some/component</info>',
+            '#Removed package from .*?config/application.config.php#',
+            '#Removed package from .*?config/application.config.php#',
+        ]);
+
+        $this->installer->onPostPackageUninstall($event);
+
+        $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
+        self::assertStringNotContainsString('Some\Component', $config);
+        self::assertStringNotContainsString('Other\Component', $config);
+    }
+
+    public function testModuleIsAppended(): void
+    {
+        $this->createApplicationConfig(
+            '<' . "?php\nreturn [\n    'modules' => [\n        'Some\Component',\n    ]\n];"
+        );
+
+        $package = $this->createMock(PackageInterface::class);
+        $package->method('getName')->willReturn('some/module');
+        $package->method('getExtra')->willReturn([
+            'laminas' => [
+                'module' => 'Some\\Module',
+            ],
+        ]);
+
+        $operation = $this->createMock(InstallOperation::class);
+        $operation->method('getPackage')->willReturn($package);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+        $this->prepareEventForPackageProviderDetection($event, 'some/module');
 
         $this->rootPackage->method('getName')->willReturn('some/module');
 
@@ -1180,10 +1486,9 @@ CONTENT
         $event->method('isDevMode')->willReturn(true);
         $event->method('getOperation')->willReturn($operation);
 
-
         $this->createOutputAssertions([
             '<info>    Removing Some\Component from package some/component</info>',
-            sprintf('Removed package from %s', $expectedName)
+            sprintf('Removed package from %s', $expectedName),
         ]);
 
         $this->installer->onPostPackageUninstall($event);
@@ -1217,11 +1522,11 @@ CONFIG;
 
         $this->rootPackage->method('getDevRequires')->willReturn(['some/component' => '*']);
         $this->rootPackageExtra = [
-           'laminas' => [
-               "component-whitelist" => [
-                   "some/component",
-               ]
-           ]
+            'laminas' => [
+                "component-whitelist" => [
+                    "some/component",
+                ],
+            ],
         ];
 
         $package = $this->createMock(PackageInterface::class);
@@ -1279,11 +1584,11 @@ CONFIG;
         $this->createConfigFile('modules.config.php', $moduleConfigContent);
 
         $this->rootPackageExtra = [
-           'laminas' => [
-               "component-whitelist" => [
-                   "some/module",
-               ],
-           ],
+            'laminas' => [
+                "component-whitelist" => [
+                    "some/module",
+                ],
+            ],
         ];
 
         $package = $this->createMock(PackageInterface::class);
@@ -1389,7 +1694,7 @@ CONFIG;
                         sprintf('/%s/', preg_quote($argument, '/')),
                         $information
                     ) !== false;
-                })
+                }),
             ];
         }
 
@@ -1407,13 +1712,13 @@ CONFIG;
         $consecutiveReturnValues = $consecutiveArguments = [];
         foreach ($questionsAssertions as $questionAssertion) {
             /** @psalm-suppress MissingClosureParamType */
-            $consecutiveArguments[] = [
-                self::callback($questionAssertion->assertion())
+            $consecutiveArguments[]    = [
+                self::callback($questionAssertion->assertion()),
             ];
             $consecutiveReturnValues[] = $questionAssertion->expectedAnswer;
 
             if ($questionAssertion instanceof RememberedAnswerQuestionAssertion) {
-                $consecutiveArguments[] = [self::callback($questionAssertion->rememberAnswerAssertion())];
+                $consecutiveArguments[]    = [self::callback($questionAssertion->rememberAnswerAssertion())];
                 $consecutiveReturnValues[] = $questionAssertion->remember ? 'y' : 'n';
             }
         }

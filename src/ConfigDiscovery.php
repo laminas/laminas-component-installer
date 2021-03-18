@@ -10,8 +10,11 @@ namespace Laminas\ComponentInstaller;
 
 use Laminas\ComponentInstaller\ConfigDiscovery\DiscoveryInterface;
 use Laminas\ComponentInstaller\Injector\InjectorInterface;
+
+use function assert;
 use function class_exists;
 use function is_array;
+use function is_string;
 
 class ConfigDiscovery
 {

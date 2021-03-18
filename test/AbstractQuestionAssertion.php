@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace LaminasTest\ComponentInstaller;
@@ -29,7 +30,7 @@ abstract class AbstractQuestionAssertion
     protected function __construct(string $expectedQuestion, $expectedAnswer)
     {
         $this->expectedQuestion = $expectedQuestion;
-        $this->expectedAnswer = $expectedAnswer;
+        $this->expectedAnswer   = $expectedAnswer;
     }
 
     /**
@@ -42,9 +43,6 @@ abstract class AbstractQuestionAssertion
         };
     }
 
-    /**
-     * @param string  $argument
-     */
     private function assertQuestionMatchesExpectation(string $argument): bool
     {
         return strpos($argument, $this->expectedQuestion) !== false;

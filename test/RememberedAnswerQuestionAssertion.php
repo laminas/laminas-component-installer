@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace LaminasTest\ComponentInstaller;
 
+use function assert;
 use function sprintf;
+use function strpos;
 
 /**
  * @psalm-immutable
@@ -12,9 +15,7 @@ final class RememberedAnswerQuestionAssertion extends AbstractQuestionAssertion
 {
     private const REMEMBER_QUESTION = 'Remember this option for other packages of the same type';
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $remember;
 
     /**
@@ -26,7 +27,6 @@ final class RememberedAnswerQuestionAssertion extends AbstractQuestionAssertion
         parent::__construct($expectedQuestion, $expectedAnswer);
         $this->remember = $remember;
     }
-
 
     /**
      * @psalm-param non-empty-string $question

@@ -8,8 +8,6 @@
 
 namespace Laminas\ComponentInstaller\Injector;
 
-use Laminas\ComponentInstaller\Exception;
-
 use function str_replace;
 
 trait ConditionalDiscoveryTrait
