@@ -20,18 +20,15 @@ use Composer\Repository\InstalledRepository;
 use Composer\Repository\PlatformRepository;
 use Composer\Repository\RepositoryFactory;
 use Composer\Repository\RootPackageRepository;
+
 use function version_compare;
 
 final class PackageProviderDetectionFactory
 {
-    /**
-     * @var Composer
-     */
+    /** @var Composer */
     private $composer;
-    /**
-     * @var null|RootPackageRepository
-     */
-    private $packageRepository = null;
+    /** @var null|RootPackageRepository */
+    private $packageRepository;
 
     public function __construct(Composer $composer)
     {
@@ -66,7 +63,8 @@ final class PackageProviderDetectionFactory
         ]);
 
         $defaultRepos = new CompositeRepository(RepositoryFactory::defaultRepos(new NullIO()));
-        if (($match = $defaultRepos->findPackage($packageName, '*'))
+        if (
+            ($match = $defaultRepos->findPackage($packageName, '*'))
             && false === $installedRepo->hasPackage($match)
         ) {
             $installedRepo->addRepository(new InstalledArrayRepository([clone $match]));

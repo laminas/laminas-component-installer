@@ -29,6 +29,9 @@ class ConfigAggregator extends AbstractDiscovery
      */
     protected $expected = '';
 
+    /**
+     * @param string $projectDirectory
+     */
     public function __construct($projectDirectory = '')
     {
         $this->expected = sprintf(

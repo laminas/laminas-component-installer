@@ -15,9 +15,7 @@ use Composer\Repository\InstalledRepositoryInterface;
 
 final class ComposerV2 implements PackageProviderDetectionInterface
 {
-    /**
-     * @var InstalledRepositoryInterface
-     */
+    /** @var InstalledRepositoryInterface */
     private $installedRepository;
 
     public function __construct(InstalledRepository $installedRepository)

@@ -18,13 +18,13 @@ class ConfigDiscovery
      * @var string[]
      */
     private $discovery = [
-        'config/application.config.php' => ConfigDiscovery\ApplicationConfig::class,
-        'config/modules.config.php' => ConfigDiscovery\ModulesConfig::class,
+        'config/application.config.php'      => ConfigDiscovery\ApplicationConfig::class,
+        'config/modules.config.php'          => ConfigDiscovery\ModulesConfig::class,
         'config/development.config.php.dist' => [
             'dist' => ConfigDiscovery\DevelopmentConfig::class,
             'work' => ConfigDiscovery\DevelopmentWorkConfig::class,
         ],
-        'config/config.php' => [
+        'config/config.php'                  => [
             'aggregator' => ConfigDiscovery\ConfigAggregator::class,
             'manager'    => ConfigDiscovery\MezzioConfig::class,
         ],
@@ -36,16 +36,16 @@ class ConfigDiscovery
      * @var string[]
      */
     private $injectors = [
-        'config/application.config.php' => Injector\ApplicationConfigInjector::class,
-        'config/modules.config.php' => Injector\ModulesConfigInjector::class,
+        'config/application.config.php'      => Injector\ApplicationConfigInjector::class,
+        'config/modules.config.php'          => Injector\ModulesConfigInjector::class,
         'config/development.config.php.dist' => [
             'dist' => Injector\DevelopmentConfigInjector::class,
             'work' => Injector\DevelopmentWorkConfigInjector::class,
         ],
-        'config/config.php' => [
+        'config/config.php'                  => [
             'aggregator' => Injector\ConfigAggregatorInjector::class,
             'manager'    => Injector\MezzioConfigInjector::class,
-        ]
+        ],
     ];
 
     /**

@@ -21,10 +21,10 @@ class ConfigAggregatorTest extends TestCase
     /** @var ConfigAggregator */
     private $locator;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->configDir = vfsStream::setup('project');
-        $this->locator = new ConfigAggregator(
+        $this->locator   = new ConfigAggregator(
             vfsStream::url('project')
         );
     }

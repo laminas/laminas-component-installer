@@ -9,6 +9,7 @@
 namespace Laminas\ComponentInstaller\Injector;
 
 use Laminas\ComponentInstaller\Exception;
+
 use function str_replace;
 
 trait ConditionalDiscoveryTrait
@@ -56,7 +57,7 @@ trait ConditionalDiscoveryTrait
     private function validConfigAggregatorConfig()
     {
         $discoveryClass = $this->discoveryClass;
-        $discovery = new $discoveryClass($this->getProjectRoot());
+        $discovery      = new $discoveryClass($this->getProjectRoot());
         return $discovery->locate();
     }
 
@@ -67,11 +68,10 @@ trait ConditionalDiscoveryTrait
      */
     private function getProjectRoot()
     {
-        $configFile = (string) $this->configFile;
+        $configFile = $this->configFile;
         if (static::DEFAULT_CONFIG_FILE === $configFile) {
             return '';
         }
-
 
         return str_replace('/' . static::DEFAULT_CONFIG_FILE, '', $configFile);
     }

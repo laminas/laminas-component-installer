@@ -21,10 +21,10 @@ class MezzioConfigTest extends TestCase
     /** @var MezzioConfig */
     private $locator;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->configDir = vfsStream::setup('project');
-        $this->locator = new MezzioConfig(
+        $this->locator   = new MezzioConfig(
             vfsStream::url('project')
         );
     }
