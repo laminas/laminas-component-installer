@@ -21,10 +21,10 @@ class ModulesConfigTest extends TestCase
     /** @var ModulesConfig */
     private $locator;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->configDir = vfsStream::setup('project');
-        $this->locator = new ModulesConfig(
+        $this->locator   = new ModulesConfig(
             vfsStream::url('project')
         );
     }

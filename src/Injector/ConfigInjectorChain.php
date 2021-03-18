@@ -27,8 +27,8 @@ class ConfigInjectorChain implements InjectorInterface
      *
      * Implementations MAY overwrite this value.
      *
-     * @param array<int,int>
-     * @psalm-param list<InjectorInterface::TYPE_*>
+     * @var array<int,int>
+     * @psalm-var list<InjectorInterface::TYPE_*>
      */
     protected $allowedTypes = [];
 
@@ -37,8 +37,6 @@ class ConfigInjectorChain implements InjectorInterface
      * to prefix the $configFile.
      *
      * @param iterable<array-key,InjectorInterface> $injectors
-     * @param DiscoveryChainInterface $discoveryChain
-     * @param Collection $availableTypes
      * @param string $projectRoot
      */
     public function __construct(
@@ -82,8 +80,10 @@ class ConfigInjectorChain implements InjectorInterface
         }
         $allowedTypes = [];
         foreach ($this->chain->getIterator() as $injector) {
-            $allowedTypes = $allowedTypes + $injector->getTypesAllowed();
+            $allowedTypes += $injector->getTypesAllowed();
         }
+
+        /** @psalm-var list<InjectorInterface::TYPE_*> $allowedTypes */
         $this->allowedTypes = $allowedTypes;
         return $allowedTypes;
     }
@@ -94,7 +94,7 @@ class ConfigInjectorChain implements InjectorInterface
     public function isRegistered($package)
     {
         $isRegisteredCount = $this->chain
-            ->filter(function ($injector) use ($package) {
+            ->filter(function (InjectorInterface $injector) use ($package): bool {
                 return $injector->isRegistered($package);
             })
             ->count();
@@ -132,7 +132,6 @@ class ConfigInjectorChain implements InjectorInterface
     }
 
     /**
-     *
      * @return Collection
      */
     public function getCollection()

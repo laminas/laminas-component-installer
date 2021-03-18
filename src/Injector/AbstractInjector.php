@@ -22,6 +22,7 @@ use function preg_replace;
 use function reset;
 use function sprintf;
 use function strlen;
+use function trim;
 
 abstract class AbstractInjector implements InjectorInterface
 {
@@ -55,10 +56,10 @@ abstract class AbstractInjector implements InjectorInterface
      * ```
      *
      * @var array<string,string>
-     * @psalm-var array{pattern:non-empty-string,replacement:non-empty-string}
+     * @psalm-var array{pattern: non-empty-string, replacement: string}
      */
     protected $cleanUpPatterns = [
-        'pattern' => "/(array\(|\[|,)(\r?\n){2}/s",
+        'pattern'     => "/(array\(|\[|,)(\r?\n){2}/s",
         'replacement' => "\$1\n",
     ];
 
@@ -89,7 +90,10 @@ abstract class AbstractInjector implements InjectorInterface
      * ```
      *
      * @var array<int,array<string,string>>
-     * @psalm-var array<InjectorInterface::TYPE_*,array{pattern:non-empty-string,replacement:non-empty-string}>
+     * @psalm-var array<
+     *     InjectorInterface::TYPE_*,
+     *     array{pattern: non-empty-string, replacement: string}
+     * >
      */
     protected $injectionPatterns = [];
 
@@ -118,10 +122,10 @@ abstract class AbstractInjector implements InjectorInterface
      * ```
      *
      * @var array<string,string>
-     * @psalm-var array{pattern:non-empty-string,replacement:string}
+     * @psalm-var array{pattern: non-empty-string, replacement: string}
      */
     protected $removalPatterns = [
-        'pattern' => 'to-be-overridden',
+        'pattern'     => 'to-be-overridden',
         'replacement' => '',
     ];
 
@@ -193,19 +197,21 @@ abstract class AbstractInjector implements InjectorInterface
             return false;
         }
 
-        if ($type === self::TYPE_COMPONENT
+        if (
+            $type === self::TYPE_COMPONENT
             && $this->moduleDependencies
         ) {
             return $this->injectAfterDependencies($package, $config);
         }
 
-        if ($type === self::TYPE_MODULE
+        if (
+            $type === self::TYPE_MODULE
             && ($firstApplicationModule = $this->findFirstEnabledApplicationModule($this->applicationModules, $config))
         ) {
             return $this->injectBeforeApplicationModules($package, $config, $firstApplicationModule);
         }
 
-        $pattern = $this->injectionPatterns[$type]['pattern'];
+        $pattern     = $this->injectionPatterns[$type]['pattern'];
         $replacement = sprintf(
             $this->injectionPatterns[$type]['replacement'],
             $package
@@ -241,7 +247,7 @@ abstract class AbstractInjector implements InjectorInterface
 
         $lastDependency = $this->findLastDependency($this->moduleDependencies, $config);
 
-        $pattern = sprintf(
+        $pattern     = sprintf(
             $this->injectionPatterns[self::TYPE_DEPENDENCY]['pattern'],
             preg_quote($lastDependency, '/')
         );
@@ -270,14 +276,14 @@ abstract class AbstractInjector implements InjectorInterface
         }
 
         $longLength = 0;
-        $last = null;
+        $last       = null;
         foreach ($dependencies as $dependency) {
             preg_match(sprintf($this->isRegisteredPattern, preg_quote($dependency, '/')), $config, $matches);
 
             $length = strlen($matches[0]);
             if ($length > $longLength) {
                 $longLength = $length;
-                $last = $dependency;
+                $last       = $dependency;
             }
         }
 
@@ -296,7 +302,7 @@ abstract class AbstractInjector implements InjectorInterface
      */
     private function injectBeforeApplicationModules($package, $config, $firstApplicationModule)
     {
-        $pattern = sprintf(
+        $pattern     = sprintf(
             $this->injectionPatterns[self::TYPE_BEFORE_APPLICATION]['pattern'],
             preg_quote($firstApplicationModule, '/')
         );
@@ -322,7 +328,7 @@ abstract class AbstractInjector implements InjectorInterface
     private function findFirstEnabledApplicationModule(array $modules, $config)
     {
         $shortest = strlen($config);
-        $first = null;
+        $first    = null;
         foreach ($modules as $module) {
             if (! $this->isRegistered($module)) {
                 continue;
@@ -333,7 +339,7 @@ abstract class AbstractInjector implements InjectorInterface
             $length = strlen($matches[0]);
             if ($length < $shortest) {
                 $shortest = $length;
-                $first = $module;
+                $first    = $module;
             }
         }
 

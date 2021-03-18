@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.6.1@e93e532e4eaad6d68c4d7b606853800eaceccc72">
+<files psalm-version="4.6.4@97fe86c4e158b5a57c5150aa5055c38b5a809aab">
   <file src="src/Collection.php">
     <DocblockTypeContradiction occurrences="2">
       <code>is_array($items)</code>
@@ -16,53 +16,31 @@
       <code>$key</code>
       <code>$results</code>
     </MissingClosureParamType>
-    <MissingPropertyType occurrences="1">
-      <code>$items</code>
-    </MissingPropertyType>
-    <MixedArgument occurrences="6">
-      <code>$this-&gt;items</code>
-      <code>$this-&gt;items</code>
-      <code>$this-&gt;items</code>
-      <code>$this-&gt;items</code>
-      <code>$this-&gt;items</code>
-      <code>$this-&gt;items</code>
-    </MixedArgument>
-    <MixedArrayAccess occurrences="2">
-      <code>$this-&gt;items[$offset]</code>
-      <code>$this-&gt;items[$offset]</code>
-    </MixedArrayAccess>
-    <MixedArrayAssignment occurrences="5">
+    <MixedArrayAssignment occurrences="3">
       <code>$filtered[$key]</code>
       <code>$filtered[$key]</code>
       <code>$results[$key]</code>
-      <code>$this-&gt;items[$offset]</code>
-      <code>$this-&gt;items[]</code>
     </MixedArrayAssignment>
     <MixedArrayOffset occurrences="3">
       <code>$filtered[$key]</code>
       <code>$filtered[$key]</code>
       <code>$results[$key]</code>
     </MixedArrayOffset>
-    <MixedAssignment occurrences="9">
+    <MixedAssignment occurrences="7">
       <code>$accumulator</code>
       <code>$accumulator</code>
       <code>$filtered[$key]</code>
       <code>$filtered[$key]</code>
       <code>$item</code>
       <code>$item</code>
-      <code>$key</code>
-      <code>$key</code>
       <code>$results[$key]</code>
     </MixedAssignment>
-    <MixedInferredReturnType occurrences="4">
-      <code>array</code>
+    <MixedInferredReturnType occurrences="3">
       <code>static</code>
       <code>static</code>
       <code>static</code>
     </MixedInferredReturnType>
-    <MixedReturnStatement occurrences="4">
-      <code>$this-&gt;items</code>
-    </MixedReturnStatement>
+    <MixedReturnStatement occurrences="3"/>
     <UnsafeInstantiation occurrences="5">
       <code>new static($items)</code>
       <code>new static([])</code>
@@ -184,7 +162,7 @@
     <MixedInferredReturnType occurrences="4">
       <code>Collection</code>
       <code>Collection</code>
-      <code>Injector\InjectorInterface</code>
+      <code>InjectorInterface</code>
       <code>bool</code>
     </MixedInferredReturnType>
     <MixedMethodCall occurrences="20">
@@ -282,14 +260,6 @@
       <code>$this-&gt;configFile</code>
     </UninitializedProperty>
   </file>
-  <file src="src/ConfigDiscovery/ConfigAggregator.php">
-    <MissingParamType occurrences="1">
-      <code>$projectDirectory</code>
-    </MissingParamType>
-    <MixedArgument occurrences="1">
-      <code>$projectDirectory</code>
-    </MixedArgument>
-  </file>
   <file src="src/ConfigDiscovery/DiscoveryChain.php">
     <MissingClosureParamType occurrences="2">
       <code>$discovery</code>
@@ -303,24 +273,13 @@
       <code>new $discoveryClass($projectDirectory)</code>
     </MixedMethodCall>
   </file>
-  <file src="src/ConfigDiscovery/MezzioConfig.php">
-    <MissingParamType occurrences="1">
-      <code>$projectDirectory</code>
-    </MissingParamType>
-    <MixedArgument occurrences="1">
-      <code>$projectDirectory</code>
-    </MixedArgument>
-  </file>
   <file src="src/Injector/AbstractInjector.php">
     <MixedArgument occurrences="3">
-      <code>$dependency</code>
-      <code>$dependency</code>
       <code>$dependency</code>
       <code>$module</code>
       <code>$module</code>
     </MixedArgument>
     <MixedAssignment occurrences="4">
-      <code>$dependency</code>
       <code>$dependency</code>
       <code>$first</code>
       <code>$last</code>
@@ -362,7 +321,7 @@
     </MixedArgument>
   </file>
   <file src="src/Injector/ConfigInjectorChain.php">
-    <MissingClosureParamType occurrences="9">
+    <MissingClosureParamType occurrences="8">
       <code>$file</code>
       <code>$flag</code>
       <code>$injector</code>
@@ -370,32 +329,24 @@
       <code>$injector</code>
       <code>$injector</code>
       <code>$injector</code>
-      <code>$injector</code>
       <code>$type</code>
     </MissingClosureParamType>
-    <MissingClosureReturnType occurrences="2">
+    <MissingClosureReturnType occurrences="1">
       <code>function ($injector) use ($availableTypes) {</code>
-      <code>function ($injector) use ($package) {</code>
     </MissingClosureReturnType>
-    <MissingPropertyType occurrences="1">
-      <code>$allowedTypes</code>
-    </MissingPropertyType>
     <MixedArgument occurrences="1">
       <code>$file</code>
     </MixedArgument>
-    <MixedAssignment occurrences="2">
-      <code>$allowedTypes</code>
+    <MixedAssignment occurrences="1">
       <code>$injector</code>
     </MixedAssignment>
-    <MixedInferredReturnType occurrences="3">
-      <code>getTypesAllowed</code>
+    <MixedInferredReturnType occurrences="2">
       <code>inject</code>
       <code>remove</code>
     </MixedInferredReturnType>
-    <MixedMethodCall occurrences="6">
+    <MixedMethodCall occurrences="5">
       <code>getTypesAllowed</code>
       <code>inject</code>
-      <code>isRegistered</code>
       <code>new $injector($projectRoot)</code>
       <code>registersType</code>
       <code>remove</code>
@@ -403,11 +354,9 @@
     <MixedOperand occurrences="1">
       <code>$injector-&gt;getTypesAllowed()</code>
     </MixedOperand>
-    <MixedReturnStatement occurrences="4">
-      <code>$allowedTypes</code>
+    <MixedReturnStatement occurrences="2">
       <code>$injected</code>
       <code>$removed</code>
-      <code>$this-&gt;allowedTypes</code>
     </MixedReturnStatement>
   </file>
   <file src="src/Injector/MezzioConfigInjector.php">
@@ -519,9 +468,6 @@
       <code>$argument</code>
       <code>$argument</code>
     </MissingClosureParamType>
-    <MissingParamType occurrences="1">
-      <code>$argument</code>
-    </MissingParamType>
     <MixedArgument occurrences="40">
       <code>$argument</code>
       <code>$argument</code>

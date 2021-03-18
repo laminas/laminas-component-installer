@@ -15,11 +15,11 @@ use Laminas\ComponentInstaller\Exception;
  */
 interface InjectorInterface
 {
-    const TYPE_CONFIG_PROVIDER = 0;
-    const TYPE_COMPONENT = 1;
-    const TYPE_MODULE = 2;
-    const TYPE_DEPENDENCY = 3;
-    const TYPE_BEFORE_APPLICATION = 4;
+    public const TYPE_CONFIG_PROVIDER    = 0;
+    public const TYPE_COMPONENT          = 1;
+    public const TYPE_MODULE             = 2;
+    public const TYPE_DEPENDENCY         = 3;
+    public const TYPE_BEFORE_APPLICATION = 4;
 
     /**
      * Whether or not the injector can handle the given type.

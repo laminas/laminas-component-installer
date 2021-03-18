@@ -9,6 +9,8 @@
 namespace Laminas\ComponentInstaller\Injector;
 
 use Laminas\ComponentInstaller\ConfigDiscovery\MezzioConfig as MezzioConfigDiscovery;
+
+use function assert;
 use function preg_quote;
 use function sprintf;
 
@@ -16,7 +18,7 @@ class MezzioConfigInjector extends AbstractInjector
 {
     use ConditionalDiscoveryTrait;
 
-    const DEFAULT_CONFIG_FILE = 'config/config.php';
+    public const DEFAULT_CONFIG_FILE = 'config/config.php';
 
     /**
      * {@inheritDoc}
@@ -25,6 +27,7 @@ class MezzioConfigInjector extends AbstractInjector
         self::TYPE_CONFIG_PROVIDER,
     ];
 
+    /** @var string */
     protected $configFile = self::DEFAULT_CONFIG_FILE;
 
     /**
@@ -40,8 +43,11 @@ class MezzioConfigInjector extends AbstractInjector
      *
      * Pattern is set in constructor due to PCRE quoting issues.
      *
-     * @var array<int,array<string,string>>
-     * @psalm-var array<InjectorInterface::TYPE_*,array{pattern:non-empty-string,replacement:non-empty-string}>
+     * @var array
+     * @psalm-var array<
+     *     InjectorInterface::TYPE_*,
+     *     array{pattern: non-empty-string, replacement: string}
+     * >
      */
     protected $injectionPatterns = [];
 
@@ -49,9 +55,15 @@ class MezzioConfigInjector extends AbstractInjector
      * Pattern to use to determine if the code item is registered.
      *
      * Set in constructor due to PCRE quoting issues.
+     *
+     * @var non-empty-string
      */
     protected $isRegisteredPattern = 'overridden-by-constructor';
 
+    /**
+     * @var array
+     * @psalm-var array{pattern: non-empty-string, replacement: string}
+     */
     protected $removalPatterns = [
         'pattern'     => '/^\s+%s::class,\s*$/m',
         'replacement' => '',
@@ -78,7 +90,7 @@ class MezzioConfigInjector extends AbstractInjector
         );
         assert($pattern !== '');
         $this->injectionPatterns[self::TYPE_CONFIG_PROVIDER] = [
-            'pattern' => $pattern,
+            'pattern'     => $pattern,
             'replacement' => "\$1\n    %s::class,",
         ];
 

@@ -9,6 +9,7 @@
 namespace LaminasTest\ComponentInstaller\Injector;
 
 use Laminas\ComponentInstaller\Injector\ConfigAggregatorInjector;
+use Laminas\ComponentInstaller\Injector\InjectorInterface;
 use org\bovigo\vfs\vfsStream;
 
 use function file_get_contents;
@@ -16,12 +17,21 @@ use function preg_replace;
 
 class ConfigAggregatorInjectorTest extends AbstractInjectorTestCase
 {
+    /** @var non-empty-string */
     protected $configFile = 'config/config.php';
 
+    /**
+     * @var string
+     * @psalm-var class-string<InjectorInterface>
+     */
     protected $injectorClass = ConfigAggregatorInjector::class;
 
+    /**
+     * @var array
+     * @psalm-var list<InjectorInterface::TYPE_*>
+     */
     protected $injectorTypesAllowed = [
-        ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER,
+        InjectorInterface::TYPE_CONFIG_PROVIDER,
     ];
 
     public function convertToShortArraySyntax(string $contents): string
@@ -40,7 +50,7 @@ class ConfigAggregatorInjectorTest extends AbstractInjectorTestCase
 
     public function injectComponentProvider(): array
     {
-        // @codingStandardsIgnoreStart
+        // phpcs:disable Generic.Files.LineLength.TooLong
         $baseContentsFqcnLongArray              = file_get_contents(__DIR__ . '/TestAsset/mezzio-application-fqcn.config.php');
         $baseContentsGloballyQualifiedLongArray = file_get_contents(__DIR__ . '/TestAsset/mezzio-application-globally-qualified.config.php');
         $baseContentsImportLongArray            = file_get_contents(__DIR__ . '/TestAsset/mezzio-application-import.config.php');
@@ -73,18 +83,16 @@ class ConfigAggregatorInjectorTest extends AbstractInjectorTestCase
             'global-short-array'            => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $baseContentsGloballyQualifiedShortArray, $expectedContentsGloballyQualifiedShortArray],
             'import-short-array'            => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $baseContentsImportShortArray,            $expectedContentsImportShortArray],
             'import-short-array-alt-indent' => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $baseContentsImportShortArrayAltIndent,   $expectedContentsImportShortArrayAltIndent],
+
             // see https://github.com/laminas/laminas-component-installer/issues/21
-            'inject-only-first-occurence'   => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $injectOnlyFirstOccurrenceInitial, $injectOnlyFirstOccurrenceExpected],
+            'inject-only-first-occurence' => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $injectOnlyFirstOccurrenceInitial, $injectOnlyFirstOccurrenceExpected],
         ];
-        // @codingStandardsIgnoreEnd
+        // phpcs:enable
     }
 
-    /**
-     * @psalm-return array<string, array{0: string, 1: int}>
-     */
     public function packageAlreadyRegisteredProvider(): array
     {
-        // @codingStandardsIgnoreStart
+        // phpcs:disable Generic.Files.LineLength.TooLong
         $fqcnLongArray              = file_get_contents(__DIR__ . '/TestAsset/mezzio-populated-fqcn.config.php');
         $globallyQualifiedLongArray = file_get_contents(__DIR__ . '/TestAsset/mezzio-populated-globally-qualified.config.php');
         $importLongArray            = file_get_contents(__DIR__ . '/TestAsset/mezzio-populated-import.config.php');
@@ -94,26 +102,23 @@ class ConfigAggregatorInjectorTest extends AbstractInjectorTestCase
         $importShortArray            = $this->convertToShortArraySyntax($importLongArray);
 
         return [
-            'fqcn-long-array'           => [$fqcnLongArray,               ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER],
-            'global-long-array'         => [$globallyQualifiedLongArray,  ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER],
-            'import-long-array'         => [$importLongArray,             ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER],
-            'fqcn-short-array'          => [$fqcnShortArray,              ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER],
-            'global-short-array'        => [$globallyQualifiedShortArray, ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER],
-            'import-short-array'        => [$importShortArray,            ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER],
+            'fqcn-long-array'    => [$fqcnLongArray,               ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER],
+            'global-long-array'  => [$globallyQualifiedLongArray,  ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER],
+            'import-long-array'  => [$importLongArray,             ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER],
+            'fqcn-short-array'   => [$fqcnShortArray,              ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER],
+            'global-short-array' => [$globallyQualifiedShortArray, ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER],
+            'import-short-array' => [$importShortArray,            ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER],
         ];
-        // @codingStandardsIgnoreEnd
+        // phpcs:enable
     }
 
-    /**
-     * @psalm-return array<string, array{0: string}>
-     */
     public function emptyConfiguration(): array
     {
-        // @codingStandardsIgnoreStart
+        // phpcs:disable Generic.Files.LineLength.TooLong
         $fqcnLongArray              = file_get_contents(__DIR__ . '/TestAsset/mezzio-empty-fqcn.config.php');
         $globallyQualifiedLongArray = file_get_contents(__DIR__ . '/TestAsset/mezzio-empty-globally-qualified.config.php');
         $importLongArray            = file_get_contents(__DIR__ . '/TestAsset/mezzio-empty-import.config.php');
-        // @codingStandardsIgnoreEnd
+        // phpcs:enable
 
         $fqcnShortArray              = $this->convertToShortArraySyntax($fqcnLongArray);
         $globallyQualifiedShortArray = $this->convertToShortArraySyntax($globallyQualifiedLongArray);
@@ -129,12 +134,9 @@ class ConfigAggregatorInjectorTest extends AbstractInjectorTestCase
         ];
     }
 
-    /**
-     * @psalm-return array<string, array{0: string, 1: string}>
-     */
     public function packagePopulatedInConfiguration(): array
     {
-        // @codingStandardsIgnoreStart
+        // phpcs:disable Generic.Files.LineLength.TooLong
         $baseContentsFqcnLongArray              = file_get_contents(__DIR__ . '/TestAsset/mezzio-populated-fqcn.config.php');
         $baseContentsGloballyQualifiedLongArray = file_get_contents(__DIR__ . '/TestAsset/mezzio-populated-globally-qualified.config.php');
         $baseContentsImportLongArray            = file_get_contents(__DIR__ . '/TestAsset/mezzio-populated-import.config.php');
@@ -165,7 +167,7 @@ class ConfigAggregatorInjectorTest extends AbstractInjectorTestCase
             'import-short-array'            => [$baseContentsImportShortArray,            $expectedContentsImportShortArray],
             'import-short-array-alt-indent' => [$baseContentsImportShortArrayAltIndent,   $expectedContentsImportShortArrayAltIndent],
         ];
-        // @codingStandardsIgnoreEnd
+        // phpcs:enable
     }
 
     public function testProperlyDetectsExistingConfigProviderInConfigWithMixedRelativeAndGloballyQualifiedNames(): void

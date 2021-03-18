@@ -9,6 +9,8 @@
 namespace Laminas\ComponentInstaller\Injector;
 
 use Laminas\ComponentInstaller\ConfigDiscovery\ConfigAggregator as ConfigAggregatorDiscovery;
+
+use function assert;
 use function preg_quote;
 use function sprintf;
 
@@ -16,12 +18,17 @@ class ConfigAggregatorInjector extends AbstractInjector
 {
     use ConditionalDiscoveryTrait;
 
-    const DEFAULT_CONFIG_FILE = 'config/config.php';
+    public const DEFAULT_CONFIG_FILE = 'config/config.php';
 
+    /**
+     * @var array
+     * @psalm-var list<InjectorInterface::TYPE_*>
+     */
     protected $allowedTypes = [
         self::TYPE_CONFIG_PROVIDER,
     ];
 
+    /** @var string */
     protected $configFile = self::DEFAULT_CONFIG_FILE;
 
     /**
@@ -37,8 +44,12 @@ class ConfigAggregatorInjector extends AbstractInjector
      * Patterns and replacements to use when registering a code item.
      *
      * Pattern is set in constructor due to PCRE quoting issues.
-     * @var array<int,array<string,string>>
-     * @psalm-var array<InjectorInterface::TYPE_*,array{pattern:non-empty-string,replacement:non-empty-string}>
+     *
+     * @var array
+     * @psalm-var array<
+     *     InjectorInterface::TYPE_*,
+     *     array{pattern: non-empty-string, replacement: string}
+     * >
      */
     protected $injectionPatterns = [];
 
@@ -46,9 +57,16 @@ class ConfigAggregatorInjector extends AbstractInjector
      * Pattern to use to determine if the code item is registered.
      *
      * Set in constructor due to PCRE quoting issues.
+     *
+     * @var string
+     * @psalm-var non-empty-string
      */
     protected $isRegisteredPattern = 'overridden-by-constructor';
 
+    /**
+     * @var array
+     * @psalm-var array{pattern: non-empty-string, replacement: string}
+     */
     protected $removalPatterns = [
         'pattern'     => '/^\s+%s::class,\s*$/m',
         'replacement' => '',
@@ -62,7 +80,7 @@ class ConfigAggregatorInjector extends AbstractInjector
      */
     public function __construct($projectRoot = '')
     {
-        $ns = preg_quote('\\');
+        $ns                        = preg_quote('\\');
         $this->isRegisteredPattern = '/new (?:'
             . $ns
             . '?'
@@ -78,7 +96,7 @@ class ConfigAggregatorInjector extends AbstractInjector
         );
         assert($pattern !== '');
         $this->injectionPatterns[self::TYPE_CONFIG_PROVIDER] = [
-            'pattern' => $pattern,
+            'pattern'     => $pattern,
             'replacement' => "\$1\n\$2%s::class,\n\$2",
         ];
 

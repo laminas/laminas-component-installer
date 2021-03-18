@@ -65,6 +65,6 @@ abstract class AbstractDiscovery implements DiscoveryInterface
         }
 
         $config = file_get_contents($this->configFile);
-        return (1 === preg_match($this->expected, $config));
+        return 1 === preg_match($this->expected, $config);
     }
 }

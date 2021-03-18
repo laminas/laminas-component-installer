@@ -33,6 +33,8 @@ use ReflectionObject;
 use function dirname;
 use function file_get_contents;
 use function implode;
+use function is_string;
+use function method_exists;
 use function mkdir;
 use function preg_match;
 use function sprintf;
@@ -43,14 +45,10 @@ class ComponentInstallerTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var vfsStreamDirectory
-     */
+    /** @var vfsStreamDirectory */
     private $projectRoot;
 
-    /**
-     * @var ComponentInstaller
-     */
+    /** @var ComponentInstaller */
     private $installer;
 
     /**
@@ -77,23 +75,23 @@ class ComponentInstallerTest extends TestCase
      */
     private $installationManager;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->projectRoot = vfsStream::setup('project');
-        $this->installer = new ComponentInstaller(
+        $this->installer   = new ComponentInstaller(
             vfsStream::url('project')
         );
 
         /** @psalm-var Composer&ObjectProphecy $composer */
-        $composer = $this->prophesize(Composer::class);
+        $composer       = $this->prophesize(Composer::class);
         $this->composer = $composer;
 
         /** @psalm-var RootPackageInterface&ObjectProphecy $rootPackage */
-        $rootPackage = $this->prophesize(RootPackageInterface::class);
+        $rootPackage       = $this->prophesize(RootPackageInterface::class);
         $this->rootPackage = $rootPackage;
 
         /** @psalm-var IOInterface&ObjectProphecy $io */
-        $io = $this->prophesize(IOInterface::class);
+        $io       = $this->prophesize(IOInterface::class);
         $this->io = $io;
 
         $this->rootPackage->getDevRequires()->willReturn([]);
@@ -102,7 +100,7 @@ class ComponentInstallerTest extends TestCase
             $config = $this->prophesize(Config::class);
             $this->composer->getConfig()->willReturn($config->reveal());
             $repositoryManager = $this->prophesize(RepositoryManager::class);
-            $localRepository = $this->prophesize(PlatformRepository::class);
+            $localRepository   = $this->prophesize(PlatformRepository::class);
             $localRepository->getPackages()->willReturn([]);
             $repositoryManager->getLocalRepository()->willReturn($localRepository->reveal());
             $this->composer->getRepositoryManager()->willReturn($repositoryManager->reveal());
@@ -118,12 +116,15 @@ class ComponentInstallerTest extends TestCase
         );
 
         /** @psalm-var InstallationManager&ObjectProphecy $installationManager */
-        $installationManager = $this->prophesize(InstallationManager::class);
+        $installationManager       = $this->prophesize(InstallationManager::class);
         $this->installationManager = $installationManager;
 
         $this->composer->getInstallationManager()->willReturn($installationManager->reveal());
     }
 
+    /**
+     * @param mixed $argument
+     */
     public static function assertPrompt($argument, ?string $packageName = null): bool
     {
         if (! is_string($argument)) {
@@ -138,10 +139,12 @@ class ComponentInstallerTest extends TestCase
             return false;
         }
 
-        if (false === strpos(
-            $argument,
-            sprintf("Please select which config file you wish to inject '%s' into", $packageName)
-        )) {
+        if (
+            false === strpos(
+                $argument,
+                sprintf("Please select which config file you wish to inject '%s' into", $packageName)
+            )
+        ) {
             return false;
         }
 
@@ -270,7 +273,7 @@ CONTENT
             //   autoloading: psr-0, psr-4, classmap or files
             //   autoloadPath: only for classmap
             // ],
-            'one-dependency-on-top-psr-0' => [
+            'one-dependency-on-top-psr-0'               => [
                 'MyPackage1',
                 ['D1', 'App'],
                 ['D1'],
@@ -278,7 +281,7 @@ CONTENT
                 'psr-0',
                 null,
             ],
-            'one-dependency-on-bottom-psr-0' => [
+            'one-dependency-on-bottom-psr-0'            => [
                 'MyPackage2',
                 ['App', 'D1'],
                 ['D1'],
@@ -286,7 +289,7 @@ CONTENT
                 'psr-0',
                 null,
             ],
-            'no-dependencies-psr-0' => [
+            'no-dependencies-psr-0'                     => [
                 'MyPackage3',
                 ['App'],
                 [],
@@ -294,7 +297,7 @@ CONTENT
                 'psr-0',
                 null,
             ],
-            'two-dependencies-psr-0' => [
+            'two-dependencies-psr-0'                    => [
                 'MyPackage4',
                 ['D1', 'D2', 'App'],
                 ['D1', 'D2'],
@@ -302,7 +305,7 @@ CONTENT
                 'psr-0',
                 null,
             ],
-            'two-dependencies-in-reverse-order-psr-0' => [
+            'two-dependencies-in-reverse-order-psr-0'   => [
                 'MyPackage5',
                 ['D2', 'D1', 'App'],
                 ['D1', 'D2'],
@@ -319,7 +322,7 @@ CONTENT
                 null,
             ],
             // PSR-4 autoloading
-            'one-dependency-on-top-psr-4' => [
+            'one-dependency-on-top-psr-4'               => [
                 'MyPackage11',
                 ['D1', 'App'],
                 ['D1'],
@@ -327,7 +330,7 @@ CONTENT
                 'psr-4',
                 null,
             ],
-            'one-dependency-on-bottom-psr-4' => [
+            'one-dependency-on-bottom-psr-4'            => [
                 'MyPackage12',
                 ['App', 'D1'],
                 ['D1'],
@@ -335,7 +338,7 @@ CONTENT
                 'psr-4',
                 null,
             ],
-            'no-dependencies-psr-4' => [
+            'no-dependencies-psr-4'                     => [
                 'MyPackage13',
                 ['App'],
                 [],
@@ -343,7 +346,7 @@ CONTENT
                 'psr-4',
                 null,
             ],
-            'two-dependencies-psr-4' => [
+            'two-dependencies-psr-4'                    => [
                 'MyPackage14',
                 ['D1', 'D2', 'App'],
                 ['D1', 'D2'],
@@ -351,7 +354,7 @@ CONTENT
                 'psr-4',
                 null,
             ],
-            'two-dependencies-in-reverse-order-psr-4' => [
+            'two-dependencies-in-reverse-order-psr-4'   => [
                 'MyPackage15',
                 ['D2', 'D1', 'App'],
                 ['D1', 'D2'],
@@ -368,7 +371,7 @@ CONTENT
                 null,
             ],
             // classmap autoloading - dir
-            'one-dependency-on-top-classmap' => [
+            'one-dependency-on-top-classmap'               => [
                 'MyPackage21',
                 ['D1', 'App'],
                 ['D1'],
@@ -376,7 +379,7 @@ CONTENT
                 'classmap',
                 'path-classmap/to/module/',
             ],
-            'one-dependency-on-bottom-classmap' => [
+            'one-dependency-on-bottom-classmap'            => [
                 'MyPackage22',
                 ['App', 'D1'],
                 ['D1'],
@@ -384,7 +387,7 @@ CONTENT
                 'classmap',
                 'path-classmap/to/module/',
             ],
-            'no-dependencies-classmap' => [
+            'no-dependencies-classmap'                     => [
                 'MyPackage23',
                 ['App'],
                 [],
@@ -392,7 +395,7 @@ CONTENT
                 'classmap',
                 'path-classmap/to/module/',
             ],
-            'two-dependencies-classmap' => [
+            'two-dependencies-classmap'                    => [
                 'MyPackage24',
                 ['D1', 'D2', 'App'],
                 ['D1', 'D2'],
@@ -400,7 +403,7 @@ CONTENT
                 'classmap',
                 'path-classmap/to/module/',
             ],
-            'two-dependencies-in-reverse-order-classmap' => [
+            'two-dependencies-in-reverse-order-classmap'   => [
                 'MyPackage25',
                 ['D2', 'D1', 'App'],
                 ['D1', 'D2'],
@@ -417,7 +420,7 @@ CONTENT
                 'path-classmap/to/module/',
             ],
             // classmap autoloading - file
-            'one-dependency-on-top-classmap-file' => [
+            'one-dependency-on-top-classmap-file'               => [
                 'MyPackage31',
                 ['D1', 'App'],
                 ['D1'],
@@ -425,7 +428,7 @@ CONTENT
                 'classmap',
                 'path-classmap/to/module/Module.php',
             ],
-            'one-dependency-on-bottom-classmap-file' => [
+            'one-dependency-on-bottom-classmap-file'            => [
                 'MyPackage32',
                 ['App', 'D1'],
                 ['D1'],
@@ -433,7 +436,7 @@ CONTENT
                 'classmap',
                 'path-classmap/to/module/Module.php',
             ],
-            'no-dependencies-classmap-file' => [
+            'no-dependencies-classmap-file'                     => [
                 'MyPackage33',
                 ['App'],
                 [],
@@ -441,7 +444,7 @@ CONTENT
                 'classmap',
                 'path-classmap/to/module/Module.php',
             ],
-            'two-dependencies-classmap-file' => [
+            'two-dependencies-classmap-file'                    => [
                 'MyPackage34',
                 ['D1', 'D2', 'App'],
                 ['D1', 'D2'],
@@ -449,7 +452,7 @@ CONTENT
                 'classmap',
                 'path-classmap/to/module/Module.php',
             ],
-            'two-dependencies-in-reverse-order-classmap-file' => [
+            'two-dependencies-in-reverse-order-classmap-file'   => [
                 'MyPackage35',
                 ['D2', 'D1', 'App'],
                 ['D1', 'D2'],
@@ -466,7 +469,7 @@ CONTENT
                 'path-classmap/to/module/Module.php',
             ],
             // files autoloading
-            'one-dependency-on-top-files' => [
+            'one-dependency-on-top-files'               => [
                 'MyPackage41',
                 ['D1', 'App'],
                 ['D1'],
@@ -474,7 +477,7 @@ CONTENT
                 'files',
                 null,
             ],
-            'one-dependency-on-bottom-files' => [
+            'one-dependency-on-bottom-files'            => [
                 'MyPackage42',
                 ['App', 'D1'],
                 ['D1'],
@@ -482,7 +485,7 @@ CONTENT
                 'files',
                 null,
             ],
-            'no-dependencies-files' => [
+            'no-dependencies-files'                     => [
                 'MyPackage43',
                 ['App'],
                 [],
@@ -490,7 +493,7 @@ CONTENT
                 'files',
                 null,
             ],
-            'two-dependencies-files' => [
+            'two-dependencies-files'                    => [
                 'MyPackage44',
                 ['D1', 'D2', 'App'],
                 ['D1', 'D2'],
@@ -498,7 +501,7 @@ CONTENT
                 'files',
                 null,
             ],
-            'two-dependencies-in-reverse-order-files' => [
+            'two-dependencies-in-reverse-order-files'   => [
                 'MyPackage45',
                 ['D2', 'D1', 'App'],
                 ['D1', 'D2'],
@@ -519,14 +522,10 @@ CONTENT
 
     /**
      * @dataProvider dependency
-     *
-     * @param string $packageName
      * @param array $enabledModules
      * @param array $dependencies
      * @param array $result
      * @param string $autoloading classmap|files|psr-0|psr-4
-     * @param null|string $autoloadPath
-     *
      * @psalm-param array<array-key, string> $enabledModules
      * @psalm-param array<array-key, string> $dependencies
      * @psalm-param array<array-key, string> $result
@@ -540,7 +539,7 @@ CONTENT
         ?string $autoloadPath = null
     ): void {
         $installPath = 'install/path';
-        $modules = "\n        '" . implode("',\n        '", $enabledModules) . "',";
+        $modules     = "\n        '" . implode("',\n        '", $enabledModules) . "',";
         $this->createApplicationConfig(
             '<' . "?php\nreturn [\n    'modules' => [" . $modules . "\n    ],\n];"
         );
@@ -548,25 +547,25 @@ CONTENT
         switch ($autoloading) {
             case 'classmap':
                 $pathToModule = 'path-classmap/to/module';
-                $autoload = [
+                $autoload     = [
                     $autoloadPath,
                 ];
                 break;
             case 'files':
                 $pathToModule = 'path/to/module';
-                $autoload = [
+                $autoload     = [
                     'path/to/module/Module.php',
                 ];
                 break;
             case 'psr-0':
                 $pathToModule = sprintf('src/%s', $packageName);
-                $autoload = [
+                $autoload     = [
                     $packageName . '\\' => 'src/',
                 ];
                 break;
             case 'psr-4':
                 $pathToModule = 'src';
-                $autoload = [
+                $autoload     = [
                     $packageName . '\\' => 'src/',
                 ];
                 break;
@@ -631,7 +630,7 @@ CONTENT
 
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
 
-        $config = include vfsStream::url('project/config/application.config.php');
+        $config  = include vfsStream::url('project/config/application.config.php');
         $modules = $config['modules'];
         $this->assertEquals($result, $modules);
     }
@@ -651,17 +650,17 @@ CONTENT
             //   [enabled modules in order],
             //   [result: expected enabled modules in order],
             // ],
-            'two-application-modules' => [
+            'two-application-modules'                                   => [
                 ['App1', 'App2'],
                 ['App1', 'App2'],
                 ['SomeModule', 'App1', 'App2'],
             ],
-            'with-some-component' => [
+            'with-some-component'                                       => [
                 ['App1'],
                 ['SomeComponent', 'App1'],
                 ['SomeComponent', 'SomeModule', 'App1'],
             ],
-            'two-application-modules-with-some-component' => [
+            'two-application-modules-with-some-component'               => [
                 ['App1', 'App2'],
                 ['SomeComponent', 'App1', 'App2'],
                 ['SomeComponent', 'SomeModule', 'App1', 'App2'],
@@ -671,12 +670,12 @@ CONTENT
                 ['SomeComponent', 'App2', 'App1'],
                 ['SomeComponent', 'SomeModule', 'App2', 'App1'],
             ],
-            'component-between-application-modules' => [
+            'component-between-application-modules'                     => [
                 ['App1', 'App2'],
                 ['App1', 'SomeComponent', 'App2'],
                 ['SomeModule', 'App1', 'SomeComponent', 'App2'],
             ],
-            'no-application-modules' => [
+            'no-application-modules'                                    => [
                 [],
                 ['SomeComponent'],
                 ['SomeComponent', 'SomeModule'],
@@ -686,11 +685,9 @@ CONTENT
 
     /**
      * @dataProvider modules
-     *
      * @param array $availableModules
      * @param array $enabledModules
      * @param array $result
-     *
      * @psalm-param array<array-key, string> $availableModules
      * @psalm-param array<array-key, string> $enabledModules
      * @psalm-param array<array-key, string> $result
@@ -746,7 +743,7 @@ CONTENT
 
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
 
-        $config = include vfsStream::url('project/config/application.config.php');
+        $config  = include vfsStream::url('project/config/application.config.php');
         $modules = $config['modules'];
         $this->assertEquals($result, $modules);
     }
@@ -788,11 +785,13 @@ CONTENT
     {
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['laminas' => [
-            'component' => 'Some\\Component',
-            'config-provider' => 'Some\\Component\\ConfigProvider',
-            'module' => 'Some\\Component',
-        ]]);
+        $package->getExtra()->willReturn([
+            'laminas' => [
+                'component'       => 'Some\\Component',
+                'config-provider' => 'Some\\Component\\ConfigProvider',
+                'module'          => 'Some\\Component',
+            ],
+        ]);
 
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
@@ -828,9 +827,11 @@ CONTENT
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['laminas' => [
-            'component' => 'Some\\Component',
-        ]]);
+        $package->getExtra()->willReturn([
+            'laminas' => [
+                'component' => 'Some\\Component',
+            ],
+        ]);
         $package->getAutoload()->willReturn([]);
 
         $operation = $this->prophesize(InstallOperation::class);
@@ -857,9 +858,11 @@ CONTENT
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['laminas' => [
-            'component' => 'Some\\Component',
-        ]]);
+        $package->getExtra()->willReturn([
+            'laminas' => [
+                'component' => 'Some\\Component',
+            ],
+        ]);
         $package->getAutoload()->willReturn([]);
 
         $operation = $this->prophesize(InstallOperation::class);
@@ -874,9 +877,11 @@ CONTENT
         $this->rootPackage->getRequires()->willReturn([]);
         $this->rootPackage->getName()->willReturn('some/component');
 
-        $this->rootPackage->getExtra()->willReturn(['laminas' => [
-            'component-whitelist' => ['some/component'],
-        ]]);
+        $this->rootPackage->getExtra()->willReturn([
+            'laminas' => [
+                'component-whitelist' => ['some/component'],
+            ],
+        ]);
 
         $this->io->write(Argument::that(function ($argument) {
             return strpos($argument, 'Installing Some\Component from package some/component');
@@ -893,9 +898,11 @@ CONTENT
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['laminas' => [
-            'component' => 'Some\\Component',
-        ]]);
+        $package->getExtra()->willReturn([
+            'laminas' => [
+                'component' => 'Some\\Component',
+            ],
+        ]);
         $package->getAutoload()->willReturn([]);
 
         $operation = $this->prophesize(InstallOperation::class);
@@ -915,10 +922,12 @@ CONTENT
                 return false;
             }
 
-            if (false === strpos(
-                $argument,
-                "Please select which config file you wish to inject 'Some\Component' into"
-            )) {
+            if (
+                false === strpos(
+                    $argument,
+                    "Please select which config file you wish to inject 'Some\Component' into"
+                )
+            ) {
                 return false;
             }
 
@@ -959,12 +968,14 @@ CONTENT
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['laminas' => [
-            'component' => [
-                'Some\\Component',
-                'Other\\Component',
+        $package->getExtra()->willReturn([
+            'laminas' => [
+                'component' => [
+                    'Some\\Component',
+                    'Other\\Component',
+                ],
             ],
-        ]]);
+        ]);
         $package->getAutoload()->willReturn([]);
 
         $operation = $this->prophesize(InstallOperation::class);
@@ -984,10 +995,12 @@ CONTENT
                 return false;
             }
 
-            if (false === strpos(
-                $argument,
-                "Please select which config file you wish to inject 'Some\Component' into"
-            )) {
+            if (
+                false === strpos(
+                    $argument,
+                    "Please select which config file you wish to inject 'Some\Component' into"
+                )
+            ) {
                 return false;
             }
 
@@ -1007,10 +1020,12 @@ CONTENT
                 return false;
             }
 
-            if (false === strpos(
-                $argument,
-                "Please select which config file you wish to inject 'Other\Component' into"
-            )) {
+            if (
+                false === strpos(
+                    $argument,
+                    "Please select which config file you wish to inject 'Other\Component' into"
+                )
+            ) {
                 return false;
             }
 
@@ -1025,7 +1040,7 @@ CONTENT
             return true;
         }), 1)->willReturn(1);
 
-        $io = $this->io;
+        $io           = $this->io;
         $askValidator = function ($argument): bool {
             if (! is_string($argument)) {
                     return false;
@@ -1066,9 +1081,11 @@ CONTENT
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['laminas' => [
-            'component' => 'Some\\Component',
-        ]]);
+        $package->getExtra()->willReturn([
+            'laminas' => [
+                'component' => 'Some\\Component',
+            ],
+        ]);
         $package->getAutoload()->willReturn([]);
 
         $operation = $this->prophesize(InstallOperation::class);
@@ -1085,10 +1102,12 @@ CONTENT
                 return false;
             }
 
-            if (false === strpos(
-                $argument,
-                "Please select which config file you wish to inject 'Some\Component' into"
-            )) {
+            if (
+                false === strpos(
+                    $argument,
+                    "Please select which config file you wish to inject 'Some\Component' into"
+                )
+            ) {
                 return false;
             }
 
@@ -1125,9 +1144,11 @@ CONTENT
         // Now do a second pass, with another package
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('other/component');
-        $package->getExtra()->willReturn(['laminas' => [
-            'component' => 'Other\\Component',
-        ]]);
+        $package->getExtra()->willReturn([
+            'laminas' => [
+                'component' => 'Other\\Component',
+            ],
+        ]);
         $package->getAutoload()->willReturn([]);
 
         $operation = $this->prophesize(InstallOperation::class);
@@ -1147,10 +1168,12 @@ CONTENT
                 return false;
             }
 
-            if (false === strpos(
-                $argument,
-                "Please select which config file you wish to inject 'Other\Component' into"
-            )) {
+            if (
+                false === strpos(
+                    $argument,
+                    "Please select which config file you wish to inject 'Other\Component' into"
+                )
+            ) {
                 return false;
             }
 
@@ -1192,9 +1215,11 @@ CONTENT
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['laminas' => [
-            'component' => 'Some\\Component',
-        ]]);
+        $package->getExtra()->willReturn([
+            'laminas' => [
+                'component' => 'Some\\Component',
+            ],
+        ]);
         $package->getAutoload()->willReturn([]);
 
         $operation = $this->prophesize(InstallOperation::class);
@@ -1211,10 +1236,12 @@ CONTENT
                 return false;
             }
 
-            if (false === strpos(
-                $argument,
-                "Please select which config file you wish to inject 'Some\Component' into"
-            )) {
+            if (
+                false === strpos(
+                    $argument,
+                    "Please select which config file you wish to inject 'Some\Component' into"
+                )
+            ) {
                 return false;
             }
 
@@ -1251,9 +1278,11 @@ CONTENT
         // Now do a second pass, with another package
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('other/component');
-        $package->getExtra()->willReturn(['laminas' => [
-            'component' => 'Other\\Component',
-        ]]);
+        $package->getExtra()->willReturn([
+            'laminas' => [
+                'component' => 'Other\\Component',
+            ],
+        ]);
         $package->getAutoload()->willReturn([]);
 
         $operation = $this->prophesize(InstallOperation::class);
@@ -1303,9 +1332,11 @@ CONTENT
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['laminas' => [
-            'component' => 'Some\\Component',
-        ]]);
+        $package->getExtra()->willReturn([
+            'laminas' => [
+                'component' => 'Some\\Component',
+            ],
+        ]);
         $package->getAutoload()->willReturn([]);
 
         $operation = $this->prophesize(InstallOperation::class);
@@ -1342,12 +1373,14 @@ CONTENT
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/component');
-        $package->getExtra()->willReturn(['laminas' => [
-            'component' => [
-                'Some\\Component',
-                'Other\\Component',
+        $package->getExtra()->willReturn([
+            'laminas' => [
+                'component' => [
+                    'Some\\Component',
+                    'Other\\Component',
+                ],
             ],
-        ]]);
+        ]);
         $package->getAutoload()->willReturn([]);
 
         $operation = $this->prophesize(InstallOperation::class);
@@ -1390,9 +1423,11 @@ CONTENT
 
         $package = $this->prophesize(PackageInterface::class);
         $package->getName()->willReturn('some/module');
-        $package->getExtra()->willReturn(['laminas' => [
-            'module' => 'Some\\Module',
-        ]]);
+        $package->getExtra()->willReturn([
+            'laminas' => [
+                'module' => 'Some\\Module',
+            ],
+        ]);
         $package->getAutoload()->willReturn([]);
 
         $operation = $this->prophesize(InstallOperation::class);
@@ -1404,7 +1439,6 @@ CONTENT
         $event->getOperation()->willReturn($operation->reveal());
         $this->prepareEventForPackageProviderDetection($event, 'some/module');
 
-
         $this->rootPackage->getRequires()->willReturn([]);
         $this->rootPackage->getName()->willReturn('some/module');
 
@@ -1413,10 +1447,12 @@ CONTENT
                 return false;
             }
 
-            if (false === strpos(
-                $argument,
-                "Please select which config file you wish to inject 'Some\Module' into"
-            )) {
+            if (
+                false === strpos(
+                    $argument,
+                    "Please select which config file you wish to inject 'Some\Module' into"
+                )
+            ) {
                 return false;
             }
 
@@ -1447,7 +1483,7 @@ CONTENT
         }))->shouldBeCalled();
 
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
-        $config = include vfsStream::url('project/config/application.config.php');
+        $config  = include vfsStream::url('project/config/application.config.php');
         $modules = $config['modules'];
         $this->assertEquals([
             'Some\Component',
@@ -1464,10 +1500,12 @@ CONTENT
         $package = $this->prophesize(PackageInterface::class);
         $package->getAutoload()->willReturn([]);
         $package->getName()->willReturn('some/package');
-        $package->getExtra()->willReturn(['laminas' => [
-            'module' => 'Some\\Module',
-            'component' => 'Some\\Component',
-        ]]);
+        $package->getExtra()->willReturn([
+            'laminas' => [
+                'module'    => 'Some\\Module',
+                'component' => 'Some\\Component',
+            ],
+        ]);
 
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
@@ -1486,10 +1524,12 @@ CONTENT
                 return false;
             }
 
-            if (false === strpos(
-                $argument,
-                "Please select which config file you wish to inject 'Some\Module' into"
-            )) {
+            if (
+                false === strpos(
+                    $argument,
+                    "Please select which config file you wish to inject 'Some\Module' into"
+                )
+            ) {
                 return false;
             }
 
@@ -1509,10 +1549,12 @@ CONTENT
                 return false;
             }
 
-            if (false === strpos(
-                $argument,
-                "Please select which config file you wish to inject 'Some\Component' into"
-            )) {
+            if (
+                false === strpos(
+                    $argument,
+                    "Please select which config file you wish to inject 'Some\Component' into"
+                )
+            ) {
                 return false;
             }
 
@@ -1547,7 +1589,7 @@ CONTENT
         }))->shouldBeCalled();
 
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
-        $config = include vfsStream::url('project/config/application.config.php');
+        $config  = include vfsStream::url('project/config/application.config.php');
         $modules = $config['modules'];
         $this->assertEquals([
             'Some\Component',
@@ -1565,10 +1607,12 @@ CONTENT
         $package = $this->prophesize(PackageInterface::class);
         $package->getAutoload()->willReturn([]);
         $package->getName()->willReturn('some/package');
-        $package->getExtra()->willReturn(['laminas' => [
-            'component' => 'Some\\Component',
-            'module' => 'Some\\Module',
-        ]]);
+        $package->getExtra()->willReturn([
+            'laminas' => [
+                'component' => 'Some\\Component',
+                'module'    => 'Some\\Module',
+            ],
+        ]);
 
         $operation = $this->prophesize(InstallOperation::class);
         $operation->getPackage()->willReturn($package->reveal());
@@ -1589,10 +1633,12 @@ CONTENT
                 return false;
             }
 
-            if (false === strpos(
-                $argument,
-                "Please select which config file you wish to inject 'Some\Module' into"
-            )) {
+            if (
+                false === strpos(
+                    $argument,
+                    "Please select which config file you wish to inject 'Some\Module' into"
+                )
+            ) {
                 return false;
             }
 
@@ -1612,10 +1658,12 @@ CONTENT
                 return false;
             }
 
-            if (false === strpos(
-                $argument,
-                "Please select which config file you wish to inject 'Some\Component' into"
-            )) {
+            if (
+                false === strpos(
+                    $argument,
+                    "Please select which config file you wish to inject 'Some\Component' into"
+                )
+            ) {
                 return false;
             }
 
@@ -1650,7 +1698,7 @@ CONTENT
         }))->shouldBeCalled();
 
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
-        $config = include vfsStream::url('project/config/application.config.php');
+        $config  = include vfsStream::url('project/config/application.config.php');
         $modules = $config['modules'];
         $this->assertEquals([
             'Some\Component',
@@ -1678,12 +1726,11 @@ CONTENT
 
     /**
      * @dataProvider moduleClass
-     *
      * @psalm-param array<string, array<array-key, string>> $result
      */
     public function testGetModuleDependenciesFromModuleClass(string $file, array $result): void
     {
-        $r = new ReflectionObject($this->installer);
+        $r  = new ReflectionObject($this->installer);
         $rm = $r->getMethod('getModuleDependencies');
         $rm->setAccessible(true);
 
@@ -1698,13 +1745,13 @@ CONTENT
         $this->setUpModuleDependencies($installPath);
 
         $autoloaders = [
-            'psr-0' => [
+            'psr-0'    => [
                 'DoesNotExist\\' => [
                     'src/Psr0/',
                     'src/Psr0Too/',
                 ],
             ],
-            'psr-4' => [
+            'psr-4'    => [
                 'DoesNotExistEither\\' => [
                     'src/Psr4/',
                     'src/Psr4Too/',
@@ -1714,7 +1761,7 @@ CONTENT
                 'src/Classmapped/',
                 'src/ClassmappedToo/',
             ],
-            'files' => [
+            'files'    => [
                 'src/File/Module.php',
                 'src/FileToo/Module.php',
             ],
@@ -1727,7 +1774,7 @@ CONTENT
             ->getInstallPath(Argument::that([$package, 'reveal']))
             ->willReturn(vfsStream::url('project/' . $installPath));
 
-        $r = new ReflectionObject($this->installer);
+        $r  = new ReflectionObject($this->installer);
         $rm = $r->getMethod('loadModuleClassesDependencies');
         $rm->setAccessible(true);
 
@@ -1810,12 +1857,9 @@ CONTENT
 
     /**
      * @dataProvider injectorConfigProvider
-     *
      * @param string $configContents
      * @param array $configNames
      * @param string $expectedName
-     *
-     * @return void
      */
     public function testUninstallMessageWithDifferentInjectors($configContents, array $configNames, $expectedName): void
     {
@@ -1830,7 +1874,7 @@ CONTENT
                 'component' => [
                     'Some\\Component',
                 ],
-            ]
+            ],
         ]);
         $package->getAutoload()->willReturn([]);
 
@@ -1850,7 +1894,7 @@ CONTENT
         // assertion
         $this->io
             ->write(Argument::that(function ($argument) use ($expectedName) {
-                return (bool)preg_match(
+                return (bool) preg_match(
                     sprintf('#Removed package from %s#', $expectedName),
                     $argument
                 );
@@ -1888,11 +1932,11 @@ CONFIG;
 
         $this->rootPackage->getDevRequires()->willReturn(['some/component' => '*']);
         $this->rootPackage->getExtra()->willReturn([
-           'laminas' => [
-               "component-whitelist" => [
-                   "some/component",
-               ]
-           ]
+            'laminas' => [
+                "component-whitelist" => [
+                    "some/component",
+                ],
+            ],
         ]);
 
         $package = $this->prophesize(PackageInterface::class);
@@ -1902,7 +1946,7 @@ CONFIG;
                 'component' => [
                     'Some\\Component',
                 ],
-            ]
+            ],
         ]);
         $package->getAutoload()->willReturn([]);
 
@@ -1918,14 +1962,14 @@ CONFIG;
         $this->rootPackage->getRequires()->willReturn([]);
 
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
-        $config = include vfsStream::url('project/config/modules.config.php');
+        $config  = include vfsStream::url('project/config/modules.config.php');
         $modules = $config['modules'];
         $this->assertEquals([
             'Laminas\Router',
             'Laminas\Validator',
-            'Application'
+            'Application',
         ], $modules);
-        $config = include vfsStream::url('project/config/development.config.php');
+        $config  = include vfsStream::url('project/config/development.config.php');
         $modules = $config['modules'];
         $this->assertEquals(['Some\Component'], $modules);
     }
@@ -1946,11 +1990,11 @@ CONFIG;
         $this->createConfigFile('modules.config.php', $moduleConfigContent);
 
         $this->rootPackage->getExtra()->willReturn([
-           'laminas' => [
-               "component-whitelist" => [
-                   "some/module",
-               ]
-           ]
+            'laminas' => [
+                "component-whitelist" => [
+                    "some/module",
+                ],
+            ],
         ]);
 
         $package = $this->prophesize(PackageInterface::class);
@@ -1958,7 +2002,7 @@ CONFIG;
         $package->getExtra()->willReturn([
             'laminas' => [
                 'module' => 'Some\\Module',
-            ]
+            ],
         ]);
         $package->getAutoload()->willReturn([]);
 
@@ -1977,7 +2021,7 @@ CONFIG;
         $this->rootPackage->getRequires()->willReturn([]);
 
         $this->assertNull($this->installer->onPostPackageInstall($event->reveal()));
-        $config = include vfsStream::url('project/config/modules.config.php');
+        $config  = include vfsStream::url('project/config/modules.config.php');
         $modules = $config['modules'];
         $this->assertEquals([
             'Laminas\Router',
@@ -2005,12 +2049,12 @@ CONFIG;
             'application.config.php' => [
                 $config,
                 ['application.config.php'],
-                '.*?config/application.config.php'
+                '.*?config/application.config.php',
             ],
             'development.config.php' => [
                 $config,
                 ['development.config.php.dist', 'development.config.php'],
-                '.*?config/development.config.php.dist.*?config/development.config.php'
+                '.*?config/development.config.php.dist.*?config/development.config.php',
             ],
         ];
     }
@@ -2020,8 +2064,6 @@ CONFIG;
      *
      * @param string $name
      * @param string $contents
-     *
-     * @return void
      */
     private function createConfigFile($name, $contents): void
     {

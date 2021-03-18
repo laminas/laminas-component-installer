@@ -8,7 +8,6 @@
 
 namespace LaminasTest\ComponentInstaller\Injector;
 
-use Laminas\ComponentInstaller\Injector\AbstractInjector;
 use Laminas\ComponentInstaller\Injector\InjectorInterface;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
@@ -32,13 +31,13 @@ abstract class AbstractInjectorTestCase extends TestCase
 
     /**
      * @psalm-suppress MissingConstructor
-     * @var AbstractInjector
+     * @var InjectorInterface
      */
     protected $injector;
 
     /**
      * @var string
-     * @psalm-var class-string<AbstractInjector>
+     * @psalm-var class-string<InjectorInterface>
      */
     protected $injectorClass;
 
@@ -48,7 +47,7 @@ abstract class AbstractInjectorTestCase extends TestCase
      */
     protected $injectorTypesAllowed = [];
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->configDir = vfsStream::setup('project');
 
@@ -61,6 +60,7 @@ abstract class AbstractInjectorTestCase extends TestCase
 
     /**
      * @see InjectorInterface
+     *
      * @psalm-return array<non-empty-string, array{0: InjectorInterface::TYPE_*, 1: bool}>
      */
     abstract public function allowedTypes(): array;
@@ -105,7 +105,7 @@ abstract class AbstractInjectorTestCase extends TestCase
     }
 
     /**
-     * @psalm-return array<string, array{0: string, 1: int}>
+     * @psalm-return array<non-empty-string, array{0: string, 1: int}>
      */
     abstract public function packageAlreadyRegisteredProvider(): array;
 
@@ -126,7 +126,7 @@ abstract class AbstractInjectorTestCase extends TestCase
     }
 
     /**
-     * @psalm-return array<string, array{0: string}>
+     * @psalm-return array<non-empty-string, array{0: string}>
      */
     abstract public function emptyConfiguration(): array;
 
@@ -144,7 +144,7 @@ abstract class AbstractInjectorTestCase extends TestCase
     }
 
     /**
-     * @psalm-return array<string, array{0: string, 1: string}>
+     * @psalm-return array<non-empty-string, array{0: string, 1: string}>
      */
     abstract public function packagePopulatedInConfiguration(): array;
 

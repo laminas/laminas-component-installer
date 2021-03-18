@@ -21,10 +21,10 @@ class ApplicationConfigTest extends TestCase
     /** @var ApplicationConfig */
     private $locator;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->configDir = vfsStream::setup('project');
-        $this->locator = new ApplicationConfig(
+        $this->locator   = new ApplicationConfig(
             vfsStream::url('project')
         );
     }

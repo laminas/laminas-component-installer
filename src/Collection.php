@@ -30,9 +30,7 @@ class Collection implements
     Countable,
     IteratorAggregate
 {
-    /**
-     * @param array
-     */
+    /** @var array */
     protected $items;
 
     /**
@@ -76,7 +74,6 @@ class Collection implements
     /**
      * Apply a callback to each item in the collection.
      *
-     * @param callable $callback
      * @return self
      */
     public function each(callable $callback)
@@ -90,7 +87,6 @@ class Collection implements
     /**
      * Reduce the collection to a single value.
      *
-     * @param callable $callback
      * @param mixed $initial Initial value.
      * @return mixed
      */
@@ -110,7 +106,6 @@ class Collection implements
      *
      * Filter callback should return true for values to keep.
      *
-     * @param callable $callback
      * @return static
      */
     public function filter(callable $callback)
@@ -128,7 +123,6 @@ class Collection implements
      *
      * Filter callback should return true for values to reject.
      *
-     * @param callable $callback
      * @return static
      */
     public function reject(callable $callback)
@@ -146,7 +140,6 @@ class Collection implements
      *
      * Callback should return the new value to use.
      *
-     * @param callable $callback
      * @return static
      */
     public function map(callable $callback)

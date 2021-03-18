@@ -39,10 +39,10 @@ class ConfigDiscoveryTest extends TestCase
     /** @var string[] */
     private $injectorTypes;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->projectRoot = vfsStream::setup('project');
-        $this->discovery = new ConfigDiscovery();
+        $this->discovery   = new ConfigDiscovery();
 
         $this->allTypes = new Collection([
             InjectorInterface::TYPE_CONFIG_PROVIDER,
@@ -106,7 +106,7 @@ class ConfigDiscoveryTest extends TestCase
             throw new ExpectationFailedException('Options array is empty; no NoopInjector found!');
         }
 
-        $options = $options->toArray();
+        $options  = $options->toArray();
         $injector = array_shift($options)->getInjector();
 
         if (! $injector instanceof NoopInjector) {

@@ -10,24 +10,19 @@ namespace Laminas\ComponentInstaller;
 
 class ConfigOption
 {
-    /**
-     * @var Injector\InjectorInterface
-     */
+    /** @var Injector\InjectorInterface */
     private $injector;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $promptText;
 
     /**
      * @param string $promptText
-     * @param Injector\InjectorInterface $injector
      */
     public function __construct($promptText, Injector\InjectorInterface $injector)
     {
         $this->promptText = $promptText;
-        $this->injector = $injector;
+        $this->injector   = $injector;
     }
 
     /**
