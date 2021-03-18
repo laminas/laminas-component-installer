@@ -934,6 +934,7 @@ class ComponentInstaller implements
         $modules = $this->marshalInstallableModules($extra, $options)
             // Create injectors
             ->reduce(
+                // @codingStandardsIgnoreStart
                 function (Collection $injectors, string $module) use ($options, $packageTypes, $name, $requireDev): Collection {
                     // @codingStandardsIgnoreEnd
                     // Get extra from root package
@@ -961,17 +962,17 @@ class ComponentInstaller implements
 
         // Inject modules into configuration
         $modules->each(function (
-                InjectorInterface $injector,
-                string $module
-            ) use (
-                $name,
-                $packageTypes,
-                $applicationModules,
-                $dependencies
-            ) {
-                if (isset($dependencies[$module])) {
-                    $injector->setModuleDependencies($dependencies[$module]);
-                }
+            InjectorInterface $injector,
+            string $module
+        ) use (
+            $name,
+            $packageTypes,
+            $applicationModules,
+            $dependencies
+        ) {
+            if (isset($dependencies[$module])) {
+                $injector->setModuleDependencies($dependencies[$module]);
+            }
 
                 $injector->setApplicationModules($applicationModules);
                 $this->injectModuleIntoConfig(
@@ -980,7 +981,7 @@ class ComponentInstaller implements
                     $injector,
                     $packageTypes[$module]
                 );
-            });
+        });
     }
 
     /**
