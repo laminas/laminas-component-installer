@@ -198,6 +198,82 @@ class ComponentInstallerTest extends TestCase
             ->setContent($contents);
     }
 
+    /**
+     * Create config on demand
+     *
+     * @param string $name
+     * @param string $contents
+     */
+    private function createConfigFile($name, $contents): void
+    {
+        vfsStream::newFile('config/' . $name)
+            ->at($this->projectRoot)
+            ->setContent($contents);
+    }
+
+    /**
+     * @param PackageEvent|MockObject $event
+     * @psalm-param PackageEvent&MockObject $event
+     */
+    private function prepareEventForPackageProviderDetection($event, string $packageName): void
+    {
+        if (method_exists(PackageEvent::class, 'getPool')) {
+            $pool = $this->createMock(Pool::class);
+            $pool->method('whatProvides')->with($packageName)->willReturn([]);
+            $event->method('getPool')->willReturn($pool);
+        }
+    }
+
+    /**
+     * @param array<int,string> $informations
+     */
+    private function createOutputAssertions(array $informations): void
+    {
+        $consecutiveArguments = [];
+
+        foreach ($informations as $information) {
+            $consecutiveArguments[] = [
+                self::callback(static function (string $argument) use ($information): bool {
+                    return preg_match(
+                        sprintf('/%s/', preg_quote($argument, '/')),
+                        $information
+                    ) !== false;
+                }),
+            ];
+        }
+
+        $this->io
+            ->expects(self::exactly(count($consecutiveArguments)))
+            ->method('write')
+            ->withConsecutive(...$consecutiveArguments);
+    }
+
+    /**
+     * @param array<int,AbstractQuestionAssertion> $questionsAssertions
+     */
+    private function createInputAssertions(array $questionsAssertions): void
+    {
+        $consecutiveReturnValues = $consecutiveArguments = [];
+        foreach ($questionsAssertions as $questionAssertion) {
+            /** @psalm-suppress MissingClosureParamType */
+            $consecutiveArguments[]    = [
+                self::callback($questionAssertion->assertion()),
+            ];
+            $consecutiveReturnValues[] = $questionAssertion->expectedAnswer;
+
+            if ($questionAssertion instanceof RememberedAnswerQuestionAssertion) {
+                $consecutiveArguments[]    = [self::callback($questionAssertion->rememberAnswerAssertion())];
+                $consecutiveReturnValues[] = $questionAssertion->remember ? 'y' : 'n';
+            }
+        }
+
+        $this->io
+            ->expects(self::exactly(count($consecutiveArguments)))
+            ->method('ask')
+            ->withConsecutive(...$consecutiveArguments)
+            ->willReturnOnConsecutiveCalls(...$consecutiveReturnValues);
+    }
+
     public function testMissingDependency(): void
     {
         $installPath = 'install/path';
@@ -1651,81 +1727,5 @@ CONFIG;
                 '.*?config/development.config.php.dist.*?config/development.config.php',
             ],
         ];
-    }
-
-    /**
-     * Create config on demand
-     *
-     * @param string $name
-     * @param string $contents
-     */
-    private function createConfigFile($name, $contents): void
-    {
-        vfsStream::newFile('config/' . $name)
-            ->at($this->projectRoot)
-            ->setContent($contents);
-    }
-
-    /**
-     * @param PackageEvent|MockObject $event
-     * @psalm-param PackageEvent&MockObject $event
-     */
-    private function prepareEventForPackageProviderDetection($event, string $packageName): void
-    {
-        if (method_exists(PackageEvent::class, 'getPool')) {
-            $pool = $this->createMock(Pool::class);
-            $pool->method('whatProvides')->with($packageName)->willReturn([]);
-            $event->method('getPool')->willReturn($pool);
-        }
-    }
-
-    /**
-     * @param array<int,string> $informations
-     */
-    private function createOutputAssertions(array $informations): void
-    {
-        $consecutiveArguments = [];
-
-        foreach ($informations as $information) {
-            $consecutiveArguments[] = [
-                self::callback(static function (string $argument) use ($information): bool {
-                    return preg_match(
-                        sprintf('/%s/', preg_quote($argument, '/')),
-                        $information
-                    ) !== false;
-                }),
-            ];
-        }
-
-        $this->io
-            ->expects(self::exactly(count($consecutiveArguments)))
-            ->method('write')
-            ->withConsecutive(...$consecutiveArguments);
-    }
-
-    /**
-     * @param array<int,AbstractQuestionAssertion> $questionsAssertions
-     */
-    private function createInputAssertions(array $questionsAssertions): void
-    {
-        $consecutiveReturnValues = $consecutiveArguments = [];
-        foreach ($questionsAssertions as $questionAssertion) {
-            /** @psalm-suppress MissingClosureParamType */
-            $consecutiveArguments[]    = [
-                self::callback($questionAssertion->assertion()),
-            ];
-            $consecutiveReturnValues[] = $questionAssertion->expectedAnswer;
-
-            if ($questionAssertion instanceof RememberedAnswerQuestionAssertion) {
-                $consecutiveArguments[]    = [self::callback($questionAssertion->rememberAnswerAssertion())];
-                $consecutiveReturnValues[] = $questionAssertion->remember ? 'y' : 'n';
-            }
-        }
-
-        $this->io
-            ->expects(self::exactly(count($consecutiveArguments)))
-            ->method('ask')
-            ->withConsecutive(...$consecutiveArguments)
-            ->willReturnOnConsecutiveCalls(...$consecutiveReturnValues);
     }
 }
