@@ -28,7 +28,6 @@ use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
-use Webmozart\Assert\Assert;
 
 use function count;
 use function dirname;
@@ -646,11 +645,11 @@ CONTENT
 
         $this->installer->onPostPackageInstall($event);
 
-        /** @psalm-suppress UnresolvableInclude */
-        $config = require vfsStream::url('project/config/application.config.php');
-        Assert::isNonEmptyMap($config);
-        Assert::keyExists($config, 'modules');
-        Assert::isNonEmptyList($config['modules']);
+        /**
+         * @psalm-suppress UnresolvableInclude
+         * @psalm-var array{modules:list<non-empty-string>} $config
+         */
+        $config  = require vfsStream::url('project/config/application.config.php');
         $modules = $config['modules'];
         self::assertEquals($result, $modules);
     }
@@ -753,11 +752,11 @@ CONTENT
         ]);
 
         $this->installer->onPostPackageInstall($event);
-        /** @psalm-suppress UnresolvableInclude */
-        $config = require vfsStream::url('project/config/application.config.php');
-        Assert::isNonEmptyMap($config);
-        Assert::keyExists($config, 'modules');
-        Assert::isNonEmptyList($config['modules']);
+        /**
+         * @psalm-suppress UnresolvableInclude
+         * @psalm-var array{modules:list<non-empty-string>} $config
+         */
+        $config  = require vfsStream::url('project/config/application.config.php');
         $modules = $config['modules'];
         self::assertEquals($result, $modules);
     }
@@ -1247,11 +1246,11 @@ CONTENT
         ]);
 
         $this->installer->onPostPackageInstall($event);
-        /** @psalm-suppress UnresolvableInclude */
-        $config = require vfsStream::url('project/config/application.config.php');
-        Assert::isNonEmptyMap($config);
-        Assert::keyExists($config, 'modules');
-        Assert::isNonEmptyList($config['modules']);
+        /**
+         * @psalm-suppress UnresolvableInclude
+         * @psalm-var array{modules:list<non-empty-string>} $config
+         */
+        $config  = require vfsStream::url('project/config/application.config.php');
         $modules = $config['modules'];
         self::assertEquals([
             'Some\Component',
@@ -1295,11 +1294,11 @@ CONTENT
         ]);
 
         $this->installer->onPostPackageInstall($event);
-        /** @psalm-suppress UnresolvableInclude */
-        $config = require vfsStream::url('project/config/application.config.php');
-        Assert::isNonEmptyMap($config);
-        Assert::keyExists($config, 'modules');
-        Assert::isNonEmptyList($config['modules']);
+        /**
+         * @psalm-suppress UnresolvableInclude
+         * @psalm-var array{modules:list<non-empty-string>} $config
+         */
+        $config  = require vfsStream::url('project/config/application.config.php');
         $modules = $config['modules'];
         self::assertEquals([
             'Some\Component',
@@ -1548,22 +1547,22 @@ CONFIG;
         $this->prepareEventForPackageProviderDetection($event, 'some/component');
 
         $this->installer->onPostPackageInstall($event);
-        /** @psalm-suppress UnresolvableInclude */
-        $config = require vfsStream::url('project/config/modules.config.php');
-        Assert::isNonEmptyMap($config);
-        Assert::keyExists($config, 'modules');
-        Assert::isNonEmptyList($config['modules']);
+        /**
+         * @psalm-suppress UnresolvableInclude
+         * @psalm-var array{modules:list<non-empty-string>} $config
+         */
+        $config  = require vfsStream::url('project/config/modules.config.php');
         $modules = $config['modules'];
         self::assertEquals([
             'Laminas\Router',
             'Laminas\Validator',
             'Application',
         ], $modules);
-        /** @psalm-suppress UnresolvableInclude */
-        $config = require vfsStream::url('project/config/development.config.php');
-        Assert::isNonEmptyMap($config);
-        Assert::keyExists($config, 'modules');
-        Assert::isNonEmptyList($config['modules']);
+        /**
+         * @psalm-suppress UnresolvableInclude
+         * @psalm-var array{modules:list<non-empty-string>} $config
+         */
+        $config  = require vfsStream::url('project/config/development.config.php');
         $modules = $config['modules'];
         self::assertEquals(['Some\Component'], $modules);
     }
@@ -1612,11 +1611,11 @@ CONFIG;
             ->willReturn('some/module');
 
         $this->installer->onPostPackageInstall($event);
-        /** @psalm-suppress UnresolvableInclude */
-        $config = require vfsStream::url('project/config/modules.config.php');
-        Assert::isNonEmptyMap($config);
-        Assert::keyExists($config, 'modules');
-        Assert::isNonEmptyList($config['modules']);
+        /**
+         * @psalm-suppress UnresolvableInclude
+         * @psalm-var array{modules:list<non-empty-string>} $config
+         */
+        $config  = require vfsStream::url('project/config/modules.config.php');
         $modules = $config['modules'];
         self::assertEquals([
             'Laminas\Router',
