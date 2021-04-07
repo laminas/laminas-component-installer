@@ -34,10 +34,10 @@
         "laminas/laminas-coding-standard": "~2.1.4",
         "malukenho/docheader": "^0.1.6",
         "mikey179/vfsstream": "^1.6.7",
-        "phpspec/prophecy-phpunit": "^2.0",
         "phpunit/phpunit": "^9.3",
         "psalm/plugin-phpunit": "^0.13.0",
-        "vimeo/psalm": "^4.2"
+        "vimeo/psalm": "^4.2",
+        "webmozart/assert": "^1.6"
     },
     "autoload": {
         "psr-4": {

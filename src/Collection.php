@@ -219,7 +219,7 @@ class Collection implements
      *
      * If $offset is null, pushes the item onto the stack.
      *
-     * @param string|int $offset
+     * @param string|int|null $offset
      * @param mixed $value
      * @return void
      */

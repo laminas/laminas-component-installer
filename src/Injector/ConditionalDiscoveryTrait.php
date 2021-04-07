@@ -8,8 +8,6 @@
 
 namespace Laminas\ComponentInstaller\Injector;
 
-use Laminas\ComponentInstaller\Exception;
-
 use function str_replace;
 
 trait ConditionalDiscoveryTrait
@@ -21,7 +19,6 @@ trait ConditionalDiscoveryTrait
      * @param string $package Package to inject into configuration.
      * @param int $type One of the TYPE_* constants.
      * @return bool
-     * @throws Exception\RuntimeException
      */
     public function inject($package, $type)
     {
@@ -38,7 +35,6 @@ trait ConditionalDiscoveryTrait
      *
      * @param string $package Package to remove.
      * @return bool
-     * @throws Exception\RuntimeException
      */
     public function remove($package)
     {
