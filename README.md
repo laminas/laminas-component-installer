@@ -1,6 +1,8 @@
 # Component Installer for Laminas and Mezzio Applications
-[![Build Status](https://travis-ci.com/laminas/laminas-component-installer.svg?branch=master)](https://travis-ci.com/laminas/laminas-component-installer)
-[![Coverage Status](https://coveralls.io/repos/github/laminas/laminas-component-installer/badge.svg?branch=master)](https://coveralls.io/github/laminas/laminas-component-installer?branch=master)
+
+[![Build Status](https://github.com/laminas/laminas-component-installer/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/laminas/laminas-component-installer/actions/workflows/continuous-integration.yml)
+[![type-coverage](https://shepherd.dev/github/laminas/laminas-component-installer/coverage.svg)](https://shepherd.dev/github/laminas/laminas-component-installer)
+[![Psalm level](https://shepherd.dev/github/laminas/laminas-component-installer/level.svg)](https://shepherd.dev/github/laminas/laminas-component-installer)
 
 This repository contains the Composer plugin class `Laminas\ComponentInstaller\ComponentInstaller`,
 which provides Composer event hooks for the events:
