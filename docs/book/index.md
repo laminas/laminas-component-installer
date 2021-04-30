@@ -66,8 +66,7 @@ Components are added at the **top** of the application's list of modules.
 
 Laminas modules typically deliver functionality around the
 [laminas-mvc](https://docs.laminas.dev/laminas-mvc/) workflow, including MVC
-event listeners, controllers, etc. To enable the installer workflow, they 
-require the following:
+event listeners, controllers, etc. To enable the installer workflow, they require the following:
 
 * A `Module` class in the package namespace.
 * An `extra.laminas.module` entry listing the package namespace in your `composer.json`.
