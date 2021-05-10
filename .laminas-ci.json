@@ -31,12 +31,6 @@
                 "php": "8.0",
                 "dependencies": "latest"
             }
-        },
-        {
-            "name": "License check",
-            "job": {
-                "command": "./vendor/bin/docheader check src/"
-            }
         }
     ]
 }
