@@ -231,7 +231,7 @@
 <h2 id="installation">Installation</h2>
 <pre class="highlight"><code class="language-bash">$ composer require --dev laminas/laminas-component-installer</code></pre>
 <blockquote>
-<h3>Global Installation</h3>
+<h3 id="global-installation">Global Installation</h3>
 <p>You can also install the plugin globally, in which case it will be active for
 every project you manage on your machine.</p>
 <pre class="highlight"><code class="language-bash">$ composer global require laminas/laminas-component-installer</code></pre>
@@ -239,7 +239,7 @@ every project you manage on your machine.</p>
 <h2 id="installable-packages">Installable Packages</h2>
 <p>How do you define a package for which laminas-component-installer will install
 configuration?</p>
-<h3>Components</h3>
+<h3 id="components">Components</h3>
 <p>Components are Laminas modules that deliver low-level
 functionality; examples include the various Laminas components
 themselves. These require the following:</p>
@@ -272,11 +272,10 @@ the component:</p>
   (applications using <a href="https://github.com/laminas/laminas-development-mode">laminas-development-mode</a>)</li>
 </ul>
 <p>Components are added at the <strong>top</strong> of the application's list of modules.</p>
-<h3>Modules</h3>
+<h3 id="modules">Modules</h3>
 <p>Laminas modules typically deliver functionality around the
 <a href="https://docs.laminas.dev/laminas-mvc/">laminas-mvc</a> workflow, including MVC
-event listeners, controllers, etc. To enable the installer workflow, they 
-require the following:</p>
+event listeners, controllers, etc. To enable the installer workflow, they require the following:</p>
 <ul>
 <li>A <code>Module</code> class in the package namespace.</li>
 <li>An <code>extra.laminas.module</code> entry listing the package namespace in your <code>composer.json</code>.</li>
@@ -305,7 +304,7 @@ the module:</p>
   (applications using <a href="https://github.com/laminas/laminas-development-mode">laminas-development-mode</a>)</li>
 </ul>
 <p>Modules are added at the <strong>bottom</strong> of the application's list of modules.</p>
-<h3>Config Providers</h3>
+<h3 id="config-providers">Config Providers</h3>
 <p>Configuration providers work with <a href="https://github.com/mtymek/mezzio-config-manager">mezzio-config-manager</a>
 and <a href="https://github.com/laminas/laminas-config-aggregator">laminas-config-aggregator</a>,
 which provides generic functionality for aggregating and merging application
@@ -391,7 +390,7 @@ configuration accordingly.</p>
 the same package. As an example, you might define default configuration, plus
 configuration for plugins; specifying these as separate configuration providers
 allows the consumer to choose if they want both enabled in their application.</p>
-<h3>Removing individual packages</h3>
+<h3 id="removing-individual-packages">Removing individual packages</h3>
 <p>When removing individual packages that were originally installed via a
 metapackage, <em>the component installer will not trigger</em>. As such, you will need
 to manually remove such packages from your configuration.</p>
@@ -448,6 +447,7 @@ requirement of the metapackage. As such, it's typically safer to:</p>
         <optgroup label="Components"></optgroup>
     </select>
 </div>
+                    
                     
                 
             </div>
@@ -521,7 +521,7 @@ requirement of the metapackage. As such, it's typically safer to:</p>
                         <p>
                             <!--Built with love by the Laminas team with the help of our
                             <a href="https://github.com/laminas/laminas-component-installer/graphs/contributors">contributors</a>.<br>-->
-                            &copy; 2020 <a href="https://getlaminas.org/">Laminas Project</a> a Series of LF Projects, LLC.
+                            &copy; 2021 <a href="https://getlaminas.org/">Laminas Project</a> a Series of LF Projects, LLC.
                         </p>
                     </div>
                 </div>
@@ -569,5 +569,5 @@ requirement of the metapackage. As such, it's typically safer to:</p>
 
 <!--
 MkDocs version : 1.1.2
-Build Date UTC : 2020-12-01 22:05:22.981758+00:00
+Build Date UTC : 2021-05-10 19:42:00.983749+00:00
 -->
