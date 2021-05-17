@@ -1,8 +1,7 @@
 {
     "name": "laminas/laminas-component-installer",
-    "description": "Composer plugin for injecting modules and configuration providers into application configuration",
     "type": "composer-plugin",
-    "license": "BSD-3-Clause",
+    "description": "Composer plugin for injecting modules and configuration providers into application configuration",
     "keywords": [
         "laminas",
         "component installer",
@@ -10,24 +9,14 @@
         "plugin"
     ],
     "homepage": "https://laminas.dev",
-    "support": {
-        "docs": "https://docs.laminas.dev/laminas-component-installer/",
-        "issues": "https://github.com/laminas/laminas-component-installer/issues",
-        "source": "https://github.com/laminas/laminas-component-installer",
-        "rss": "https://github.com/laminas/laminas-component-installer/releases.atom",
-        "chat": "https://laminas.dev/chat",
-        "forum": "https://discourse.laminas.dev"
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "extra": {
-        "class": "Laminas\\ComponentInstaller\\ComponentInstaller"
-    },
+    "license": "BSD-3-Clause",
     "require": {
         "php": "^7.3 || ~8.0.0",
         "composer-plugin-api": "^1.0 || ^2.0",
         "laminas/laminas-zendframework-bridge": "^1.0"
+    },
+    "replace": {
+        "zendframework/zend-component-installer": "^2.1.2"
     },
     "require-dev": {
         "composer/composer": "^1.5.2 || ^2.0",
@@ -38,6 +27,12 @@
         "psalm/plugin-phpunit": "^0.13.0",
         "vimeo/psalm": "^4.2",
         "webmozart/assert": "^1.6"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "class": "Laminas\\ComponentInstaller\\ComponentInstaller"
     },
     "autoload": {
         "psr-4": {
@@ -57,12 +52,17 @@
         ],
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
-        "test": "phpunit --colors=always",
+        "license-check": "docheader check src/",
         "static-analysis": "psalm --shepherd --stats",
-        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
-        "license-check": "docheader check src/"
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     },
-    "replace": {
-        "zendframework/zend-component-installer": "^2.1.2"
+    "support": {
+        "issues": "https://github.com/laminas/laminas-component-installer/issues",
+        "forum": "https://discourse.laminas.dev",
+        "chat": "https://laminas.dev/chat",
+        "source": "https://github.com/laminas/laminas-component-installer",
+        "docs": "https://docs.laminas.dev/laminas-component-installer/",
+        "rss": "https://github.com/laminas/laminas-component-installer/releases.atom"
     }
 }
