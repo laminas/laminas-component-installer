@@ -60,8 +60,7 @@ one or more of the following keys under the `extra.laminas` configuration in the
   - `config/development.config.php`
 
 - A **config-provider** is for use with applications that utilize
-  [mezzio-config-manager](https://github.com/mtymek/mezzio-config-manager)
-  or [laminas-config-aggregator](https://github.com/laminas/laminas-config-aggregator)
+  [laminas-config-aggregator](https://github.com/laminas/laminas-config-aggregator)
   (which may or may not be Mezzio applications). The class listed must be an
   invokable that returns an array of configuration, and will be injected at the
   top of:
