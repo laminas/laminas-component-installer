@@ -12,7 +12,7 @@ class AbstractDiscoveryTest extends TestCase
     /**
      * @covers \Laminas\ComponentInstaller\ConfigDiscovery\AbstractDiscovery::__construct
      */
-    public function testConstructorThrowsExceptionWithProjectDirectoryOfNull(): void
+    public function testConstructorAcceptsNullValueForProjectDirectory(): void
     {
         $this->expectNotToPerformAssertions();
         new class extends AbstractDiscovery {
