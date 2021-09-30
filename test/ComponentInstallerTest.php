@@ -1069,6 +1069,48 @@ CONTENT
         self::assertStringContainsString("'Other\Component'", $config);
     }
 
+    public function testAddPackageToConfigWillPassProjectRootAsStringToConfigDiscovery(): void
+    {
+        $this->projectRoot = null;
+        $this->installer   = new ComponentInstaller();
+
+        $this->installer->activate(
+            $this->composer,
+            $this->io
+        );
+
+        /** @psalm-var InstallationManager&MockObject $installationManager */
+        $installationManager       = $this->createMock(InstallationManager::class);
+        $this->installationManager = $installationManager;
+
+        $this->composer
+            ->method('getInstallationManager')
+            ->willReturn($installationManager);
+
+        $package = $this->createMock(PackageInterface::class);
+        $package->method('getName')->willReturn('some/component');
+        $package->method('getExtra')->willReturn([
+            'laminas' => [
+                'component'       => 'Some\\Component',
+                'config-provider' => 'Some\\Component\\ConfigProvider',
+                'module'          => 'Some\\Component',
+            ],
+        ]);
+
+        $operation = $this->createMock(InstallOperation::class);
+        $operation->method('getPackage')->willReturn($package);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+
+        $this->io
+            ->expects(self::never())
+            ->method(self::anything());
+
+        $this->installer->onPostPackageInstall($event);
+    }
+
     public function testMultipleInvocationsOfOnPostPackageInstallCanPromptMultipleTimes(): void
     {
         // Do a first pass, with an initial package

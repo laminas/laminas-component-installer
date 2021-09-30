@@ -117,7 +117,7 @@ class ComponentInstaller implements
      *
      * @var string
      */
-    private $projectRoot;
+    private $projectRoot = '';
 
     /** @var Closure():PackageProviderDetectionFactory */
     private $packageProviderFactory;
