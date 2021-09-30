@@ -30,7 +30,7 @@
         "laminas/laminas-zendframework-bridge": "^1.0"
     },
     "require-dev": {
-        "composer/composer": "^1.5.2 || ^2.0",
+        "composer/composer": "^1.10.22 || ^2.0",
         "laminas/laminas-coding-standard": "2.2.1",
         "malukenho/docheader": "^0.1.6",
         "mikey179/vfsstream": "1.6.10",
