@@ -2,27 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 2.3.3 - TBD
+## 2.3.3 - 2021-09-30
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [2.3.3](https://github.com/laminas/laminas-component-installer/milestone/7)
 
-- Nothing.
+2.3.x bugfix release (patch)
 
-### Deprecated
+### 2.3.3
 
-- Nothing.
+- Total issues resolved: **0**
+- Total pull requests resolved: **1**
+- Total contributors: **1**
 
-### Removed
+#### Documentation
 
-- Nothing.
-
-### Fixed
-
-- Nothing.
+ - [39: Remove mentioning of deprecated mezzio-config-manager](https://github.com/laminas/laminas-component-installer/pull/39) thanks to @arueckauer
 
 ## 2.3.2 - 2020-10-27
 
