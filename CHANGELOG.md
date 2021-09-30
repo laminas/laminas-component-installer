@@ -60,6 +60,25 @@ Feature release (minor)
  - [23: Psalm integration](https://github.com/laminas/laminas-component-installer/pull/23) thanks to @weierophinney and @boesing
  - [22: PHP 8 support Fixes #14](https://github.com/laminas/laminas-component-installer/pull/22) thanks to @adamturcsan and @boesing
 
+## 2.3.3 - 2021-09-30
+
+
+-----
+
+### Release Notes for [2.3.3](https://github.com/laminas/laminas-component-installer/milestone/7)
+
+2.3.x bugfix release (patch)
+
+### 2.3.3
+
+- Total issues resolved: **0**
+- Total pull requests resolved: **1**
+- Total contributors: **1**
+
+#### Documentation
+
+- [39: Remove mentioning of deprecated mezzio-config-manager](https://github.com/laminas/laminas-component-installer/pull/39) thanks to @arueckauer
+
 ## 2.3.2 - 2020-10-27
 
 ### Fixed
