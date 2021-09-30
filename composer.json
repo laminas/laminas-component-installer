@@ -33,7 +33,7 @@
         "composer/composer": "^1.5.2 || ^2.0",
         "laminas/laminas-coding-standard": "2.2.1",
         "malukenho/docheader": "^0.1.6",
-        "mikey179/vfsstream": "^1.6.7",
+        "mikey179/vfsstream": "1.6.10",
         "phpunit/phpunit": "^9.3",
         "psalm/plugin-phpunit": "^0.13.0",
         "vimeo/psalm": "^4.2",
