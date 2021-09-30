@@ -1071,20 +1071,26 @@ CONTENT
 
     public function testAddPackageToConfigWillPassProjectRootAsStringToConfigDiscovery(): void
     {
-        $this->installer = new ComponentInstaller();
-
-        $this->installer->activate(
-            $this->composer,
-            $this->io
-        );
-
         /** @psalm-var InstallationManager&MockObject $installationManager */
-        $installationManager       = $this->createMock(InstallationManager::class);
-        $this->installationManager = $installationManager;
+        $installationManager = $this->createMock(InstallationManager::class);
 
-        $this->composer
+        /** @psalm-var Composer&MockObject $composer */
+        $composer = $this->createMock(Composer::class);
+        $composer
             ->method('getInstallationManager')
             ->willReturn($installationManager);
+
+        /** @psalm-var IOInterface&MockObject $io */
+        $io = $this->createMock(IOInterface::class);
+        $io
+            ->expects(self::never())
+            ->method(self::anything());
+
+        $installer = new ComponentInstaller();
+        $installer->activate(
+            $composer,
+            $io
+        );
 
         $package = $this->createMock(PackageInterface::class);
         $package->method('getName')->willReturn('some/component');
@@ -1103,11 +1109,7 @@ CONTENT
         $event->method('isDevMode')->willReturn(true);
         $event->method('getOperation')->willReturn($operation);
 
-        $this->io
-            ->expects(self::never())
-            ->method(self::anything());
-
-        $this->installer->onPostPackageInstall($event);
+        $installer->onPostPackageInstall($event);
     }
 
     public function testMultipleInvocationsOfOnPostPackageInstallCanPromptMultipleTimes(): void
