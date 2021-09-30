@@ -19,8 +19,9 @@ use function is_array;
 use function iterator_to_array;
 use function sprintf;
 
-use const ReturnTypeWillChange;
-
+/**
+ * @use ReturnTypeWillChange
+ */
 class Collection implements
     ArrayAccess,
     Countable,
