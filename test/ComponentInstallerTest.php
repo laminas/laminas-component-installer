@@ -1071,8 +1071,7 @@ CONTENT
 
     public function testAddPackageToConfigWillPassProjectRootAsStringToConfigDiscovery(): void
     {
-        $this->projectRoot = null;
-        $this->installer   = new ComponentInstaller();
+        $this->installer = new ComponentInstaller();
 
         $this->installer->activate(
             $this->composer,
