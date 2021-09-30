@@ -33,10 +33,8 @@ abstract class AbstractDiscovery implements DiscoveryInterface
      *
      * Optionally specify project directory; $configFile will be relative to
      * this value.
-     *
-     * @param string $projectDirectory
      */
-    public function __construct($projectDirectory = '')
+    public function __construct(string $projectDirectory = '')
     {
         if ('' !== $projectDirectory && is_dir($projectDirectory)) {
             $this->configFile = sprintf(
