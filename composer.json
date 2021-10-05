@@ -30,13 +30,13 @@
         "laminas/laminas-zendframework-bridge": "^1.0"
     },
     "require-dev": {
-        "composer/composer": "2.0.13",
+        "composer/composer": "^2.1.9",
         "laminas/laminas-coding-standard": "2.2.1",
         "malukenho/docheader": "^0.1.6",
         "mikey179/vfsstream": "1.6.10",
         "phpunit/phpunit": "^9.3",
         "psalm/plugin-phpunit": "^0.13.0",
-        "vimeo/psalm": "^4.2",
+        "vimeo/psalm": "^4.10",
         "webmozart/assert": "^1.6"
     },
     "autoload": {
