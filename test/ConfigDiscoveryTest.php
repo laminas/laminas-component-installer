@@ -10,7 +10,6 @@ use Laminas\ComponentInstaller\Injector\InjectorInterface;
 use Laminas\ComponentInstaller\Injector\NoopInjector;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
-use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 
 use function array_shift;
@@ -100,14 +99,14 @@ class ConfigDiscoveryTest extends TestCase
     public function assertOptionsContainsNoopInjector(Collection $options): void
     {
         if ($options->isEmpty()) {
-            throw new ExpectationFailedException('Options array is empty; no NoopInjector found!');
+            self::fail('Options array is empty; no NoopInjector found!');
         }
 
         $options  = $options->toArray();
         $injector = array_shift($options)->getInjector();
 
         if (! $injector instanceof NoopInjector) {
-            throw new ExpectationFailedException('Options array does not contain a NoopInjector!');
+            self::fail('Options array does not contain a NoopInjector!');
         }
     }
 
