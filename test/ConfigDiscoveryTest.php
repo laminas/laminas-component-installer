@@ -112,7 +112,7 @@ class ConfigDiscoveryTest extends TestCase
     {
         foreach ($options as $option) {
             if (! $option instanceof ConfigOption) {
-                throw new ExpectationFailedException(sprintf(
+                self::fail(sprintf(
                     'Invalid option returned: %s',
                     is_object($option) ? get_class($option) : gettype($option)
                 ));
@@ -123,7 +123,7 @@ class ConfigDiscoveryTest extends TestCase
             }
         }
 
-        throw new ExpectationFailedException(sprintf(
+        self::fail(sprintf(
             'Injector of type %s was not found in the options',
             $injectorType
         ));
@@ -136,7 +136,7 @@ class ConfigDiscoveryTest extends TestCase
 
         foreach ($chain->getCollection() as $injector) {
             if (! $injector instanceof InjectorInterface) {
-                throw new ExpectationFailedException(sprintf(
+                self::fail(sprintf(
                     'Invalid Injector returned: %s',
                     is_object($injector) ? get_class($injector) : gettype($injector)
                 ));
@@ -147,7 +147,7 @@ class ConfigDiscoveryTest extends TestCase
             }
         }
 
-        throw new ExpectationFailedException(sprintf(
+        self::fail(sprintf(
             'Injector of type %s was not found in the options',
             $injectorType
         ));
