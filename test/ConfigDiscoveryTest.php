@@ -19,6 +19,9 @@ use function gettype;
 use function is_object;
 use function sprintf;
 
+/**
+ * @psalm-suppress MissingConstructor
+ */
 class ConfigDiscoveryTest extends TestCase
 {
     /** @var vfsStreamDirectory */
