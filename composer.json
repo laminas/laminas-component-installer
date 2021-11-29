@@ -35,7 +35,7 @@
         "malukenho/docheader": "^0.1.6",
         "mikey179/vfsstream": "1.6.10",
         "phpunit/phpunit": "^9.3",
-        "psalm/plugin-phpunit": "^0.13.0",
+        "psalm/plugin-phpunit": "^0.16.1",
         "vimeo/psalm": "^4.10",
         "webmozart/assert": "^1.6"
     },
