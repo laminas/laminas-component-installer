@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\ComponentInstaller\ConfigDiscovery;
 
 use function preg_quote;
@@ -23,10 +25,7 @@ class MezzioConfig extends AbstractDiscovery
      */
     protected $expected = '';
 
-    /**
-     * @param string $projectDirectory
-     */
-    public function __construct($projectDirectory = '')
+    public function __construct(string $projectDirectory = '')
     {
         $this->expected = sprintf(
             '/new (?:%s?%s)?ConfigManager\(\s*(?:array\(|\[)/s',

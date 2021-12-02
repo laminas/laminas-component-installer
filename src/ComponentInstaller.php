@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\ComponentInstaller;
 
 use ArrayObject;
@@ -117,7 +119,7 @@ class ComponentInstaller implements
      *
      * @var string
      */
-    private $projectRoot;
+    private $projectRoot = '';
 
     /** @var Closure():PackageProviderDetectionFactory */
     private $packageProviderFactory;

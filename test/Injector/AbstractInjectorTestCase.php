@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaminasTest\ComponentInstaller\Injector;
 
 use Laminas\ComponentInstaller\Injector\InjectorInterface;
@@ -11,10 +13,7 @@ use function file_get_contents;
 
 abstract class AbstractInjectorTestCase extends TestCase
 {
-    /**
-     * @psalm-suppress MissingConstructor
-     * @var vfsStreamDirectory
-     */
+    /** @var vfsStreamDirectory */
     protected $configDir;
 
     /**
@@ -23,10 +22,7 @@ abstract class AbstractInjectorTestCase extends TestCase
      */
     protected $configFile;
 
-    /**
-     * @psalm-suppress MissingConstructor
-     * @var InjectorInterface
-     */
+    /** @var InjectorInterface */
     protected $injector;
 
     /**

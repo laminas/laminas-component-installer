@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\ComponentInstaller\ConfigDiscovery;
 
 class DevelopmentConfig extends ApplicationConfig

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaminasTest\ComponentInstaller;
 
 use Composer\Composer;
@@ -1067,6 +1069,49 @@ CONTENT
         $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
         self::assertStringContainsString("'Some\Component'", $config);
         self::assertStringContainsString("'Other\Component'", $config);
+    }
+
+    public function testAddPackageToConfigWillPassProjectRootAsStringToConfigDiscovery(): void
+    {
+        /** @psalm-var InstallationManager&MockObject $installationManager */
+        $installationManager = $this->createMock(InstallationManager::class);
+
+        /** @psalm-var Composer&MockObject $composer */
+        $composer = $this->createMock(Composer::class);
+        $composer
+            ->method('getInstallationManager')
+            ->willReturn($installationManager);
+
+        /** @psalm-var IOInterface&MockObject $io */
+        $io = $this->createMock(IOInterface::class);
+        $io
+            ->expects(self::never())
+            ->method(self::anything());
+
+        $installer = new ComponentInstaller();
+        $installer->activate(
+            $composer,
+            $io
+        );
+
+        $package = $this->createMock(PackageInterface::class);
+        $package->method('getName')->willReturn('some/component');
+        $package->method('getExtra')->willReturn([
+            'laminas' => [
+                'component'       => 'Some\\Component',
+                'config-provider' => 'Some\\Component\\ConfigProvider',
+                'module'          => 'Some\\Component',
+            ],
+        ]);
+
+        $operation = $this->createMock(InstallOperation::class);
+        $operation->method('getPackage')->willReturn($package);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+
+        $installer->onPostPackageInstall($event);
     }
 
     public function testMultipleInvocationsOfOnPostPackageInstallCanPromptMultipleTimes(): void

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaminasTest\ComponentInstaller;
 
 use Laminas\ComponentInstaller\Collection;
@@ -10,7 +12,6 @@ use Laminas\ComponentInstaller\Injector\InjectorInterface;
 use Laminas\ComponentInstaller\Injector\NoopInjector;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
-use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 
 use function array_shift;
@@ -97,14 +98,14 @@ class ConfigDiscoveryTest extends TestCase
     public function assertOptionsContainsNoopInjector(Collection $options): void
     {
         if ($options->isEmpty()) {
-            throw new ExpectationFailedException('Options array is empty; no NoopInjector found!');
+            self::fail('Options array is empty; no NoopInjector found!');
         }
 
         $options  = $options->toArray();
         $injector = array_shift($options)->getInjector();
 
         if (! $injector instanceof NoopInjector) {
-            throw new ExpectationFailedException('Options array does not contain a NoopInjector!');
+            self::fail('Options array does not contain a NoopInjector!');
         }
     }
 
@@ -112,7 +113,7 @@ class ConfigDiscoveryTest extends TestCase
     {
         foreach ($options as $option) {
             if (! $option instanceof ConfigOption) {
-                throw new ExpectationFailedException(sprintf(
+                self::fail(sprintf(
                     'Invalid option returned: %s',
                     is_object($option) ? get_class($option) : gettype($option)
                 ));
@@ -123,7 +124,7 @@ class ConfigDiscoveryTest extends TestCase
             }
         }
 
-        throw new ExpectationFailedException(sprintf(
+        self::fail(sprintf(
             'Injector of type %s was not found in the options',
             $injectorType
         ));
@@ -136,7 +137,7 @@ class ConfigDiscoveryTest extends TestCase
 
         foreach ($chain->getCollection() as $injector) {
             if (! $injector instanceof InjectorInterface) {
-                throw new ExpectationFailedException(sprintf(
+                self::fail(sprintf(
                     'Invalid Injector returned: %s',
                     is_object($injector) ? get_class($injector) : gettype($injector)
                 ));
@@ -147,7 +148,7 @@ class ConfigDiscoveryTest extends TestCase
             }
         }
 
-        throw new ExpectationFailedException(sprintf(
+        self::fail(sprintf(
             'Injector of type %s was not found in the options',
             $injectorType
         ));

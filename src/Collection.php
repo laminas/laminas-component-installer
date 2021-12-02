@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\ComponentInstaller;
 
 use ArrayAccess;
@@ -8,6 +10,7 @@ use Countable;
 use InvalidArgumentException;
 use IteratorAggregate;
 use OutOfRangeException;
+use ReturnTypeWillChange;
 use Traversable;
 
 use function array_key_exists;
@@ -184,6 +187,7 @@ class Collection implements
      * @param string|int $offset
      * @return bool
      */
+    #[ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return array_key_exists($offset, $this->items);
@@ -196,6 +200,7 @@ class Collection implements
      * @return mixed
      * @throws OutOfRangeException
      */
+    #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         if (! $this->offsetExists($offset)) {
@@ -217,6 +222,7 @@ class Collection implements
      * @param mixed $value
      * @return void
      */
+    #[ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (null === $offset) {
@@ -233,6 +239,7 @@ class Collection implements
      * @param string|int $offset
      * @return void
      */
+    #[ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         if ($this->offsetExists($offset)) {
@@ -245,6 +252,7 @@ class Collection implements
      *
      * @return int
      */
+    #[ReturnTypeWillChange]
     public function count()
     {
         return count($this->items);
@@ -265,6 +273,7 @@ class Collection implements
      *
      * @return ArrayIterator
      */
+    #[ReturnTypeWillChange]
     public function getIterator()
     {
         return new ArrayIterator($this->items);
