@@ -13,6 +13,7 @@ use Composer\Repository\InstalledArrayRepository;
 use Composer\Repository\InstalledRepository;
 use Composer\Repository\PlatformRepository;
 use Composer\Repository\RepositoryFactory;
+use Composer\Repository\RepositoryInterface as ComposerRepositoryInterface;
 use Composer\Repository\RootPackageRepository;
 
 use function version_compare;
@@ -48,15 +49,9 @@ final class PackageProviderDetectionFactory
             return new ComposerV1($event->getPool());
         }
 
-        $platformOverrides = $this->composer->getConfig()->get('platform') ?? [];
+        $installedRepo = new InstalledRepository($this->prepareRepositoriesForInstalledRepository());
+        $defaultRepos  = new CompositeRepository(RepositoryFactory::defaultRepos(new NullIO()));
 
-        $installedRepo = new InstalledRepository([
-            $this->packageRepository,
-            $this->composer->getRepositoryManager()->getLocalRepository(),
-            new PlatformRepository([], $platformOverrides),
-        ]);
-
-        $defaultRepos = new CompositeRepository(RepositoryFactory::defaultRepos(new NullIO()));
         if (
             ($match = $defaultRepos->findPackage($packageName, '*'))
             && false === $installedRepo->hasPackage($match)
@@ -65,5 +60,24 @@ final class PackageProviderDetectionFactory
         }
 
         return new ComposerV2($installedRepo);
+    }
+
+    /** @psalm-return ComposerRepositoryInterface[] */
+    private function prepareRepositoriesForInstalledRepository(): array
+    {
+        $platformOverrides = $this->composer->getConfig()->get('platform') ?? [];
+
+        if (null === $this->packageRepository) {
+            return [
+                $this->composer->getRepositoryManager()->getLocalRepository(),
+                new PlatformRepository([], $platformOverrides),
+            ];
+        }
+
+        return [
+            $this->packageRepository,
+            $this->composer->getRepositoryManager()->getLocalRepository(),
+            new PlatformRepository([], $platformOverrides),
+        ];
     }
 }

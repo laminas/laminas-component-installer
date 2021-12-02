@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.6.4@97fe86c4e158b5a57c5150aa5055c38b5a809aab">
+<files psalm-version="4.13.1@5cf660f63b548ccd4a56f62d916ee4d6028e01a3">
   <file src="src/Collection.php">
     <DocblockTypeContradiction occurrences="1">
       <code>is_array($items)</code>
@@ -52,6 +52,9 @@
     <InvalidScalarArgument occurrences="1">
       <code>$default</code>
     </InvalidScalarArgument>
+    <LessSpecificImplementedReturnType occurrences="1">
+      <code>string[]</code>
+    </LessSpecificImplementedReturnType>
     <LessSpecificReturnStatement occurrences="1">
       <code>$dependencies-&gt;getArrayCopy()</code>
     </LessSpecificReturnStatement>
@@ -102,8 +105,9 @@
       <code>$supportedTypes</code>
       <code>$value</code>
     </MixedArgument>
-    <MixedArgumentTypeCoercion occurrences="1">
+    <MixedArgumentTypeCoercion occurrences="2">
       <code>$extra</code>
+      <code>$package-&gt;getAutoload()</code>
     </MixedArgumentTypeCoercion>
     <MixedArrayAssignment occurrences="2">
       <code>$ask[]</code>
@@ -152,17 +156,21 @@
     <PossiblyNullArgument occurrences="1">
       <code>$this-&gt;io-&gt;ask(implode($ask), 'y')</code>
     </PossiblyNullArgument>
-    <PropertyNotSetInConstructor occurrences="4">
+    <PropertyNotSetInConstructor occurrences="3">
       <code>$composer</code>
       <code>$io</code>
       <code>$packageProviderFactory</code>
-      <code>$projectRoot</code>
     </PropertyNotSetInConstructor>
     <RedundantConditionGivenDocblockType occurrences="3">
       <code>is_string($module)</code>
       <code>is_string($projectRoot)</code>
       <code>is_string($this-&gt;projectRoot)</code>
     </RedundantConditionGivenDocblockType>
+    <UnusedClosureParam occurrences="3">
+      <code>$key</code>
+      <code>$packages</code>
+      <code>$type</code>
+    </UnusedClosureParam>
   </file>
   <file src="src/ConfigDiscovery.php">
     <InvalidArgument occurrences="1">
@@ -227,19 +235,14 @@
       <code>$module</code>
       <code>$module</code>
     </MixedArgument>
-    <MixedAssignment occurrences="4">
+    <MixedAssignment occurrences="2">
       <code>$dependency</code>
-      <code>$first</code>
-      <code>$last</code>
       <code>$module</code>
     </MixedAssignment>
-    <MixedInferredReturnType occurrences="2">
+    <MixedInferredReturnType occurrences="1">
       <code>string</code>
-      <code>string|null</code>
     </MixedInferredReturnType>
-    <MixedReturnStatement occurrences="3">
-      <code>$first</code>
-      <code>$last</code>
+    <MixedReturnStatement occurrences="1">
       <code>reset($dependencies)</code>
     </MixedReturnStatement>
     <NullableReturnStatement occurrences="1">
@@ -285,7 +288,8 @@
     <MixedArgument occurrences="1">
       <code>$file</code>
     </MixedArgument>
-    <MixedAssignment occurrences="1">
+    <MixedAssignment occurrences="2">
+      <code>$allowedTypes</code>
       <code>$injector</code>
     </MixedAssignment>
     <MixedInferredReturnType occurrences="2">
@@ -306,6 +310,9 @@
       <code>$injected</code>
       <code>$removed</code>
     </MixedReturnStatement>
+    <UnusedClosureParam occurrences="1">
+      <code>$injector</code>
+    </UnusedClosureParam>
   </file>
   <file src="src/Injector/MezzioConfigInjector.php">
     <MissingParamType occurrences="1">
@@ -330,8 +337,9 @@
     </UndefinedInterfaceMethod>
   </file>
   <file src="src/PackageProvider/PackageProviderDetectionFactory.php">
-    <MixedArgument occurrences="2">
+    <MixedArgument occurrences="3">
       <code>$event-&gt;getPool()</code>
+      <code>$platformOverrides</code>
       <code>$platformOverrides</code>
     </MixedArgument>
     <MixedAssignment occurrences="1">
@@ -342,15 +350,11 @@
     </UndefinedMethod>
   </file>
   <file src="test/ComponentInstallerTest.php">
-    <MissingParamType occurrences="1">
-      <code>$argument</code>
-    </MissingParamType>
     <MixedArgument occurrences="2">
       <code>$configName</code>
       <code>$pathToModule</code>
     </MixedArgument>
-    <MixedAssignment occurrences="4">
-      <code>$config</code>
+    <MixedAssignment occurrences="3">
       <code>$configName</code>
       <code>$dependencies</code>
       <code>$dependencies</code>
@@ -364,10 +368,6 @@
     </PossiblyUndefinedVariable>
   </file>
   <file src="test/ConfigDiscoveryTest.php">
-    <InternalClass occurrences="6">
-      <code>new ExpectationFailedException('Options array does not contain a NoopInjector!')</code>
-      <code>new ExpectationFailedException('Options array is empty; no NoopInjector found!')</code>
-    </InternalClass>
     <InvalidPropertyAssignmentValue occurrences="1">
       <code>new ConfigDiscovery()</code>
     </InvalidPropertyAssignmentValue>
@@ -393,7 +393,9 @@
     </UndefinedDocblockClass>
   </file>
   <file src="test/Injector/AbstractInjectorTestCase.php">
-    <InvalidStringClass occurrences="1"/>
-    <PropertyTypeCoercion occurrences="1"/>
+    <PossiblyInvalidArgument occurrences="2">
+      <code>testInjectAddsPackageToModulesListInAppropriateLocation</code>
+      <code>testRegistersTypesReturnsExpectedBooleanBasedOnType</code>
+    </PossiblyInvalidArgument>
   </file>
 </files>
