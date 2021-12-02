@@ -10,6 +10,7 @@ use Countable;
 use InvalidArgumentException;
 use IteratorAggregate;
 use OutOfRangeException;
+use ReturnTypeWillChange;
 use Traversable;
 
 use function array_key_exists;
@@ -21,9 +22,6 @@ use function is_array;
 use function iterator_to_array;
 use function sprintf;
 
-/**
- * @use ReturnTypeWillChange
- */
 class Collection implements
     ArrayAccess,
     Countable,
