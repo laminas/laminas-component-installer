@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\ComponentInstaller\Injector;
 
 use function str_replace;

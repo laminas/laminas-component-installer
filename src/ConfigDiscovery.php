@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laminas\ComponentInstaller;
 
 use Laminas\ComponentInstaller\ConfigDiscovery\DiscoveryInterface;
