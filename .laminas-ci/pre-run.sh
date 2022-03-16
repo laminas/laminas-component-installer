@@ -10,7 +10,7 @@ function get_composer() {
 
 JOB=$3
 COMMAND=$(echo "${JOB}" | jq -r ".command")
-PATTERN="composer-1 install"
+PATTERN="composer-1"
 
 if [[ "${COMMAND}" =~ ${PATTERN} ]];then
     get_composer
