@@ -3,7 +3,7 @@
         {
             "name": "PHPUnit on PHP 7.4 using Composer v1 with lowest dependencies",
             "job": {
-                "command": "rm -rf ./vendor && composer-1 require --dev composer/composer:^1 && ./vendor/bin/phpunit",
+                "command": "composer require --dev --update-with-all-dependencies composer/composer:^1 && ./vendor/bin/phpunit",
                 "php": "7.4",
                 "dependencies": "lowest"
             }
@@ -11,7 +11,7 @@
         {
             "name": "PHPUnit on PHP 7.4 using Composer v1 with latest dependencies",
             "job": {
-                "command": "rm -rf ./vendor && composer-1 require --dev composer/composer:^1 && ./vendor/bin/phpunit",
+                "command": "composer require --dev --update-with-all-dependencies composer/composer:^1 && ./vendor/bin/phpunit",
                 "php": "7.4",
                 "dependencies": "latest"
             }
@@ -27,7 +27,7 @@
         {
             "name": "PHPUnit on PHP 8.1 using Composer v1 with latest dependencies",
             "job": {
-                "command": "rm -rf ./vendor && composer-1 require --dev composer/composer:^1 && ./vendor/bin/phpunit",
+                "command": "composer require --dev --update-with-all-dependencies composer/composer:^1 && ./vendor/bin/phpunit",
                 "php": "8.1",
                 "dependencies": "latest"
             }
@@ -35,7 +35,7 @@
         {
             "name": "PHPUnit on PHP 8.1 using Composer v1 with latest dependencies",
             "job": {
-                "command": "rm -rf ./vendor && composer-1 require --dev composer/composer:^1 && ./vendor/bin/phpunit",
+                "command": "composer require --dev --update-with-all-dependencies composer/composer:^1 && ./vendor/bin/phpunit",
                 "php": "8.1",
                 "dependencies": "latest"
             }
