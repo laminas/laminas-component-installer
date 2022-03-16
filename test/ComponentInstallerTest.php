@@ -241,7 +241,6 @@ final class ComponentInstallerTest extends TestCase
     {
         $consecutiveReturnValues = $consecutiveArguments = [];
         foreach ($questionsAssertions as $questionAssertion) {
-            /** @psalm-suppress MissingClosureParamType */
             $consecutiveArguments[]    = [
                 self::callback($questionAssertion->assertion()),
             ];
