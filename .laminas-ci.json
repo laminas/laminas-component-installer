@@ -9,5 +9,7 @@
             }
         }
     ],
-    "ignore_php_platform_requirements": {}
+    "ignore_php_platform_requirements": {
+        "8.0": false
+    }
 }
