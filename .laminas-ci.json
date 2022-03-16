@@ -8,5 +8,6 @@
                 "dependencies": "*"
             }
         }
-    ]
+    ],
+    "ignore_php_platform_requirements": {}
 }
