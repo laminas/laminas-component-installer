@@ -51,24 +51,16 @@ final class ComponentInstallerTest extends TestCase
     /** @var ComponentInstaller */
     private $installer;
 
-    /**
-     * @var Composer&MockObject
-     */
+    /** @var Composer&MockObject */
     private $composer;
 
-    /**
-     * @var RootPackage&MockObject
-     */
+    /** @var RootPackage&MockObject */
     private $rootPackage;
 
-    /**
-     * @var IOInterface&MockObject
-     */
+    /** @var IOInterface&MockObject */
     private $io;
 
-    /**
-     * @var InstallationManager&MockObject
-     */
+    /** @var InstallationManager&MockObject */
     private $installationManager;
 
     /** @var array{laminas?:array{component-whitelist?:list<non-empty-string>}} */
@@ -84,7 +76,7 @@ final class ComponentInstallerTest extends TestCase
         $composer       = $this->createMock(Composer::class);
         $this->composer = $composer;
 
-        $rootPackage       = $this->createMock(RootPackage::class);
+        $rootPackage = $this->createMock(RootPackage::class);
 
         $this->rootPackage = $rootPackage;
         $this->rootPackage
