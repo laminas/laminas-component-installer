@@ -32,7 +32,7 @@
         "composer-plugin-api": "^1.0 || ^2.0"
     },
     "require-dev": {
-        "composer/composer": "^1.10.25 || ^2.3.0-rc1",
+        "composer/composer": "^2.3.0-rc1",
         "laminas/laminas-coding-standard": "~2.3.0",
         "malukenho/docheader": "^0.1.6",
         "mikey179/vfsstream": "^1.6.10",
