@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7e7b4b600330a14130f987c104fbfb12",
+    "content-hash": "d05409aa85b9505f371f7e7b5021de1a",
     "packages": [],
     "packages-dev": [
         {
@@ -251,16 +251,16 @@
         },
         {
             "name": "composer/composer",
-            "version": "2.3.0-RC1",
+            "version": "2.3.0-RC2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "3b150d0ef6454694d074cac2807237894dfd6217"
+                "reference": "36dc875e1c6d5ce9411c78aae22b33ac24c86e13"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/3b150d0ef6454694d074cac2807237894dfd6217",
-                "reference": "3b150d0ef6454694d074cac2807237894dfd6217",
+                "url": "https://api.github.com/repos/composer/composer/zipball/36dc875e1c6d5ce9411c78aae22b33ac24c86e13",
+                "reference": "36dc875e1c6d5ce9411c78aae22b33ac24c86e13",
                 "shasum": ""
             },
             "require": {
@@ -336,7 +336,7 @@
             "support": {
                 "irc": "ircs://irc.libera.chat:6697/composer",
                 "issues": "https://github.com/composer/composer/issues",
-                "source": "https://github.com/composer/composer/tree/2.3.0-RC1"
+                "source": "https://github.com/composer/composer/tree/2.3.0-RC2"
             },
             "funding": [
                 {
@@ -352,7 +352,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-03-16T08:25:31+00:00"
+            "time": "2022-03-20T12:20:49+00:00"
         },
         {
             "name": "composer/metadata-minifier",
