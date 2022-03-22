@@ -1,36 +1,15 @@
 {
     "additional_checks": [
         {
-            "name": "PHPUnit on PHP 7.4 using Composer v1 with lowest dependencies",
+            "name": "PHPUnit using Composer v1",
             "job": {
-                "command": "rm -rf ./vendor && composer-1 install && ./vendor/bin/phpunit",
-                "php": "7.4",
-                "dependencies": "lowest"
-            }
-        },
-        {
-            "name": "PHPUnit on PHP 7.4 using Composer v1 with latest dependencies",
-            "job": {
-                "command": "rm -rf ./vendor && composer-1 install && ./vendor/bin/phpunit",
-                "php": "7.4",
-                "dependencies": "latest"
-            }
-        },
-        {
-            "name": "PHPUnit on PHP 8.0 using Composer v1 with lowest dependencies",
-            "job": {
-                "command": "rm -rf ./vendor && composer-1 install --ignore-platform-reqs && ./vendor/bin/phpunit",
-                "php": "8.0",
-                "dependencies": "lowest"
-            }
-        },
-        {
-            "name": "PHPUnit on PHP 8.0 using Composer v1 with latest dependencies",
-            "job": {
-                "command": "rm -rf ./vendor && composer-1 install && ./vendor/bin/phpunit",
-                "php": "8.0",
-                "dependencies": "latest"
+                "command": "rm -r vendor/ && composer require --dev --update-with-all-dependencies composer/composer:^1 && xmlstarlet ed -u '/phpunit/@convertDeprecationsToExceptions' -v 'false' phpunit.xml.dist > phpunit.xml && vendor/bin/phpunit",
+                "php": "*",
+                "dependencies": "*"
             }
         }
-    ]
+    ],
+    "ignore_php_platform_requirements": {
+        "8.0": false
+    }
 }

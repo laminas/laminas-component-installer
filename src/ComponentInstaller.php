@@ -21,6 +21,7 @@ use Laminas\ComponentInstaller\Injector\ConfigInjectorChain;
 use Laminas\ComponentInstaller\Injector\InjectorInterface;
 use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionFactory;
 use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionInterface;
+use RuntimeException;
 
 use function array_diff_assoc;
 use function array_filter;
@@ -34,6 +35,7 @@ use function assert;
 use function explode;
 use function file_exists;
 use function file_get_contents;
+use function gettype;
 use function implode;
 use function in_array;
 use function is_array;
@@ -519,6 +521,7 @@ class ComponentInstaller implements
         $ask[] = sprintf('  Make your selection (default is <comment>%d</comment>):', $default);
 
         while (true) {
+            /** @psalm-suppress MixedAssignment Well the method returns mixed. We do verifying this in the next lines. */
             $answer = $this->io->ask(implode($ask), $default);
 
             if (is_numeric($answer) && isset($options[(int) $answer])) {
@@ -543,9 +546,16 @@ class ComponentInstaller implements
         $ask = ["\n  <question>Remember this option for other packages of the same type? (Y/n)</question>"];
 
         while (true) {
-            $answer = strtolower($this->io->ask(implode($ask), 'y'));
+            $answer = $this->io->ask(implode($ask), 'y');
+            if (! is_string($answer)) {
+                throw new RuntimeException(sprintf(
+                    'Expected `%s#ask` to return a string: "%s" returned',
+                    IOInterface::class,
+                    gettype($answer)
+                ));
+            }
 
-            switch ($answer) {
+            switch (strtolower($answer)) {
                 case 'y':
                     $this->cacheInjector($injector, $packageType);
 
@@ -782,6 +792,11 @@ class ComponentInstaller implements
     private function mapType(array $map, string $type, ArrayObject $dependencies, string $packagePath): void
     {
         foreach ($map as $namespace => $paths) {
+            /**
+             * @psalm-suppress RedundantFunctionCallGivenDocblockType Since we only use psalm to verify v2
+             *                                                        of composer here, lets keep this until dropping
+             *                                                        support for composer v1.
+             */
             $paths = array_values((array) $paths);
             $this->mapNamespacePaths($paths, $namespace, $type, $dependencies, $packagePath);
         }

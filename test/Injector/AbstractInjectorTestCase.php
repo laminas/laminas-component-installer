@@ -41,8 +41,7 @@ abstract class AbstractInjectorTestCase extends TestCase
     {
         $this->configDir = vfsStream::setup('project');
 
-        $injectorClass = $this->injectorClass;
-        /** @psalm-suppress UnsafeInstantiation */
+        $injectorClass  = $this->injectorClass;
         $this->injector = new $injectorClass(
             vfsStream::url('project')
         );

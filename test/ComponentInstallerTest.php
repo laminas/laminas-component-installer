@@ -12,7 +12,8 @@ use Composer\DependencyResolver\Operation\UpdateOperation;
 use Composer\DependencyResolver\Pool;
 use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
-use Composer\Repository\PlatformRepository;
+use Composer\Package\RootPackage;
+use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Repository\RepositoryManager;
 use Composer\Repository\RootPackageRepository;
 use Generator;
@@ -20,7 +21,6 @@ use Laminas\ComponentInstaller\ComponentInstaller;
 use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionFactory;
 use LaminasTest\ComponentInstaller\TestAsset\NativeTypehintedInstallationManager as InstallationManager;
 use LaminasTest\ComponentInstaller\TestAsset\NativeTypehintedPackageInterface as PackageInterface;
-use LaminasTest\ComponentInstaller\TestAsset\NativeTypehintedRootPackageInterface as RootPackageInterface;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -51,28 +51,16 @@ final class ComponentInstallerTest extends TestCase
     /** @var ComponentInstaller */
     private $installer;
 
-    /**
-     * @var Composer|MockObject
-     * @psalm-var Composer&MockObject
-     */
+    /** @var Composer&MockObject */
     private $composer;
 
-    /**
-     * @var RootPackageInterface|MockObject
-     * @psalm-var RootPackageInterface&MockObject
-     */
+    /** @var RootPackage&MockObject */
     private $rootPackage;
 
-    /**
-     * @var IOInterface|MockObject
-     * @psalm-var IOInterface&MockObject
-     */
+    /** @var IOInterface&MockObject */
     private $io;
 
-    /**
-     * @var InstallationManager|MockObject
-     * @psalm-var InstallationManager&MockObject
-     */
+    /** @var InstallationManager&MockObject */
     private $installationManager;
 
     /** @var array{laminas?:array{component-whitelist?:list<non-empty-string>}} */
@@ -85,12 +73,11 @@ final class ComponentInstallerTest extends TestCase
             vfsStream::url('project')
         );
 
-        /** @psalm-var Composer&MockObject $composer */
         $composer       = $this->createMock(Composer::class);
         $this->composer = $composer;
 
-        /** @psalm-var RootPackageInterface&MockObject $rootPackage */
-        $rootPackage       = $this->createMock(RootPackageInterface::class);
+        $rootPackage = $this->createMock(RootPackage::class);
+
         $this->rootPackage = $rootPackage;
         $this->rootPackage
             ->method('getExtra')
@@ -98,7 +85,14 @@ final class ComponentInstallerTest extends TestCase
                 return $this->rootPackageExtra;
             });
 
-        /** @psalm-var IOInterface&MockObject $io */
+        $this->rootPackage
+            ->method('getProvides')
+            ->willReturn([]);
+
+        $this->rootPackage
+            ->method('getReplaces')
+            ->willReturn([]);
+
         $io       = $this->createMock(IOInterface::class);
         $this->io = $io;
 
@@ -108,7 +102,7 @@ final class ComponentInstallerTest extends TestCase
                 ->method('getConfig')
                 ->willReturn($config);
             $repositoryManager = $this->createMock(RepositoryManager::class);
-            $localRepository   = $this->createMock(PlatformRepository::class);
+            $localRepository   = $this->createMock(InstalledRepositoryInterface::class);
             $localRepository
                 ->method('getPackages')
                 ->willReturn([]);
@@ -136,7 +130,6 @@ final class ComponentInstallerTest extends TestCase
             $this->io
         );
 
-        /** @psalm-var InstallationManager&MockObject $installationManager */
         $installationManager       = $this->createMock(InstallationManager::class);
         $this->installationManager = $installationManager;
 
@@ -214,8 +207,7 @@ final class ComponentInstallerTest extends TestCase
     }
 
     /**
-     * @param PackageEvent|MockObject $event
-     * @psalm-param PackageEvent&MockObject $event
+     * @param PackageEvent&MockObject $event
      */
     private function prepareEventForPackageProviderDetection($event, string $packageName): void
     {
@@ -257,7 +249,6 @@ final class ComponentInstallerTest extends TestCase
     {
         $consecutiveReturnValues = $consecutiveArguments = [];
         foreach ($questionsAssertions as $questionAssertion) {
-            /** @psalm-suppress MissingClosureParamType */
             $consecutiveArguments[]    = [
                 self::callback($questionAssertion->assertion()),
             ];
@@ -1073,16 +1064,13 @@ CONTENT
 
     public function testAddPackageToConfigWillPassProjectRootAsStringToConfigDiscovery(): void
     {
-        /** @psalm-var InstallationManager&MockObject $installationManager */
         $installationManager = $this->createMock(InstallationManager::class);
 
-        /** @psalm-var Composer&MockObject $composer */
         $composer = $this->createMock(Composer::class);
         $composer
             ->method('getInstallationManager')
             ->willReturn($installationManager);
 
-        /** @psalm-var IOInterface&MockObject $io */
         $io = $this->createMock(IOInterface::class);
         $io
             ->expects(self::never())
