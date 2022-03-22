@@ -548,7 +548,11 @@ class ComponentInstaller implements
         while (true) {
             $answer = $this->io->ask(implode($ask), 'y');
             if (! is_string($answer)) {
-                throw new RuntimeException(sprintf('Expected `%s#ask` to return a string: "%s" returned', IOInterface::class, gettype($answer)));
+                throw new RuntimeException(sprintf(
+                    'Expected `%s#ask` to return a string: "%s" returned',
+                    IOInterface::class,
+                    gettype($answer)
+                ));
             }
 
             switch (strtolower($answer)) {
