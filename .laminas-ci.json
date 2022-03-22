@@ -3,7 +3,7 @@
         {
             "name": "PHPUnit using Composer v1",
             "job": {
-                "command": "rm -r vendor/ && composer require --dev --update-with-all-dependencies composer/composer:^1 && vendor/bin/phpunit",
+                "command": "rm -r vendor/ && composer require --dev --update-with-all-dependencies composer/composer:^1 && xmlstarlet ed -u '/phpunit/@convertDeprecationsToExceptions' -v 'false' phpunit.xml.dist > phpunit.xml && vendor/bin/phpunit",
                 "php": "*",
                 "dependencies": "*"
             }
