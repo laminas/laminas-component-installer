@@ -20,6 +20,9 @@
     },
     "config": {
         "sort-packages": true,
+        "platform": {
+            "php": "7.4.99"
+        },
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
@@ -34,12 +37,11 @@
     "require-dev": {
         "composer/composer": "^2.1.9@RC",
         "laminas/laminas-coding-standard": "~2.3.0",
-        "malukenho/docheader": "^0.1.6",
         "mikey179/vfsstream": "^1.6.10",
-        "phpunit/phpunit": "^9.5.5",
+        "phpunit/phpunit": "^9.5.19",
         "psalm/plugin-phpunit": "^0.16.1",
-        "vimeo/psalm": "^4.10",
-        "webmozart/assert": "^1.6"
+        "vimeo/psalm": "^4.22.0",
+        "webmozart/assert": "^1.10.0"
     },
     "autoload": {
         "psr-4": {
@@ -53,16 +55,15 @@
     },
     "scripts": {
         "check": [
-            "@license-check",
             "@cs-check",
-            "@test"
+            "@test",
+            "@static-analysis"
         ],
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
         "test": "phpunit --colors=always",
         "static-analysis": "psalm --shepherd --stats",
-        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
-        "license-check": "docheader check src/"
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     },
     "conflict": {
         "zendframework/zend-component-installer": "*"
