@@ -18,5 +18,7 @@
     <exclude-pattern>test/TestAsset/Module*.php</exclude-pattern>
 
     <!-- Include all rules from Laminas Coding Standard -->
-    <rule ref="LaminasCodingStandard" />
+    <rule ref="LaminasCodingStandard">
+        <exclude name="SlevomatCodingStandard.Classes.ModernClassNameReference"/>
+    </rule>
 </ruleset>
