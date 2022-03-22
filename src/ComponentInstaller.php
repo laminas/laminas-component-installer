@@ -21,6 +21,7 @@ use Laminas\ComponentInstaller\Injector\ConfigInjectorChain;
 use Laminas\ComponentInstaller\Injector\InjectorInterface;
 use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionFactory;
 use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionInterface;
+use RuntimeException;
 
 use function array_diff_assoc;
 use function array_filter;
@@ -34,6 +35,7 @@ use function assert;
 use function explode;
 use function file_exists;
 use function file_get_contents;
+use function gettype;
 use function implode;
 use function in_array;
 use function is_array;
@@ -546,7 +548,7 @@ class ComponentInstaller implements
         while (true) {
             $answer = $this->io->ask(implode($ask), 'y');
             if (! is_string($answer)) {
-                return;
+                throw new RuntimeException(sprintf('Expected `%s#ask` to return a string: "%s" returned', IOInterface::class, gettype($answer)));
             }
 
             switch (strtolower($answer)) {
