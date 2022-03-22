@@ -85,6 +85,14 @@ final class ComponentInstallerTest extends TestCase
                 return $this->rootPackageExtra;
             });
 
+        $this->rootPackage
+            ->method('getProvides')
+            ->willReturn([]);
+
+        $this->rootPackage
+            ->method('getReplaces')
+            ->willReturn([]);
+
         $io       = $this->createMock(IOInterface::class);
         $this->io = $io;
 
