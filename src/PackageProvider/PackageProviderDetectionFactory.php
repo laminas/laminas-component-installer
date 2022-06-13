@@ -18,12 +18,10 @@ use Composer\Repository\RootPackageRepository;
 
 use function version_compare;
 
-final class PackageProviderDetectionFactory
+final class PackageProviderDetectionFactory implements PackageProviderDetectionFactoryInterface
 {
-    /** @var Composer */
-    private $composer;
-    /** @var null|RootPackageRepository */
-    private $packageRepository;
+    private Composer $composer;
+    private ?RootPackageRepository $packageRepository = null;
 
     public function __construct(Composer $composer)
     {
@@ -46,6 +44,7 @@ final class PackageProviderDetectionFactory
     public function detect(PackageEvent $event, string $packageName): PackageProviderDetectionInterface
     {
         if (self::isComposerV1()) {
+            /** @psalm-suppress UndefinedMethod,MixedArgument Yes, the method does not exist when psalm is running. */
             return new ComposerV1($event->getPool());
         }
 
@@ -62,9 +61,12 @@ final class PackageProviderDetectionFactory
         return new ComposerV2($installedRepo);
     }
 
-    /** @psalm-return ComposerRepositoryInterface[] */
+    /**
+     * @return list<ComposerRepositoryInterface>
+     */
     private function prepareRepositoriesForInstalledRepository(): array
     {
+        /** @var array<string,string|false> $platformOverrides */
         $platformOverrides = $this->composer->getConfig()->get('platform') ?? [];
 
         if (null === $this->packageRepository) {

@@ -12,8 +12,6 @@ interface DiscoveryInterface
      * Implementations should check if the file exists, and can potentially
      * look for known expected artifacts within the file to determine if
      * the configuration is one to which the installer can or should write to.
-     *
-     * @return bool
      */
-    public function locate();
+    public function locate(): bool;
 }

@@ -12,6 +12,7 @@ use Composer\DependencyResolver\Operation\UpdateOperation;
 use Composer\DependencyResolver\Pool;
 use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
+use Composer\Package\PackageInterface;
 use Composer\Package\RootPackage;
 use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Repository\RepositoryManager;
@@ -20,7 +21,6 @@ use Generator;
 use Laminas\ComponentInstaller\ComponentInstaller;
 use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionFactory;
 use LaminasTest\ComponentInstaller\TestAsset\NativeTypehintedInstallationManager as InstallationManager;
-use LaminasTest\ComponentInstaller\TestAsset\NativeTypehintedPackageInterface as PackageInterface;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -196,8 +196,8 @@ final class ComponentInstallerTest extends TestCase
     /**
      * Create config on demand
      *
-     * @param string $name
-     * @param string $contents
+     * @param non-empty-string $name
+     * @param non-empty-string $contents
      */
     private function createConfigFile($name, $contents): void
     {
@@ -669,6 +669,9 @@ CONTENT
                     $packageName . '\\' => 'src/',
                 ];
                 break;
+            default:
+                $autoload     = [];
+                $pathToModule = '.';
         }
 
         $dependenciesStr = $dependencies ? "'" . implode("', '", $dependencies) . "'" : '';
@@ -1444,6 +1447,7 @@ CONTENT
         $rm = $r->getMethod('getModuleDependencies');
         $rm->setAccessible(true);
 
+        /** @psalm-suppress MixedAssignment We do want to assert the value and thus we do not care about mixed here. */
         $dependencies = $rm->invoke($this->installer, $file);
 
         self::assertEquals($result, $dependencies);
@@ -1489,6 +1493,7 @@ CONTENT
         $rm = $r->getMethod('loadModuleClassesDependencies');
         $rm->setAccessible(true);
 
+        /** @psalm-suppress MixedAssignment We do want to assert the value and thus we do not care about mixed here. */
         $dependencies = $rm->invoke($this->installer, $package);
         self::assertEquals([
             'DoesNotExist'       => ['DoesNotExistDependency'],
@@ -1568,12 +1573,15 @@ CONTENT
 
     /**
      * @dataProvider injectorConfigProvider
-     * @param string $configContents
-     * @param array $configNames
-     * @param string $expectedName
+     * @param non-empty-string $configContents
+     * @param list<non-empty-string> $configNames
+     * @param non-empty-string $expectedName
      */
-    public function testUninstallMessageWithDifferentInjectors($configContents, array $configNames, $expectedName): void
-    {
+    public function testUninstallMessageWithDifferentInjectors(
+        string $configContents,
+        array $configNames,
+        string $expectedName
+    ): void {
         foreach ($configNames as $configName) {
             $this->createConfigFile($configName, $configContents);
         }
@@ -1736,18 +1744,22 @@ CONFIG;
     }
 
     /**
-     * @return array
+     * @return array<non-empty-string,array{
+     *     non-empty-string,
+     *     list<non-empty-string>,
+     *     non-empty-string
+     * }>
      */
-    public function injectorConfigProvider()
+    public function injectorConfigProvider(): array
     {
         $config = <<<'CONFIG'
-<?php
-return [
-    'modules' => [
-        'Some\Component'
-    ]
-];
-CONFIG;
+        <?php
+        return [
+            'modules' => [
+                'Some\Component'
+            ]
+        ];
+        CONFIG;
 
         return [
             'application.config.php' => [

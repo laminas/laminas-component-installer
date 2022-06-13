@@ -5,65 +5,57 @@ declare(strict_types=1);
 namespace Laminas\ComponentInstaller\Injector;
 
 use Laminas\ComponentInstaller\ConfigDiscovery\ConfigAggregator as ConfigAggregatorDiscovery;
+use Laminas\ComponentInstaller\ConfigDiscovery\DiscoveryInterface;
 
 use function assert;
 use function preg_quote;
 use function sprintf;
 
-class ConfigAggregatorInjector extends AbstractInjector
+final class ConfigAggregatorInjector extends AbstractInjector
 {
     use ConditionalDiscoveryTrait;
 
     public const DEFAULT_CONFIG_FILE = 'config/config.php';
 
-    /**
-     * @var array
-     * @psalm-var list<InjectorInterface::TYPE_*>
-     */
-    protected $allowedTypes = [
+    /** @var list<InjectorInterface::TYPE_*> */
+    protected array $allowedTypes = [
         self::TYPE_CONFIG_PROVIDER,
     ];
 
-    /** @var string */
-    protected $configFile = self::DEFAULT_CONFIG_FILE;
+    /** @var non-empty-string */
+    protected string $configFile = self::DEFAULT_CONFIG_FILE;
 
     /**
      * Discovery class, for testing if this injector is valid for the given
      * configuration.
      *
-     * @var string
-     * @psalm-var non-empty-string
+     * @var class-string<DiscoveryInterface>
      */
-    protected $discoveryClass = ConfigAggregatorDiscovery::class;
+    protected string $discoveryClass = ConfigAggregatorDiscovery::class;
 
     /**
      * Patterns and replacements to use when registering a code item.
      *
      * Pattern is set in constructor due to PCRE quoting issues.
      *
-     * @var array
-     * @psalm-var array<
+     * @var array<
      *     InjectorInterface::TYPE_*,
      *     array{pattern: non-empty-string, replacement: string}
      * >
      */
-    protected $injectionPatterns = [];
+    protected array $injectionPatterns = [];
 
     /**
      * Pattern to use to determine if the code item is registered.
      *
      * Set in constructor due to PCRE quoting issues.
      *
-     * @var string
-     * @psalm-var non-empty-string
+     * @var non-empty-string
      */
-    protected $isRegisteredPattern = 'overridden-by-constructor';
+    protected string $isRegisteredPattern = 'overridden-by-constructor';
 
-    /**
-     * @var array
-     * @psalm-var array{pattern: non-empty-string, replacement: string}
-     */
-    protected $removalPatterns = [
+    /** @var array{pattern: non-empty-string, replacement: string} */
+    protected array $removalPatterns = [
         'pattern'     => '/^\s+%s::class,\s*$/m',
         'replacement' => '',
     ];
@@ -74,7 +66,7 @@ class ConfigAggregatorInjector extends AbstractInjector
      * Sets $isRegisteredPattern and pattern for $injectionPatterns to ensure
      * proper PCRE quoting.
      */
-    public function __construct($projectRoot = '')
+    public function __construct(string $projectRoot = '')
     {
         $ns                        = preg_quote('\\');
         $this->isRegisteredPattern = '/new (?:'
@@ -97,5 +89,15 @@ class ConfigAggregatorInjector extends AbstractInjector
         ];
 
         parent::__construct($projectRoot);
+    }
+
+    protected function getDefaultConfigFile(): string
+    {
+        return self::DEFAULT_CONFIG_FILE;
+    }
+
+    protected function getDiscoveryClass(): string
+    {
+        return $this->discoveryClass;
     }
 }

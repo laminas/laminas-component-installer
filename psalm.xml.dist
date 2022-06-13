@@ -4,7 +4,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
-    errorBaseline="psalm-baseline.xml"
     errorLevel="1"
     findUnusedPsalmSuppress="true"
 >
@@ -27,15 +26,7 @@
 
         <InternalMethod>
             <errorLevel type="suppress">
-                <referencedMethod name="PHPUnit\Framework\MockObject\Builder\InvocationMocker::method"/>
-            </errorLevel>
-
-            <errorLevel type="suppress">
-                <referencedMethod name="PHPUnit\Framework\MockObject\Builder\InvocationMocker::willReturn"/>
-            </errorLevel>
-
-            <errorLevel type="suppress">
-                <referencedMethod name="PHPUnit\Framework\MockObject\Builder\InvocationMocker::with"/>
+                <directory name="test"/>
             </errorLevel>
         </InternalMethod>
     </issueHandlers>

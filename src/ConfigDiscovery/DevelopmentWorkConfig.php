@@ -4,12 +4,19 @@ declare(strict_types=1);
 
 namespace Laminas\ComponentInstaller\ConfigDiscovery;
 
-class DevelopmentWorkConfig extends ApplicationConfig
+final class DevelopmentWorkConfig implements DiscoveryInterface
 {
-    /**
-     * Configuration file to look for.
-     *
-     * @var string
-     */
-    protected $configFile = 'config/development.config.php';
+    private const CONFIG_FILE = 'config/development.config.php';
+
+    private DiscoveryInterface $applicationDiscovery;
+
+    public function __construct(string $projectDirectory = '')
+    {
+        $this->applicationDiscovery = new ApplicationConfig($projectDirectory, self::CONFIG_FILE);
+    }
+
+    public function locate(): bool
+    {
+        return $this->applicationDiscovery->locate();
+    }
 }

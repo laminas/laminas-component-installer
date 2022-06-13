@@ -16,23 +16,17 @@ abstract class AbstractDiscovery implements DiscoveryInterface
      * Configuration file to look for.
      *
      * Implementations MUST overwite this.
-     *
-     * @var string
      */
-    protected $configFile;
+    protected string $configFile = '';
 
     /**
      * Expected pattern to match if the configuration file exists.
      *
      * Implementations MUST overwrite this.
-     *
-     * @var string
      */
-    protected $expected;
+    protected string $expected = '';
 
     /**
-     * Constructor
-     *
      * Optionally specify project directory; $configFile will be relative to
      * this value.
      */
@@ -49,10 +43,8 @@ abstract class AbstractDiscovery implements DiscoveryInterface
 
     /**
      * Determine if the configuration file exists and contains modules.
-     *
-     * @return bool
      */
-    public function locate()
+    public function locate(): bool
     {
         if (! is_file($this->configFile)) {
             return false;

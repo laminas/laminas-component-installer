@@ -9,7 +9,7 @@ use Composer\Package\PackageInterface;
 interface PackageProviderDetectionInterface
 {
     /**
-     * @return PackageInterface[]
+     * @return list<PackageInterface>
      */
     public function whatProvides(string $packageName): array;
 }

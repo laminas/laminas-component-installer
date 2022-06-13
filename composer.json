@@ -35,12 +35,12 @@
         "composer-plugin-api": "^1.0 || ^2.0"
     },
     "require-dev": {
-        "composer/composer": "^2.1.9@RC",
+        "composer/composer": "^2.3",
         "laminas/laminas-coding-standard": "~2.3.0",
         "mikey179/vfsstream": "^1.6.10",
         "phpunit/phpunit": "^9.5.19",
         "psalm/plugin-phpunit": "^0.16.1",
-        "vimeo/psalm": "^4.22.0",
+        "vimeo/psalm": "^4.23",
         "webmozart/assert": "^1.10.0"
     },
     "autoload": {
