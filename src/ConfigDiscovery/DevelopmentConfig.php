@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Laminas\ComponentInstaller\ConfigDiscovery;
 
+/**
+ * @internal
+ */
 final class DevelopmentConfig implements DiscoveryInterface
 {
     private const CONFIG_FILE = 'config/development.config.php.dist';

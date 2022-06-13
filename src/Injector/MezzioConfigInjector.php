@@ -11,6 +11,9 @@ use function assert;
 use function preg_quote;
 use function sprintf;
 
+/**
+ * @internal
+ */
 final class MezzioConfigInjector extends AbstractInjector
 {
     use ConditionalDiscoveryTrait;

@@ -6,6 +6,9 @@ namespace Laminas\ComponentInstaller\PackageProvider;
 
 use Composer\Package\PackageInterface;
 
+/**
+ * @internal
+ */
 interface PackageProviderDetectionInterface
 {
     /**

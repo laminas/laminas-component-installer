@@ -10,6 +10,9 @@ use function is_file;
 use function preg_match;
 use function sprintf;
 
+/**
+ * @internal
+ */
 abstract class AbstractDiscovery implements DiscoveryInterface
 {
     /**

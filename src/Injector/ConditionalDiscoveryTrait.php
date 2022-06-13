@@ -9,6 +9,8 @@ use Laminas\ComponentInstaller\ConfigDiscovery\DiscoveryInterface;
 use function str_replace;
 
 /**
+ * @internal
+ *
  * @psalm-require-extends AbstractInjector
  */
 trait ConditionalDiscoveryTrait

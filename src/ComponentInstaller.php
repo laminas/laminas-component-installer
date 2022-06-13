@@ -89,6 +89,8 @@ use function substr;
  * In either case, you can edit the appropriate configuration file when
  * complete to create a specific order.
  *
+ * @internal
+ *
  * @psalm-type ComposerExtraComponentInstallerProjectArrayType = array{
  *     component-whitelist?: non-empty-list<non-empty-string>
  * }

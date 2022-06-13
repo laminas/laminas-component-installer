@@ -7,6 +7,8 @@ namespace Laminas\ComponentInstaller\Injector;
 use Laminas\ComponentInstaller\Exception;
 
 /**
+ * @internal
+ *
  * @todo add getConfigFile() method in 2.0
  */
 interface InjectorInterface

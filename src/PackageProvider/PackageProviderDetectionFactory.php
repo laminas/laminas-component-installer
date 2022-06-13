@@ -18,6 +18,9 @@ use Composer\Repository\RootPackageRepository;
 
 use function version_compare;
 
+/**
+ * @internal
+ */
 final class PackageProviderDetectionFactory implements PackageProviderDetectionFactoryInterface
 {
     private Composer $composer;

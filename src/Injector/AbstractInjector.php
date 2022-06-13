@@ -19,6 +19,9 @@ use function sprintf;
 use function strlen;
 use function trim;
 
+/**
+ * @internal
+ */
 abstract class AbstractInjector implements InjectorInterface
 {
     /**

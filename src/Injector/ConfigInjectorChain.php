@@ -14,6 +14,9 @@ use function assert;
 use function in_array;
 use function is_bool;
 
+/**
+ * @internal
+ */
 final class ConfigInjectorChain implements InjectorInterface
 {
     /**

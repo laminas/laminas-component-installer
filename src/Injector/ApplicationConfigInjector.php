@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Laminas\ComponentInstaller\Injector;
 
+/**
+ * @internal
+ */
 final class ApplicationConfigInjector extends AbstractInjector
 {
     /** @var non-empty-string */

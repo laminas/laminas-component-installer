@@ -8,6 +8,9 @@ use Composer\DependencyResolver\Pool;
 
 use function array_values;
 
+/**
+ * @internal
+ */
 final class ComposerV1 implements PackageProviderDetectionInterface
 {
     private Pool $pool;

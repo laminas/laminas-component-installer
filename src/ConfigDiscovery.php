@@ -9,6 +9,9 @@ use Laminas\ComponentInstaller\Injector\InjectorInterface;
 
 use function is_array;
 
+/**
+ * @internal
+ */
 final class ConfigDiscovery
 {
     /**

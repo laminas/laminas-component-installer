@@ -6,6 +6,9 @@ namespace Laminas\ComponentInstaller;
 
 use Laminas\ComponentInstaller\Injector\InjectorInterface;
 
+/**
+ * @internal
+ */
 final class ConfigOption
 {
     private InjectorInterface $injector;

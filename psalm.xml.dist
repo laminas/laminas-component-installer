@@ -20,7 +20,7 @@
     <issueHandlers>
         <InternalClass>
             <errorLevel type="suppress">
-                <referencedClass name="Laminas\ComponentInstaller\Collection"/>
+                <directory name="test"/>
             </errorLevel>
         </InternalClass>
 

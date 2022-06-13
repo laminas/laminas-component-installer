@@ -6,6 +6,9 @@ namespace Laminas\ComponentInstaller\ConfigDiscovery;
 
 use Laminas\ComponentInstaller\Collection;
 
+/**
+ * @internal
+ */
 final class DiscoveryChain implements DiscoveryChainInterface
 {
     /**

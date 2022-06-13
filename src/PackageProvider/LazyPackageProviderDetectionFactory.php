@@ -7,6 +7,9 @@ namespace Laminas\ComponentInstaller\PackageProvider;
 use Composer\Composer;
 use Composer\Installer\PackageEvent;
 
+/**
+ * @internal
+ */
 final class LazyPackageProviderDetectionFactory implements PackageProviderDetectionFactoryInterface
 {
     private ?PackageProviderDetectionFactoryInterface $packageProviderDetectionFactory = null;

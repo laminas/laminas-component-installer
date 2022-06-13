@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Laminas\ComponentInstaller\Injector;
 
+/**
+ * @internal
+ */
 final class DevelopmentConfigInjector implements InjectorInterface
 {
     private const CONFIG_FILE = 'config/development.config.php.dist';

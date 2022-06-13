@@ -7,6 +7,9 @@ namespace Laminas\ComponentInstaller\ConfigDiscovery;
 use function preg_quote;
 use function sprintf;
 
+/**
+ * @internal
+ */
 final class ConfigAggregator extends AbstractDiscovery
 {
     /**

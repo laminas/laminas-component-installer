@@ -8,6 +8,9 @@ use Composer\Repository\InstalledRepository;
 
 use function array_values;
 
+/**
+ * @internal
+ */
 final class ComposerV2 implements PackageProviderDetectionInterface
 {
     private InstalledRepository $installedRepository;
