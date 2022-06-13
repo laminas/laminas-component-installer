@@ -201,8 +201,8 @@ class ComponentInstaller implements
         $operation = $event->getOperation();
         assert($operation instanceof InstallOperation);
         $package = $operation->getPackage();
-        $name    = $package->getName();
-        assert($name !== '');
+        /** @var non-empty-string $name */
+        $name = $package->getName();
 
         $packageExtra = $package->getExtra();
         $extra        = $this->getExtraMetadata($packageExtra);
@@ -347,8 +347,8 @@ class ComponentInstaller implements
         assert($operation instanceof UninstallOperation);
         $package = $operation->getPackage();
 
-        $name = $package->getName();
-        assert($name !== '');
+        /** @var non-empty-string $name */
+        $name         = $package->getName();
         $packageExtra = $package->getExtra();
         $extra        = $this->getExtraMetadata($packageExtra);
 
