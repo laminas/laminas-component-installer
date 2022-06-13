@@ -19,7 +19,7 @@ use DirectoryIterator;
 use Laminas\ComponentInstaller\Injector\AbstractInjector;
 use Laminas\ComponentInstaller\Injector\ConfigInjectorChain;
 use Laminas\ComponentInstaller\Injector\InjectorInterface;
-use Laminas\ComponentInstaller\PackageProvider\LazyPackageProviderDetectionFactory;
+use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionFactory;
 use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionFactoryInterface;
 use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionInterface;
 use RuntimeException;
@@ -158,7 +158,7 @@ class ComponentInstaller implements
         $this->composer               = $composer;
         $this->io                     = $io;
         $this->cachedInjectors        = [];
-        $this->packageProviderFactory = new LazyPackageProviderDetectionFactory($composer);
+        $this->packageProviderFactory = new PackageProviderDetectionFactory($composer);
     }
 
     /**
