@@ -92,7 +92,8 @@ use function substr;
  * @internal
  *
  * @psalm-type ComposerExtraComponentInstallerProjectArrayType = array{
- *     component-auto-installs?: non-empty-list<non-empty-string>
+ *     component-auto-installs?: non-empty-list<non-empty-string>,
+ *     component-ignore-list?: non-empty-list<non-empty-string>
  * }
  * @psalm-type ComposerExtraComponentInstallerArrayType = array{
  *     component?:non-empty-array<non-empty-string>,
@@ -491,11 +492,12 @@ class ComponentInstaller implements
     /**
      * Prompt for the user to select a configuration location to update.
      *
-     * @param non-empty-string $name
+     * @param non-empty-string             $name
      * @param Collection<int,ConfigOption> $options
      * @param InjectorInterface::TYPE_* $packageType
-     * @param non-empty-string $packageName
-     * @param list<non-empty-string> $autoInstallations
+     * @param non-empty-string             $packageName
+     * @param list<non-empty-string>       $autoInstallations
+     * @param list<non-empty-string>       $ignoreList
      */
     private function promptForConfigOption(
         string $name,
@@ -503,8 +505,14 @@ class ComponentInstaller implements
         int $packageType,
         string $packageName,
         array $autoInstallations,
-        bool $requireDev = false
+        array $ignoreList,
+        bool $requireDev
     ): InjectorInterface {
+        // If package is whitelisted, do not inject
+        if (in_array($packageName, $ignoreList, true)) {
+            return new Injector\NoopInjector();
+        }
+
         if ($cachedInjector = $this->getCachedInjector($packageType)) {
             return $cachedInjector;
         }
@@ -951,6 +959,7 @@ class ComponentInstaller implements
         $rootPackageExtra  = $this->composer->getPackage()->getExtra();
         $rootExtra         = $this->getExtraMetadata($rootPackageExtra, true);
         $autoInstallations = $rootExtra['component-auto-installs'] ?? [];
+        $ignoreList        = $rootExtra['component-ignore-list'] ?? [];
 
         $this->marshalInstallableComponents($extra, $options)
             // Create injectors
@@ -961,7 +970,8 @@ class ComponentInstaller implements
                 $requireDev,
                 $dependencies,
                 $applicationModules,
-                $autoInstallations
+                $autoInstallations,
+                $ignoreList
             ): void {
                 $packageType = $packageTypes->get($component);
 
@@ -971,6 +981,7 @@ class ComponentInstaller implements
                     $packageType,
                     $name,
                     $autoInstallations,
+                    $ignoreList,
                     $requireDev
                 );
 
@@ -1056,6 +1067,16 @@ class ComponentInstaller implements
         ) {
             $laminasSpecificConfiguration['component-auto-installs']
                 = $maybeLaminasSpecificConfiguration['component-auto-installs'];
+        }
+
+        if (
+            isset($maybeLaminasSpecificConfiguration['component-ignore-list'])
+            && $this->isNonEmptyListContainingNonEmptyStrings(
+                $maybeLaminasSpecificConfiguration['component-ignore-list']
+            )
+        ) {
+            $laminasSpecificConfiguration['component-ignore-list']
+                = $maybeLaminasSpecificConfiguration['component-ignore-list'];
         }
 
         return $laminasSpecificConfiguration;
