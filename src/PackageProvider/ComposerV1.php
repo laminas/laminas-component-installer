@@ -6,10 +6,14 @@ namespace Laminas\ComponentInstaller\PackageProvider;
 
 use Composer\DependencyResolver\Pool;
 
+use function array_values;
+
+/**
+ * @internal
+ */
 final class ComposerV1 implements PackageProviderDetectionInterface
 {
-    /** @var Pool */
-    private $pool;
+    private Pool $pool;
 
     public function __construct(Pool $pool)
     {
@@ -18,6 +22,6 @@ final class ComposerV1 implements PackageProviderDetectionInterface
 
     public function whatProvides(string $packageName): array
     {
-        return $this->pool->whatProvides($packageName);
+        return array_values($this->pool->whatProvides($packageName));
     }
 }

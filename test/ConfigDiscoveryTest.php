@@ -14,25 +14,20 @@ use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 
-use function array_shift;
 use function get_class;
-use function gettype;
-use function is_object;
 use function sprintf;
 
 class ConfigDiscoveryTest extends TestCase
 {
-    /** @var vfsStreamDirectory */
-    private $projectRoot;
+    private vfsStreamDirectory $projectRoot;
 
-    /** @var ConfigDiscovery\ */
-    private $discovery;
+    private ConfigDiscovery $discovery;
 
-    /** @var Collection */
-    private $allTypes;
+    /** @var Collection<array-key,InjectorInterface::TYPE_*> */
+    private Collection $allTypes;
 
-    /** @var string[] */
-    private $injectorTypes;
+    /** @var list<class-string<InjectorInterface>> */
+    private array $injectorTypes;
 
     protected function setUp(): void
     {
@@ -95,30 +90,29 @@ class ConfigDiscoveryTest extends TestCase
             ->setContent('<' . "?php\nreturn [\n]);");
     }
 
+    /**
+     * @param Collection<int,ConfigOption> $options
+     */
     public function assertOptionsContainsNoopInjector(Collection $options): void
     {
         if ($options->isEmpty()) {
             self::fail('Options array is empty; no NoopInjector found!');
         }
 
-        $options  = $options->toArray();
-        $injector = array_shift($options)->getInjector();
+        $injector = $options->get(0)->getInjector();
 
         if (! $injector instanceof NoopInjector) {
             self::fail('Options array does not contain a NoopInjector!');
         }
     }
 
+    /**
+     * @param class-string<InjectorInterface> $injectorType
+     * @param Collection<int,ConfigOption> $options
+     */
     public function assertOptionsContainsInjector(string $injectorType, Collection $options): InjectorInterface
     {
         foreach ($options as $option) {
-            if (! $option instanceof ConfigOption) {
-                self::fail(sprintf(
-                    'Invalid option returned: %s',
-                    is_object($option) ? get_class($option) : gettype($option)
-                ));
-            }
-
             if ($injectorType === get_class($option->getInjector())) {
                 return $option->getInjector();
             }
@@ -130,19 +124,16 @@ class ConfigDiscoveryTest extends TestCase
         ));
     }
 
+    /**
+     * @param class-string<InjectorInterface>    $injectorType
+     * @param Collection<int,ConfigOption> $options
+     */
     public function assertOptionsContainsInjectorInChain(string $injectorType, Collection $options): void
     {
         $chain = $this->assertOptionsContainsInjector(Injector\ConfigInjectorChain::class, $options);
         $this->assertInstanceOf(Injector\ConfigInjectorChain::class, $chain);
 
         foreach ($chain->getCollection() as $injector) {
-            if (! $injector instanceof InjectorInterface) {
-                self::fail(sprintf(
-                    'Invalid Injector returned: %s',
-                    is_object($injector) ? get_class($injector) : gettype($injector)
-                ));
-            }
-
             if ($injectorType === get_class($injector)) {
                 return;
             }
@@ -181,8 +172,8 @@ class ConfigDiscoveryTest extends TestCase
     /**
      * @psalm-return array<array-key, array{
      *     seedMethod: string,
-     *     type: int,
-     *     expected: string,
+     *     type: InjectorInterface::TYPE_*,
+     *     expected: class-string<InjectorInterface>,
      *     chain: bool
      * }>
      */
@@ -266,6 +257,8 @@ class ConfigDiscoveryTest extends TestCase
 
     /**
      * @dataProvider configFileSubset
+     * @param InjectorInterface::TYPE_* $type
+     * @param class-string<InjectorInterface> $expected
      */
     public function testGetAvailableConfigOptionsCanReturnsSubsetOfOptionsBaseOnPackageType(
         string $seedMethod,

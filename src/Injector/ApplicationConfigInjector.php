@@ -4,21 +4,23 @@ declare(strict_types=1);
 
 namespace Laminas\ComponentInstaller\Injector;
 
-class ApplicationConfigInjector extends AbstractInjector
+/**
+ * @internal
+ */
+final class ApplicationConfigInjector extends AbstractInjector
 {
-    /** @var string */
-    protected $configFile = 'config/application.config.php';
+    /** @var non-empty-string */
+    protected string $configFile = 'config/application.config.php';
 
     /**
      * Patterns and replacements to use when registering a code item.
      *
-     * @var array
-     * @psalm-var array<
+     * @var array<
      *     InjectorInterface::TYPE_*,
      *     array{pattern: non-empty-string, replacement: string}
      * >
      */
-    protected $injectionPatterns = [
+    protected array $injectionPatterns = [
         self::TYPE_COMPONENT          => [
             'pattern'     => '/^(\s+)(\'modules\'\s*\=\>\s*(?:array\s*\(|\[))\s*$/m',
             'replacement' => "\$1\$2\n\$1    '%s',",
@@ -37,18 +39,21 @@ class ApplicationConfigInjector extends AbstractInjector
         ],
     ];
 
-    /**
-     * @var string
-     * @psalm-var non-empty-string
-     */
-    protected $isRegisteredPattern = '/\'modules\'\s*\=\>\s*(?:array\(|\[)[^)\]]*\'%s\'/s';
+    /** @var non-empty-string */
+    protected string $isRegisteredPattern = '/\'modules\'\s*\=\>\s*(?:array\(|\[)[^)\]]*\'%s\'/s';
 
-    /**
-     * @var array
-     * @psalm-var array{pattern: non-empty-string, replacement: string}
-     */
-    protected $removalPatterns = [
+    /** @var array{pattern: non-empty-string, replacement: string} */
+    protected array $removalPatterns = [
         'pattern'     => '/^\s+\'%s\',\s*$/m',
         'replacement' => '',
     ];
+
+    /**
+     * @param non-empty-string|null $configFile
+     */
+    public function __construct(string $projectRoot = '', ?string $configFile = null)
+    {
+        $this->configFile = $configFile ?? $this->configFile;
+        parent::__construct($projectRoot);
+    }
 }

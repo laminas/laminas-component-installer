@@ -7,6 +7,8 @@ namespace Laminas\ComponentInstaller\Injector;
 use Laminas\ComponentInstaller\Exception;
 
 /**
+ * @internal
+ *
  * @todo add getConfigFile() method in 2.0
  */
 interface InjectorInterface
@@ -20,61 +22,52 @@ interface InjectorInterface
     /**
      * Whether or not the injector can handle the given type.
      *
-     * @param int $type One of the TYPE_* constants.
-     * @psalm-param InjectorInterface::TYPE_* $type
-     * @return bool
+     * @param InjectorInterface::TYPE_* $type
      */
-    public function registersType($type);
+    public function registersType(int $type): bool;
 
     /**
      * Return a list of types the injector handles.
      *
-     * @return int[]
+     * @return list<InjectorInterface::TYPE_*>
      */
-    public function getTypesAllowed();
+    public function getTypesAllowed(): array;
 
     /**
      * Is a given package already registered?
      *
-     * @param string $package
-     * @return bool
+     * @param non-empty-string $package
      */
-    public function isRegistered($package);
+    public function isRegistered(string $package): bool;
 
     /**
      * Register a package with the configuration.
      *
-     * @param string $package Package to inject into configuration.
-     * @param int $type One of the TYPE_* constants.
-     * @return bool
+     * @param non-empty-string $package Package to inject into configuration.
+     * @param InjectorInterface::TYPE_* $type
      * @throws Exception\RuntimeException
      */
-    public function inject($package, $type);
+    public function inject(string $package, int $type): bool;
 
     /**
      * Remove a package from the configuration.
      *
-     * @param string $package Package to remove.
-     * @return bool
+     * @param non-empty-string $package Package to remove.
      * @throws Exception\RuntimeException
      */
-    public function remove($package);
+    public function remove(string $package): bool;
 
     /**
      * Set modules of the application.
      *
-     * @param array<int,string> $modules
-     * @psalm-param list<non-empty-string> $modules
-     * @return self
+     * @param list<non-empty-string> $modules
      */
-    public function setApplicationModules(array $modules);
+    public function setApplicationModules(array $modules): self;
 
     /**
-     * Set dependencies for the module.
+     * Create an injector for  dependencies for the module.
      *
-     * @param array<int,string> $modules
-     * @psalm-param list<non-empty-string> $modules
-     * @return self
+     * @param list<non-empty-string> $modules
      */
-    public function setModuleDependencies(array $modules);
+    public function setModuleDependencies(array $modules): self;
 }

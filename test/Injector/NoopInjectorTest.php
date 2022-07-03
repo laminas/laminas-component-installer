@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaminasTest\ComponentInstaller\Injector;
 
+use Laminas\ComponentInstaller\Injector\InjectorInterface;
 use Laminas\ComponentInstaller\Injector\NoopInjector;
 use PHPUnit\Framework\TestCase;
 
@@ -31,7 +32,7 @@ class NoopInjectorTest extends TestCase
     }
 
     /**
-     * @psalm-return array<string, array{0: int}>
+     * @psalm-return array<string, array{0: InjectorInterface::TYPE_*}>
      */
     public function packageTypes(): array
     {
@@ -43,6 +44,7 @@ class NoopInjectorTest extends TestCase
     }
 
     /**
+     * @param InjectorInterface::TYPE_* $type
      * @dataProvider packageTypes
      */
     public function testInjectIsANoop(int $type): void

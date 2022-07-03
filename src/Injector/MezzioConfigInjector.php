@@ -4,48 +4,49 @@ declare(strict_types=1);
 
 namespace Laminas\ComponentInstaller\Injector;
 
+use Laminas\ComponentInstaller\ConfigDiscovery\DiscoveryInterface;
 use Laminas\ComponentInstaller\ConfigDiscovery\MezzioConfig as MezzioConfigDiscovery;
 
 use function assert;
 use function preg_quote;
 use function sprintf;
 
-class MezzioConfigInjector extends AbstractInjector
+/**
+ * @internal
+ */
+final class MezzioConfigInjector extends AbstractInjector
 {
     use ConditionalDiscoveryTrait;
 
     public const DEFAULT_CONFIG_FILE = 'config/config.php';
 
-    /**
-     * {@inheritDoc}
-     */
-    protected $allowedTypes = [
+    /** @var list<InjectorInterface::TYPE_*> */
+    protected array $allowedTypes = [
         self::TYPE_CONFIG_PROVIDER,
     ];
 
-    /** @var string */
-    protected $configFile = self::DEFAULT_CONFIG_FILE;
+    /** @var non-empty-string */
+    protected string $configFile = self::DEFAULT_CONFIG_FILE;
 
     /**
      * Discovery class, for testing if this injector is valid for the given
      * configuration.
      *
-     * @var string
+     * @var class-string<DiscoveryInterface>
      */
-    protected $discoveryClass = MezzioConfigDiscovery::class;
+    protected string $discoveryClass = MezzioConfigDiscovery::class;
 
     /**
      * Patterns and replacements to use when registering a code item.
      *
      * Pattern is set in constructor due to PCRE quoting issues.
      *
-     * @var array
-     * @psalm-var array<
+     * @var array<
      *     InjectorInterface::TYPE_*,
      *     array{pattern: non-empty-string, replacement: string}
      * >
      */
-    protected $injectionPatterns = [];
+    protected array $injectionPatterns = [];
 
     /**
      * Pattern to use to determine if the code item is registered.
@@ -54,13 +55,10 @@ class MezzioConfigInjector extends AbstractInjector
      *
      * @var non-empty-string
      */
-    protected $isRegisteredPattern = 'overridden-by-constructor';
+    protected string $isRegisteredPattern = 'overridden-by-constructor';
 
-    /**
-     * @var array
-     * @psalm-var array{pattern: non-empty-string, replacement: string}
-     */
-    protected $removalPatterns = [
+    /** @var array{pattern: non-empty-string, replacement: string} */
+    protected array $removalPatterns = [
         'pattern'     => '/^\s+%s::class,\s*$/m',
         'replacement' => '',
     ];
@@ -71,7 +69,7 @@ class MezzioConfigInjector extends AbstractInjector
      * Sets $isRegisteredPattern and pattern for $injectionPatterns to ensure
      * proper PCRE quoting.
      */
-    public function __construct($projectRoot = '')
+    public function __construct(string $projectRoot = '')
     {
         $this->isRegisteredPattern = '/new (?:'
             . preg_quote('\\')
@@ -91,5 +89,15 @@ class MezzioConfigInjector extends AbstractInjector
         ];
 
         parent::__construct($projectRoot);
+    }
+
+    protected function getDefaultConfigFile(): string
+    {
+        return self::DEFAULT_CONFIG_FILE;
+    }
+
+    protected function getDiscoveryClass(): string
+    {
+        return $this->discoveryClass;
     }
 }

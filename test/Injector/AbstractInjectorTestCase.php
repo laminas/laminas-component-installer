@@ -94,11 +94,12 @@ abstract class AbstractInjectorTestCase extends TestCase
     }
 
     /**
-     * @psalm-return array<non-empty-string, array{0: string, 1: int}>
+     * @psalm-return array<non-empty-string, array{0: string, 1: InjectorInterface::TYPE_*}>
      */
     abstract public function packageAlreadyRegisteredProvider(): array;
 
     /**
+     * @param InjectorInterface::TYPE_* $type
      * @dataProvider packageAlreadyRegisteredProvider
      */
     public function testInjectDoesNotModifyContentsIfPackageIsAlreadyRegistered(string $contents, int $type): void

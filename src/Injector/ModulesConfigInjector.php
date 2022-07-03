@@ -4,19 +4,21 @@ declare(strict_types=1);
 
 namespace Laminas\ComponentInstaller\Injector;
 
-class ModulesConfigInjector extends AbstractInjector
+/**
+ * @internal
+ */
+final class ModulesConfigInjector extends AbstractInjector
 {
-    /** @var string */
-    protected $configFile = 'config/modules.config.php';
+    /** @var non-empty-string */
+    protected string $configFile = 'config/modules.config.php';
 
     /**
-     * @var array
-     * @psalm-var array<
+     * @var array<
      *     InjectorInterface::TYPE_*,
      *     array{pattern: non-empty-string, replacement: string}
      * >
      */
-    protected $injectionPatterns = [
+    protected array $injectionPatterns = [
         self::TYPE_COMPONENT          => [
             'pattern'     => '/^(return\s+(?:array\s*\(|\[))\s*$/m',
             'replacement' => "\$1\n    '%s',",
@@ -36,13 +38,10 @@ class ModulesConfigInjector extends AbstractInjector
     ];
 
     /** @var non-empty-string */
-    protected $isRegisteredPattern = '/return\s+(?:array\(|\[)[^)\]]*\'%s\'/s';
+    protected string $isRegisteredPattern = '/return\s+(?:array\(|\[)[^)\]]*\'%s\'/s';
 
-    /**
-     * @var array
-     * @psalm-var array{pattern: non-empty-string, replacement: string}
-     */
-    protected $removalPatterns = [
+    /** @var array{pattern: non-empty-string, replacement: string} */
+    protected array $removalPatterns = [
         'pattern'     => '/^\s+\'%s\',\s*$/m',
         'replacement' => '',
     ];

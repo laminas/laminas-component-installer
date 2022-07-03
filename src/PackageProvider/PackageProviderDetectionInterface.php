@@ -6,10 +6,13 @@ namespace Laminas\ComponentInstaller\PackageProvider;
 
 use Composer\Package\PackageInterface;
 
+/**
+ * @internal
+ */
 interface PackageProviderDetectionInterface
 {
     /**
-     * @return PackageInterface[]
+     * @return list<PackageInterface>
      */
     public function whatProvides(string $packageName): array;
 }

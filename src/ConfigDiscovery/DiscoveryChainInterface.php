@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace Laminas\ComponentInstaller\ConfigDiscovery;
 
-interface DiscoveryChainInterface
+/**
+ * @internal
+ */
+interface DiscoveryChainInterface extends DiscoveryInterface
 {
-    /**
-     * Determine if discovery exists
-     *
-     * @param string $name
-     * @return bool
-     */
-    public function discoveryExists($name);
+    public function discoveryExists(string $name): bool;
 }

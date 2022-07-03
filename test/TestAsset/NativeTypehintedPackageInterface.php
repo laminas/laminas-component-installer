@@ -9,6 +9,7 @@ use Composer\Package\PackageInterface;
 /**
  * Interface to ensure we do not have to mock each of these methods in every unit test.
  * PHPUnit will create return values based on the native typehint.
+ * Can be removed when dropping support for composer v1
  */
 interface NativeTypehintedPackageInterface extends PackageInterface
 {

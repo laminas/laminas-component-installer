@@ -73,9 +73,6 @@ final class ComponentInstallerTest extends TestCase
             vfsStream::url('project')
         );
 
-        $composer       = $this->createMock(Composer::class);
-        $this->composer = $composer;
-
         $rootPackage = $this->createMock(RootPackage::class);
 
         $this->rootPackage = $rootPackage;
@@ -84,6 +81,16 @@ final class ComponentInstallerTest extends TestCase
             ->willReturnCallback(function (): array {
                 return $this->rootPackageExtra;
             });
+
+        $installationManager       = $this->createMock(InstallationManager::class);
+        $this->installationManager = $installationManager;
+
+        $composer = $this->createComposerMock(
+            $installationManager,
+            $rootPackage
+        );
+
+        $this->composer = $composer;
 
         $this->rootPackage
             ->method('getProvides')
@@ -129,13 +136,6 @@ final class ComponentInstallerTest extends TestCase
             $this->composer,
             $this->io
         );
-
-        $installationManager       = $this->createMock(InstallationManager::class);
-        $this->installationManager = $installationManager;
-
-        $this->composer
-            ->method('getInstallationManager')
-            ->willReturn($installationManager);
     }
 
     /**
@@ -196,8 +196,8 @@ final class ComponentInstallerTest extends TestCase
     /**
      * Create config on demand
      *
-     * @param string $name
-     * @param string $contents
+     * @param non-empty-string $name
+     * @param non-empty-string $contents
      */
     private function createConfigFile($name, $contents): void
     {
@@ -669,6 +669,9 @@ CONTENT
                     $packageName . '\\' => 'src/',
                 ];
                 break;
+            default:
+                $autoload     = [];
+                $pathToModule = '.';
         }
 
         $dependenciesStr = $dependencies ? "'" . implode("', '", $dependencies) . "'" : '';
@@ -1064,12 +1067,7 @@ CONTENT
 
     public function testAddPackageToConfigWillPassProjectRootAsStringToConfigDiscovery(): void
     {
-        $installationManager = $this->createMock(InstallationManager::class);
-
-        $composer = $this->createMock(Composer::class);
-        $composer
-            ->method('getInstallationManager')
-            ->willReturn($installationManager);
+        $composer = $this->createComposerMock();
 
         $io = $this->createMock(IOInterface::class);
         $io
@@ -1444,6 +1442,7 @@ CONTENT
         $rm = $r->getMethod('getModuleDependencies');
         $rm->setAccessible(true);
 
+        /** @psalm-suppress MixedAssignment We do want to assert the value and thus we do not care about mixed here. */
         $dependencies = $rm->invoke($this->installer, $file);
 
         self::assertEquals($result, $dependencies);
@@ -1489,6 +1488,7 @@ CONTENT
         $rm = $r->getMethod('loadModuleClassesDependencies');
         $rm->setAccessible(true);
 
+        /** @psalm-suppress MixedAssignment We do want to assert the value and thus we do not care about mixed here. */
         $dependencies = $rm->invoke($this->installer, $package);
         self::assertEquals([
             'DoesNotExist'       => ['DoesNotExistDependency'],
@@ -1568,12 +1568,15 @@ CONTENT
 
     /**
      * @dataProvider injectorConfigProvider
-     * @param string $configContents
-     * @param array $configNames
-     * @param string $expectedName
+     * @param non-empty-string $configContents
+     * @param list<non-empty-string> $configNames
+     * @param non-empty-string $expectedName
      */
-    public function testUninstallMessageWithDifferentInjectors($configContents, array $configNames, $expectedName): void
-    {
+    public function testUninstallMessageWithDifferentInjectors(
+        string $configContents,
+        array $configNames,
+        string $expectedName
+    ): void {
         foreach ($configNames as $configName) {
             $this->createConfigFile($configName, $configContents);
         }
@@ -1736,18 +1739,22 @@ CONFIG;
     }
 
     /**
-     * @return array
+     * @return array<non-empty-string,array{
+     *     non-empty-string,
+     *     list<non-empty-string>,
+     *     non-empty-string
+     * }>
      */
-    public function injectorConfigProvider()
+    public function injectorConfigProvider(): array
     {
         $config = <<<'CONFIG'
-<?php
-return [
-    'modules' => [
-        'Some\Component'
-    ]
-];
-CONFIG;
+        <?php
+        return [
+            'modules' => [
+                'Some\Component'
+            ]
+        ];
+        CONFIG;
 
         return [
             'application.config.php' => [
@@ -1997,5 +2004,28 @@ CONFIG;
                 'Some\Module',
             ],
         ];
+    }
+
+    /**
+     * @return Composer&MockObject
+     */
+    private function createComposerMock(
+        ?InstallationManager $installationManager = null,
+        ?RootPackage $package = null
+    ): Composer {
+        $installationManager ??= $this->createMock(InstallationManager::class);
+        $composer              = $this->createMock(Composer::class);
+
+        $composer
+            ->method('getInstallationManager')
+            ->willReturn($installationManager);
+
+        $package ??= $this->createMock(RootPackage::class);
+
+        $composer
+            ->method('getPackage')
+            ->willReturn($package);
+
+        return $composer;
     }
 }

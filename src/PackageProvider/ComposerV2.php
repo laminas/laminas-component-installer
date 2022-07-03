@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Laminas\ComponentInstaller\PackageProvider;
 
 use Composer\Repository\InstalledRepository;
-use Composer\Repository\InstalledRepositoryInterface;
 
+use function array_values;
+
+/**
+ * @internal
+ */
 final class ComposerV2 implements PackageProviderDetectionInterface
 {
-    /** @var InstalledRepositoryInterface */
-    private $installedRepository;
+    private InstalledRepository $installedRepository;
 
     public function __construct(InstalledRepository $installedRepository)
     {
@@ -19,6 +22,6 @@ final class ComposerV2 implements PackageProviderDetectionInterface
 
     public function whatProvides(string $packageName): array
     {
-        return $this->installedRepository->findPackagesWithReplacersAndProviders($packageName);
+        return array_values($this->installedRepository->findPackagesWithReplacersAndProviders($packageName));
     }
 }

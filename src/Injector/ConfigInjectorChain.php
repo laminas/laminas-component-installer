@@ -7,61 +7,67 @@ namespace Laminas\ComponentInstaller\Injector;
 use Laminas\ComponentInstaller\Collection;
 use Laminas\ComponentInstaller\ConfigDiscovery\DiscoveryChainInterface;
 
+use function array_merge;
+use function array_unique;
+use function array_values;
+use function assert;
 use function in_array;
+use function is_bool;
 
-class ConfigInjectorChain implements InjectorInterface
+/**
+ * @internal
+ */
+final class ConfigInjectorChain implements InjectorInterface
 {
     /**
      * ConfigInjectors Collection
      *
-     * @var Collection
+     * @var Collection<array-key,InjectorInterface>
      */
-    protected $chain;
+    private Collection $chain;
 
     /**
      * Types this injector is allowed to register.
      *
      * Implementations MAY overwrite this value.
      *
-     * @var array<int,int>
-     * @psalm-var list<InjectorInterface::TYPE_*>
+     * @var list<InjectorInterface::TYPE_*>
      */
-    protected $allowedTypes = [];
+    private array $allowedTypes = [];
 
     /**
      * Optionally accept the project root directory; if non-empty, it is used
      * to prefix the $configFile.
      *
-     * @param iterable<array-key,InjectorInterface> $injectors
-     * @param string $projectRoot
+     * @param array<string,class-string<InjectorInterface>> $injectors
+     * @param Collection<array-key,InjectorInterface::TYPE_*> $availableTypes
      */
     public function __construct(
-        $injectors,
+        array $injectors,
         DiscoveryChainInterface $discoveryChain,
         Collection $availableTypes,
-        $projectRoot = ''
+        string $projectRoot = ''
     ) {
-        $this->chain = Collection::create($injectors)
+        $this->chain = (new Collection($injectors))
             // Keep only those injectors that discovery exists in discoveryChain
-            ->filter(function ($injector, $file) use ($discoveryChain) {
-                return $discoveryChain->discoveryExists($file);
-            })
+            ->filter(
+            /** @psalm-suppress UnusedClosureParam https://github.com/vimeo/psalm/issues/8095 */
+                fn(string $injector, string $file) => $discoveryChain->discoveryExists($file)
+            )
             // Create an injector for the config file
-            ->map(function ($injector) use ($projectRoot) {
-                return new $injector($projectRoot);
-            })
+            ->map(
+                fn(string $injector): InjectorInterface => new $injector($projectRoot)
+            )
             // Keep only those injectors that match types available for the package
-            ->filter(function ($injector) use ($availableTypes) {
-                return $availableTypes->reduce(function ($flag, $type) use ($injector) {
-                    return $flag || $injector->registersType($type);
-                }, false);
-            });
+            ->filter(fn(InjectorInterface $injector) => $availableTypes->anySatisfies(
+                fn(int $type) => $injector->registersType($type)
+            ));
     }
 
     /**
      * {@inheritDoc}
      */
-    public function registersType($type)
+    public function registersType(int $type): bool
     {
         return in_array($type, $this->getTypesAllowed(), true);
     }
@@ -69,30 +75,28 @@ class ConfigInjectorChain implements InjectorInterface
     /**
      * {@inheritDoc}
      */
-    public function getTypesAllowed()
+    public function getTypesAllowed(): array
     {
         if ($this->allowedTypes) {
             return $this->allowedTypes;
         }
+
         $allowedTypes = [];
         foreach ($this->chain->getIterator() as $injector) {
-            $allowedTypes += $injector->getTypesAllowed();
+            $allowedTypes[] = $injector->getTypesAllowed();
         }
 
-        /** @psalm-var list<InjectorInterface::TYPE_*> $allowedTypes */
-        $this->allowedTypes = $allowedTypes;
-        return $allowedTypes;
+        $this->allowedTypes = array_values(array_unique(array_merge([], ...$allowedTypes)));
+        return $this->allowedTypes;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function isRegistered($package)
+    public function isRegistered(string $package): bool
     {
         $isRegisteredCount = $this->chain
-            ->filter(function (InjectorInterface $injector) use ($package): bool {
-                return $injector->isRegistered($package);
-            })
+            ->filter(fn(InjectorInterface $injector): bool => $injector->isRegistered($package))
             ->count();
         return $this->chain->count() === $isRegisteredCount;
     }
@@ -100,7 +104,7 @@ class ConfigInjectorChain implements InjectorInterface
     /**
      * {@inheritDoc}
      */
-    public function inject($package, $type)
+    public function inject(string $package, int $type): bool
     {
         $injected = false;
 
@@ -109,13 +113,15 @@ class ConfigInjectorChain implements InjectorInterface
                 $injected = $injector->inject($package, $type) || $injected;
             });
 
+        assert(is_bool($injected));
+
         return $injected;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function remove($package)
+    public function remove(string $package): bool
     {
         $removed = false;
 
@@ -124,13 +130,14 @@ class ConfigInjectorChain implements InjectorInterface
                 $removed = $injector->remove($package) || $removed;
             });
 
+        assert(is_bool($removed));
         return $removed;
     }
 
     /**
-     * @return Collection
+     * @return Collection<array-key,InjectorInterface>
      */
-    public function getCollection()
+    public function getCollection(): Collection
     {
         return $this->chain;
     }
@@ -138,7 +145,7 @@ class ConfigInjectorChain implements InjectorInterface
     /**
      * {@inheritDoc}
      */
-    public function setApplicationModules(array $modules)
+    public function setApplicationModules(array $modules): self
     {
         return $this;
     }
@@ -146,7 +153,7 @@ class ConfigInjectorChain implements InjectorInterface
     /**
      * {@inheritDoc}
      */
-    public function setModuleDependencies(array $modules)
+    public function setModuleDependencies(array $modules): self
     {
         return $this;
     }
