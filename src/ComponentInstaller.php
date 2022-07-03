@@ -92,7 +92,6 @@ use function substr;
  * @internal
  *
  * @psalm-type ComposerExtraComponentInstallerProjectArrayType = array{
- *     component-whitelist?: non-empty-list<non-empty-string>,
  *     component-auto-installs?: non-empty-list<non-empty-string>
  * }
  * @psalm-type ComposerExtraComponentInstallerArrayType = array{
@@ -951,9 +950,7 @@ class ComponentInstaller implements
         /** @var array<string,mixed> $rootPackageExtra */
         $rootPackageExtra  = $this->composer->getPackage()->getExtra();
         $rootExtra         = $this->getExtraMetadata($rootPackageExtra, true);
-        $autoInstallations = $rootExtra['component-auto-installs']
-            ?? $rootExtra['component-whitelist']
-            ?? [];
+        $autoInstallations = $rootExtra['component-auto-installs'] ?? [];
 
         $this->marshalInstallableComponents($extra, $options)
             // Create injectors
@@ -1050,14 +1047,6 @@ class ComponentInstaller implements
         }
 
         // We do not return component/module/config-provider for components project
-
-        if (
-            isset($maybeLaminasSpecificConfiguration['component-whitelist'])
-            && $this->isNonEmptyListContainingNonEmptyStrings($maybeLaminasSpecificConfiguration['component-whitelist'])
-        ) {
-            $laminasSpecificConfiguration['component-whitelist']
-                = $maybeLaminasSpecificConfiguration['component-whitelist'];
-        }
 
         if (
             isset($maybeLaminasSpecificConfiguration['component-auto-installs'])
