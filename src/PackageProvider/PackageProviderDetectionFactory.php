@@ -6,14 +6,18 @@ namespace Laminas\ComponentInstaller\PackageProvider;
 
 use Composer\Composer;
 use Composer\Installer\PackageEvent;
+use Composer\IO\IOInterface;
 use Composer\IO\NullIO;
 use Composer\Repository\CompositeRepository;
 use Composer\Repository\InstalledArrayRepository;
 use Composer\Repository\InstalledRepository;
 use Composer\Repository\PlatformRepository;
 use Composer\Repository\RepositoryFactory;
+use Composer\Repository\RepositoryInterface;
 use Composer\Repository\RepositoryInterface as ComposerRepositoryInterface;
 use Composer\Repository\RootPackageRepository;
+
+use function method_exists;
 
 /**
  * @internal
@@ -37,7 +41,7 @@ final class PackageProviderDetectionFactory implements PackageProviderDetectionF
     public function detect(PackageEvent $event, string $packageName): PackageProviderDetectionInterface
     {
         $installedRepo = new InstalledRepository($this->prepareRepositoriesForInstalledRepository());
-        $defaultRepos  = new CompositeRepository(RepositoryFactory::defaultRepos(new NullIO()));
+        $defaultRepos  = new CompositeRepository($this->createDefaultRepos(new NullIO()));
 
         if (
             ($match = $defaultRepos->findPackage($packageName, '*'))
@@ -62,5 +66,17 @@ final class PackageProviderDetectionFactory implements PackageProviderDetectionF
             $this->composer->getRepositoryManager()->getLocalRepository(),
             new PlatformRepository([], $platformOverrides),
         ];
+    }
+
+    /**
+     * @return RepositoryInterface[]
+     */
+    private function createDefaultRepos(IOInterface $io): array
+    {
+        if (method_exists(RepositoryFactory::class, 'defaultReposWithDefaultManager')) {
+            return RepositoryFactory::defaultReposWithDefaultManager($io);
+        }
+
+        return RepositoryFactory::defaultRepos($io);
     }
 }
