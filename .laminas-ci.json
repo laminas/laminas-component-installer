@@ -1,14 +1,4 @@
 {
-    "additional_checks": [
-        {
-            "name": "PHPUnit using Composer v1",
-            "job": {
-                "command": "rm -r vendor/ && composer require --dev --update-with-all-dependencies composer/composer:^1 && xmlstarlet ed -u '/phpunit/@convertDeprecationsToExceptions' -v 'false' phpunit.xml.dist > phpunit.xml && vendor/bin/phpunit",
-                "php": "*",
-                "dependencies": "*"
-            }
-        }
-    ],
     "ignore_php_platform_requirements": {
         "8.0": false
     }

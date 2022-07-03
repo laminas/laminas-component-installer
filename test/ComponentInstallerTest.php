@@ -10,17 +10,16 @@ use Composer\DependencyResolver\Operation\InstallOperation;
 use Composer\DependencyResolver\Operation\UninstallOperation;
 use Composer\DependencyResolver\Operation\UpdateOperation;
 use Composer\DependencyResolver\Pool;
+use Composer\Installer\InstallationManager;
 use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
+use Composer\Package\PackageInterface;
 use Composer\Package\RootPackage;
 use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Repository\RepositoryManager;
 use Composer\Repository\RootPackageRepository;
 use Generator;
 use Laminas\ComponentInstaller\ComponentInstaller;
-use Laminas\ComponentInstaller\PackageProvider\PackageProviderDetectionFactory;
-use LaminasTest\ComponentInstaller\TestAsset\NativeTypehintedInstallationManager as InstallationManager;
-use LaminasTest\ComponentInstaller\TestAsset\NativeTypehintedPackageInterface as PackageInterface;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -103,30 +102,28 @@ final class ComponentInstallerTest extends TestCase
         $io       = $this->createMock(IOInterface::class);
         $this->io = $io;
 
-        if (false === PackageProviderDetectionFactory::isComposerV1()) {
-            $config = $this->createMock(Config::class);
-            $this->composer
-                ->method('getConfig')
-                ->willReturn($config);
-            $repositoryManager = $this->createMock(RepositoryManager::class);
-            $localRepository   = $this->createMock(InstalledRepositoryInterface::class);
-            $localRepository
-                ->method('getPackages')
-                ->willReturn([]);
-            $repositoryManager
-                ->method('getLocalRepository')
-                ->willReturn($localRepository);
-            $this->composer
-                ->method('getRepositoryManager')
-                ->willReturn($repositoryManager);
+        $config = $this->createMock(Config::class);
+        $this->composer
+            ->method('getConfig')
+            ->willReturn($config);
+        $repositoryManager = $this->createMock(RepositoryManager::class);
+        $localRepository   = $this->createMock(InstalledRepositoryInterface::class);
+        $localRepository
+            ->method('getPackages')
+            ->willReturn([]);
+        $repositoryManager
+            ->method('getLocalRepository')
+            ->willReturn($localRepository);
+        $this->composer
+            ->method('getRepositoryManager')
+            ->willReturn($repositoryManager);
 
-            $this->rootPackage
-                ->method('setRepository')
-                ->with(self::callback(static function (object $repository): bool {
-                    self::assertInstanceOf(RootPackageRepository::class, $repository);
-                    return true;
-                }));
-        }
+        $this->rootPackage
+            ->method('setRepository')
+            ->with(self::callback(static function (object $repository): bool {
+                self::assertInstanceOf(RootPackageRepository::class, $repository);
+                return true;
+            }));
 
         $this->composer
             ->method('getPackage')
