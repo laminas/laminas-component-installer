@@ -62,7 +62,7 @@ final class ComponentInstallerTest extends TestCase
     /** @var InstallationManager&MockObject */
     private $installationManager;
 
-    /** @var array{laminas?:array{component-whitelist?:list<non-empty-string>}} */
+    /** @var array{laminas?:array{component-auto-installs?:list<non-empty-string>,component-whitelist?:list<non-empty-string>}} */
     private $rootPackageExtra = [];
 
     protected function setUp(): void
@@ -949,45 +949,6 @@ CONTENT
         self::assertStringContainsString("'Some\Component'", $config);
     }
 
-    public function testOnPostPackageInstallDoesNotPromptForWhitelistedPackages(): void
-    {
-        $this->createApplicationConfig();
-
-        $package = $this->createMock(PackageInterface::class);
-        $package->method('getName')->willReturn('some/component');
-        $package->method('getExtra')->willReturn([
-            'laminas' => [
-                'component' => 'Some\\Component',
-            ],
-        ]);
-
-        $operation = $this->createMock(InstallOperation::class);
-        $operation->method('getPackage')->willReturn($package);
-
-        $event = $this->createMock(PackageEvent::class);
-        $event->method('isDevMode')->willReturn(true);
-        $event->method('getOperation')->willReturn($operation);
-        $this->prepareEventForPackageProviderDetection($event, 'some/component');
-
-        $this->rootPackage->method('getName')->willReturn('some/component');
-        $this->rootPackageExtra = [
-            'laminas' => [
-                'component-whitelist' => ['some/component'],
-            ],
-        ];
-
-        $this->createOutputAssertions([
-            'Installing Some\Component from package some/component',
-        ]);
-        $this->io
-            ->expects(self::never())
-            ->method('ask');
-
-        $this->installer->onPostPackageInstall($event);
-        $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
-        self::assertStringContainsString("'Some\Component'", $config);
-    }
-
     public function testOnPostPackageInstallPromptsForConfigOptions(): void
     {
         $this->createApplicationConfig();
@@ -1603,7 +1564,178 @@ CONTENT
         $this->installer->onPostPackageUninstall($event);
     }
 
-    public function testInstallWhitelistedDevModuleWithDifferentInjectors(): void
+    public function testInstallAutoInstallableDevModuleWithDifferentInjectors(): void
+    {
+        $moduleConfigContent = <<<'CONFIG'
+<?php
+return [
+    'modules' => [
+        'Laminas\Router',
+        'Laminas\Validator',
+        'Application'
+    ]
+];
+CONFIG;
+
+        $this->createConfigFile('modules.config.php', $moduleConfigContent);
+
+        $configContents = <<<'CONFIG'
+<?php
+return [
+    'modules' => [
+    ]
+];
+CONFIG;
+        foreach (['development.config.php.dist', 'development.config.php'] as $configName) {
+            $this->createConfigFile($configName, $configContents);
+        }
+
+        $this->rootPackage->method('getDevRequires')->willReturn(['some/component' => '*']);
+        $this->rootPackageExtra = [
+            'laminas' => [
+                "component-auto-installs" => [
+                    "some/component",
+                ],
+            ],
+        ];
+
+        $package = $this->createMock(PackageInterface::class);
+        $package->method('getName')->willReturn('some/component');
+        $package->method('getExtra')->willReturn([
+            'laminas' => [
+                'component' => [
+                    'Some\\Component',
+                ],
+            ],
+        ]);
+
+        $operation = $this->createMock(InstallOperation::class);
+        $operation->method('getPackage')->willReturn($package);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
+
+        $this->installer->onPostPackageInstall($event);
+        /**
+         * @psalm-suppress UnresolvableInclude
+         * @psalm-var array{modules:list<non-empty-string>} $config
+         */
+        $config  = require vfsStream::url('project/config/modules.config.php');
+        $modules = $config['modules'];
+        self::assertEquals([
+            'Laminas\Router',
+            'Laminas\Validator',
+            'Application',
+        ], $modules);
+        /**
+         * @psalm-suppress UnresolvableInclude
+         * @psalm-var array{modules:list<non-empty-string>} $config
+         */
+        $config  = require vfsStream::url('project/config/development.config.php');
+        $modules = $config['modules'];
+        self::assertEquals(['Some\Component'], $modules);
+    }
+
+    public function testOnPostPackageInstallDoesNotPromptForAutoInstallablePackages(): void
+    {
+        $this->createApplicationConfig();
+
+        $package = $this->createMock(PackageInterface::class);
+        $package->method('getName')->willReturn('some/component');
+        $package->method('getExtra')->willReturn([
+            'laminas' => [
+                'component' => 'Some\\Component',
+            ],
+        ]);
+
+        $operation = $this->createMock(InstallOperation::class);
+        $operation->method('getPackage')->willReturn($package);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
+
+        $this->rootPackage->method('getName')->willReturn('some/component');
+        $this->rootPackageExtra = [
+            'laminas' => [
+                'component-auto-installs' => ['some/component'],
+            ],
+        ];
+
+        $this->createOutputAssertions([
+            'Installing Some\Component from package some/component',
+        ]);
+        $this->io
+            ->expects(self::never())
+            ->method('ask');
+
+        $this->installer->onPostPackageInstall($event);
+        $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
+        self::assertStringContainsString("'Some\Component'", $config);
+    }
+
+    public function testInstallAutoInstallableDevModuleWithUniqueInjector(): void
+    {
+        $moduleConfigContent = <<<'CONFIG'
+<?php
+return [
+    'modules' => [
+        'Laminas\Router',
+        'Laminas\Validator',
+        'Application',
+    ]
+];
+CONFIG;
+
+        $this->createConfigFile('modules.config.php', $moduleConfigContent);
+
+        $this->rootPackageExtra = [
+            'laminas' => [
+                "component-auto-installs" => [
+                    "some/module",
+                ],
+            ],
+        ];
+
+        $package = $this->createMock(PackageInterface::class);
+        $package->method('getName')->willReturn('some/module');
+        $package->method('getExtra')->willReturn([
+            'laminas' => [
+                'module' => 'Some\\Module',
+            ],
+        ]);
+
+        $operation = $this->createMock(InstallOperation::class);
+        $operation->method('getPackage')->willReturn($package);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+        $this->prepareEventForPackageProviderDetection($event, 'some/module');
+
+        $this->rootPackage
+            ->method('getName')
+            ->willReturn('some/module');
+
+        $this->installer->onPostPackageInstall($event);
+        /**
+         * @psalm-suppress UnresolvableInclude
+         * @psalm-var array{modules:list<non-empty-string>} $config
+         */
+        $config  = require vfsStream::url('project/config/modules.config.php');
+        $modules = $config['modules'];
+        self::assertEquals([
+            'Laminas\Router',
+            'Laminas\Validator',
+            'Application',
+            'Some\Module',
+        ], $modules);
+    }
+
+    public function testInstallDeprecatedWhitelistedDevModuleWithDifferentInjectors(): void
     {
         $moduleConfigContent = <<<'CONFIG'
 <?php
@@ -1677,7 +1809,46 @@ CONFIG;
         self::assertEquals(['Some\Component'], $modules);
     }
 
-    public function testInstallWhitelistedDevModuleWithUniqueInjector(): void
+    public function testOnPostPackageInstallDoesNotPromptForDeprecatedWhitelistedPackages(): void
+    {
+        $this->createApplicationConfig();
+
+        $package = $this->createMock(PackageInterface::class);
+        $package->method('getName')->willReturn('some/component');
+        $package->method('getExtra')->willReturn([
+            'laminas' => [
+                'component' => 'Some\\Component',
+            ],
+        ]);
+
+        $operation = $this->createMock(InstallOperation::class);
+        $operation->method('getPackage')->willReturn($package);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
+
+        $this->rootPackage->method('getName')->willReturn('some/component');
+        $this->rootPackageExtra = [
+            'laminas' => [
+                'component-whitelist' => ['some/component'],
+            ],
+        ];
+
+        $this->createOutputAssertions([
+            'Installing Some\Component from package some/component',
+        ]);
+        $this->io
+            ->expects(self::never())
+            ->method('ask');
+
+        $this->installer->onPostPackageInstall($event);
+        $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
+        self::assertStringContainsString("'Some\Component'", $config);
+    }
+
+    public function testInstallDeprecatedWhitelistedDevModuleWithUniqueInjector(): void
     {
         $moduleConfigContent = <<<'CONFIG'
 <?php

@@ -92,7 +92,8 @@ use function substr;
  * @internal
  *
  * @psalm-type ComposerExtraComponentInstallerProjectArrayType = array{
- *     component-whitelist?: non-empty-list<non-empty-string>
+ *     component-whitelist?: non-empty-list<non-empty-string>,
+ *     component-auto-installs?: non-empty-list<non-empty-string>
  * }
  * @psalm-type ComposerExtraComponentInstallerArrayType = array{
  *     component?:non-empty-array<non-empty-string>,
@@ -495,22 +496,22 @@ class ComponentInstaller implements
      * @param Collection<int,ConfigOption> $options
      * @param InjectorInterface::TYPE_* $packageType
      * @param non-empty-string $packageName
-     * @param list<non-empty-string> $whitelist
+     * @param list<non-empty-string> $autoInstallations
      */
     private function promptForConfigOption(
         string $name,
         Collection $options,
         int $packageType,
         string $packageName,
-        array $whitelist,
+        array $autoInstallations,
         bool $requireDev = false
     ): InjectorInterface {
         if ($cachedInjector = $this->getCachedInjector($packageType)) {
             return $cachedInjector;
         }
 
-        // If package is whitelisted, don't ask...
-        if (in_array($packageName, $whitelist, true)) {
+        // If package is allowed to be auto-installed, don't ask...
+        if (in_array($packageName, $autoInstallations, true)) {
             $injector = $options->get(1)->getInjector();
             if ($requireDev && $options->has(2)) {
                 return $options->get(2)->getInjector();
@@ -948,9 +949,11 @@ class ComponentInstaller implements
 
         // Get extra from root package
         /** @var array<string,mixed> $rootPackageExtra */
-        $rootPackageExtra = $this->composer->getPackage()->getExtra();
-        $rootExtra        = $this->getExtraMetadata($rootPackageExtra, true);
-        $whitelist        = $rootExtra['component-whitelist'] ?? [];
+        $rootPackageExtra  = $this->composer->getPackage()->getExtra();
+        $rootExtra         = $this->getExtraMetadata($rootPackageExtra, true);
+        $autoInstallations = $rootExtra['component-auto-installs']
+            ?? $rootExtra['component-whitelist']
+            ?? [];
 
         $this->marshalInstallableComponents($extra, $options)
             // Create injectors
@@ -961,7 +964,7 @@ class ComponentInstaller implements
                 $requireDev,
                 $dependencies,
                 $applicationModules,
-                $whitelist
+                $autoInstallations
             ): void {
                 $packageType = $packageTypes->get($component);
 
@@ -970,7 +973,7 @@ class ComponentInstaller implements
                     $options,
                     $packageType,
                     $name,
-                    $whitelist,
+                    $autoInstallations,
                     $requireDev
                 );
 
@@ -1054,6 +1057,16 @@ class ComponentInstaller implements
         ) {
             $laminasSpecificConfiguration['component-whitelist']
                 = $maybeLaminasSpecificConfiguration['component-whitelist'];
+        }
+
+        if (
+            isset($maybeLaminasSpecificConfiguration['component-auto-installs'])
+            && $this->isNonEmptyListContainingNonEmptyStrings(
+                $maybeLaminasSpecificConfiguration['component-auto-installs']
+            )
+        ) {
+            $laminasSpecificConfiguration['component-auto-installs']
+                = $maybeLaminasSpecificConfiguration['component-auto-installs'];
         }
 
         return $laminasSpecificConfiguration;

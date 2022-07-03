@@ -159,23 +159,25 @@ will need to have a line that instantiates either a
 Configuration providers are added at the **top** of the
 `ConfigManager`/`ConfigAggregator` provider array.
 
-## Whitelisting packages to autoinstall
+## Marking packages to auto-install
 
 At the root package level, you can indicate that certain packages that supply
 config providers and/or modules should automatically inject configuration,
-instead of prompting for installation, via the `component-whitelist` setting.
+instead of prompting for installation, via the `component-auto-installs` setting.
 This value should be an array of package names.
 
 ```json
-"extra": {
+{
+  "extra": {
     "laminas": {
-        "component-whitelist": [
-            "mezzio/mezzio",
-            "mezzio/mezzio-helper",
-            "mezzio/mezzio-fastrouterouter",
-            "mezzio/mezzio-platesrenderer"
-        ]
+      "component-auto-installs": [
+        "mezzio/mezzio",
+        "mezzio/mezzio-helper",
+        "mezzio/mezzio-fastrouterouter",
+        "mezzio/mezzio-platesrenderer"
+      ]
     }
+  }
 }
 ```
 
