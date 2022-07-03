@@ -478,7 +478,7 @@ class ComponentInstaller implements
     /**
      * Prompt for the user to select a configuration location to update.
      *
-     * @param array $whitelist
+     * @param array $autoInstallations
      * @return InjectorInterface
      */
     private function promptForConfigOption(
@@ -486,15 +486,15 @@ class ComponentInstaller implements
         Collection $options,
         int $packageType,
         string $packageName,
-        array $whitelist,
+        array $autoInstallations,
         bool $requireDev = false
     ) {
         if ($cachedInjector = $this->getCachedInjector($packageType)) {
             return $cachedInjector;
         }
 
-        // If package is whitelisted, don't ask...
-        if (in_array($packageName, $whitelist, true)) {
+        // If package is allowed to be auto-installed, don't ask...
+        if (in_array($packageName, $autoInstallations, true)) {
             if ($requireDev) {
                 return isset($options[2]) ? $options[2]->getInjector() : $options[1]->getInjector();
             }
@@ -990,17 +990,19 @@ class ComponentInstaller implements
                     // @codingStandardsIgnoreEnd
                     // Get extra from root package
                     /** @var array<string,mixed> $rootPackageExtra */
-                    $rootPackageExtra = $this->composer->getPackage()->getExtra();
-                    $rootExtra        = $this->getExtraMetadata($rootPackageExtra);
-                    $whitelist        = $rootExtra['component-whitelist'] ?? [];
-                    assert(is_array($whitelist));
+                    $rootPackageExtra  = $this->composer->getPackage()->getExtra();
+                    $rootExtra         = $this->getExtraMetadata($rootPackageExtra);
+                    $autoInstallations = $rootExtra['component-auto-installs']
+                        ?? $rootExtra['component-whitelist']
+                        ?? [];
+                    assert(is_array($autoInstallations));
                     $packageType        = $packageTypes[$module];
                     $injectors[$module] = $this->promptForConfigOption(
                         $module,
                         $options,
                         $packageType,
                         $name,
-                        $whitelist,
+                        $autoInstallations,
                         $requireDev
                     );
 
