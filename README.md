@@ -82,19 +82,24 @@ one or more of the following keys under the `extra.laminas` configuration in the
   top of:
   - `config/config.php`
 
-## Whitelisting packages to install automatically
+## Marking Packages to Auto-Install or to Be Ignored
 
 At the project level, you can mark packages that expose configuration providers
-and modules that you want to automatically inject via the `component-whitelist`
-key:
+and modules that you want to automatically inject via the `component-auto-installs`
+key or in case you might want to permanently ignore a component, ignore components via `component-ignore-list`:
 
 ```json
-"extra": {
-  "laminas": {
-    "component-whitelist": [
-      "mezzio/mezzio",
-      "mezzio/mezzio-helpers"
-    ]
+{
+  "extra": {
+    "laminas": {
+      "component-auto-installs": [
+        "mezzio/mezzio",
+        "mezzio/mezzio-helpers"
+      ],
+      "component-ignore-list": [
+        "laminas/laminas-db"
+      ]
+    }
   }
 }
 ```
