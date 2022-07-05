@@ -183,6 +183,25 @@ This value should be an array of package names.
 
 This setting only works in the root package.
 
+## Excluding Packages from Being Auto-Installed
+
+At the root package level, you can also indicate that certain packages that supply
+config providers and/or modules should **NOT** automatically inject configuration,
+instead of prompting for installation, via the `component-ignore-list` setting.
+This value should be an array of package names.
+
+```json
+"extra": {
+    "laminas": {
+        "component-ignore-list": [
+            "laminas/laminas-db"
+        ]
+    }
+}
+```
+
+This setting only works in the root package.
+
 ## Why?
 
 When preparing laminas-mvc's version 3 release, we wanted to reduce the number of

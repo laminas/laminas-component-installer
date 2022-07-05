@@ -62,7 +62,14 @@ final class ComponentInstallerTest extends TestCase
     /** @var InstallationManager&MockObject */
     private $installationManager;
 
-    /** @var array{laminas?:array{component-auto-installs?:list<non-empty-string>}} */
+    /**
+     * @var array{
+     *  laminas?: array{
+     *      component-auto-installs?:list<non-empty-string>,
+     *      component-ignore-list?:list<non-empty-string>
+     *  }
+     * }
+     **/
     private $rootPackageExtra = [];
 
     protected function setUp(): void
@@ -216,7 +223,7 @@ final class ComponentInstallerTest extends TestCase
     }
 
     /**
-     * @param array<int,string> $informations
+     * @param non-empty-list<string> $informations
      */
     private function createOutputAssertions(array $informations): void
     {
@@ -1735,6 +1742,42 @@ CONFIG;
         ], $modules);
     }
 
+    public function testOnPostPackageInstallDoesNotPromptForIgnoredPackages(): void
+    {
+        $this->createApplicationConfig();
+
+        $package = $this->createMock(PackageInterface::class);
+        $package->method('getName')->willReturn('some/component');
+        $package->method('getExtra')->willReturn([
+            'laminas' => [
+                'component' => 'Some\\Component',
+            ],
+        ]);
+
+        $operation = $this->createMock(InstallOperation::class);
+        $operation->method('getPackage')->willReturn($package);
+
+        $event = $this->createMock(PackageEvent::class);
+        $event->method('isDevMode')->willReturn(true);
+        $event->method('getOperation')->willReturn($operation);
+        $this->prepareEventForPackageProviderDetection($event, 'some/component');
+
+        $this->rootPackage->method('getName')->willReturn('some/component');
+        $this->rootPackageExtra = [
+            'laminas' => [
+                'component-ignore-list' => ['some/component'],
+            ],
+        ];
+
+        $this->io
+            ->expects(self::never())
+            ->method('ask');
+
+        $this->installer->onPostPackageInstall($event);
+        $config = file_get_contents(vfsStream::url('project/config/application.config.php'));
+        self::assertStringNotContainsString("'Some\Component'", $config);
+    }
+
     /**
      * @return array<non-empty-string,array{
      *     non-empty-string,
@@ -1861,7 +1904,7 @@ CONFIG;
      * @psalm-param ComposerExtraLaminasConfiguration $previousExtra
      * @psalm-param ComposerExtraLaminasConfiguration $newExtra
      * @psalm-param list<AbstractQuestionAssertion> $inputAssertions
-     * @psalm-param list<non-empty-string> $outputAssertions
+     * @psalm-param non-empty-list<non-empty-string> $outputAssertions
      * @psalm-param list<non-empty-string> $expectedInstalledModules
      * @dataProvider packageUpdateScenarios
      */
@@ -1913,7 +1956,7 @@ CONFIG;
      *     1:ComposerExtraLaminasConfiguration,
      *     2:ComposerExtraLaminasConfiguration,
      *     3:list<AbstractQuestionAssertion>,
-     *     4:list<non-empty-string>,
+     *     4:non-empty-list<non-empty-string>,
      *     5:list<non-empty-string>
      * }>
      */
