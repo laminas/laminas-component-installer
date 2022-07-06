@@ -199,6 +199,10 @@
                     </li>
                 
                     <li class="toc__entry">
+                        <a href="#excluding-packages-from-being-auto-installed" class="toc__link nav-link">Excluding Packages from Being Auto-Installed</a>
+                    </li>
+                
+                    <li class="toc__entry">
                         <a href="#why" class="toc__link nav-link">Why?</a>
                     </li>
                 
@@ -371,6 +375,19 @@ This value should be an array of package names.</p>
       ]
     }
   }
+}</code></pre>
+<p>This setting only works in the root package.</p>
+<h2 id="excluding-packages-from-being-auto-installed">Excluding Packages from Being Auto-Installed</h2>
+<p>At the root package level, you can also indicate that certain packages that supply
+config providers and/or modules should <strong>NOT</strong> automatically inject configuration,
+instead of prompting for installation, via the <code>component-ignore-list</code> setting.
+This value should be an array of package names.</p>
+<pre class="highlight"><code class="language-json">"extra": {
+    "laminas": {
+        "component-ignore-list": [
+            "laminas/laminas-db"
+        ]
+    }
 }</code></pre>
 <p>This setting only works in the root package.</p>
 <h2 id="why">Why?</h2>
@@ -568,5 +585,5 @@ requirement of the metapackage. As such, it's typically safer to:</p>
 
 <!--
 MkDocs version : 1.3.0
-Build Date UTC : 2022-07-03 21:30:38.236796+00:00
+Build Date UTC : 2022-07-06 12:00:49.898318+00:00
 -->
