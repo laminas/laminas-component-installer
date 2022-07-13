@@ -42,6 +42,18 @@ final class PackageProviderDetectionFactoryTest extends TestCase
         $packageProvider->whatProvides('some/component');
     }
 
+    public function testUsesRootPackageCloneWhenCreatingRootPackageRepository(): void
+    {
+        $rootPackage = new RootPackage('some/component', '1.0.0', '1.0.0');
+        $composer    = $this->createComposerMock($rootPackage);
+
+        $factory = new PackageProviderDetectionFactory($composer);
+        $event   = $this->createMock(PackageEvent::class);
+
+        $factory->detect($event, 'some/component');
+        self::assertNull($rootPackage->getRepository());
+    }
+
     /**
      * @return Composer&MockObject
      */
