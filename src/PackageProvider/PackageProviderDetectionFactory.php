@@ -14,7 +14,6 @@ use Composer\Repository\InstalledRepository;
 use Composer\Repository\PlatformRepository;
 use Composer\Repository\RepositoryFactory;
 use Composer\Repository\RepositoryInterface;
-use Composer\Repository\RepositoryInterface as ComposerRepositoryInterface;
 use Composer\Repository\RootPackageRepository;
 
 use function method_exists;
@@ -25,12 +24,10 @@ use function method_exists;
 final class PackageProviderDetectionFactory implements PackageProviderDetectionFactoryInterface
 {
     private Composer $composer;
-    private RootPackageRepository $packageRepository;
 
     public function __construct(Composer $composer)
     {
-        $this->composer          = $composer;
-        $this->packageRepository = new RootPackageRepository($composer->getPackage());
+        $this->composer = $composer;
     }
 
     public static function create(Composer $composer): self
@@ -54,15 +51,18 @@ final class PackageProviderDetectionFactory implements PackageProviderDetectionF
     }
 
     /**
-     * @return list<ComposerRepositoryInterface>
+     * @return list<RepositoryInterface>
      */
     private function prepareRepositoriesForInstalledRepository(): array
     {
         /** @var array<string,string|false> $platformOverrides */
         $platformOverrides = $this->composer->getConfig()->get('platform') ?? [];
 
+        $rootPackage           = $this->composer->getPackage();
+        $rootPackageRepository = $rootPackage->getRepository() ?? new RootPackageRepository(clone $rootPackage);
+
         return [
-            $this->packageRepository,
+            $rootPackageRepository,
             $this->composer->getRepositoryManager()->getLocalRepository(),
             new PlatformRepository([], $platformOverrides),
         ];
