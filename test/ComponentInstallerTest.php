@@ -1950,6 +1950,19 @@ CONFIG;
         self::assertEquals($expectedInstalledModules, $modules);
     }
 
+    public function testDoesNotModifyRootPackageOnPluginActivation(): void
+    {
+        $installer = new ComponentInstaller(
+            vfsStream::url('project')
+        );
+
+        $rootPackage = new RootPackage('vendor/package', '1.0.0', '1.0.0');
+
+        $composer = $this->createComposerMock(null, $rootPackage);
+        $installer->activate($composer, $this->io);
+        self::assertNull($rootPackage->getRepository());
+    }
+
     /**
      * @psalm-return Generator<non-empty-string,array{
      *     0:list<non-empty-string>,
