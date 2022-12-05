@@ -49,7 +49,8 @@ final class ConfigDiscovery
     /**
      * Return a list of available configuration options.
      *
-     * @param Collection<array-key,InjectorInterface::TYPE_*> $availableTypes Collection of injector type
+     * @template TKey of array-key
+     * @param Collection<TKey,InjectorInterface::TYPE_*> $availableTypes Collection of injector type
      *     constants indicating valid package types that could be injected.
      * @param string $projectRoot Path to the project root; assumes PWD by default.
      * @return Collection<int,ConfigOption> Collection of ConfigOption instances.

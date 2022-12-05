@@ -478,7 +478,7 @@ class ComponentInstaller implements
      *
      * @param ComposerExtraComponentInstallerArrayType   $extra
      * @param Collection<int,ConfigOption> $options
-     * @return Collection<array-key,non-empty-string> List of packages to install
+     * @return Collection<int,non-empty-string> List of packages to install
      */
     private function marshalInstallableComponents(array $extra, Collection $options): Collection
     {
@@ -658,9 +658,10 @@ class ComponentInstaller implements
     /**
      * Remove an individual module defined in a package from configuration.
      *
-     * @param non-empty-string     $component Module to remove
+     * @template TKey of array-key
+     * @param non-empty-string $component Module to remove
      * @param non-empty-string $package   Package in which module is defined
-     * @param Collection<array-key,InjectorInterface> $injectors Injectors to use for removal
+     * @param Collection<TKey,InjectorInterface> $injectors Injectors to use for removal
      */
     private function removeModuleFromConfig(string $component, string $package, Collection $injectors): void
     {
