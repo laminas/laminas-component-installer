@@ -22,7 +22,7 @@ final class ConfigInjectorChain implements InjectorInterface
     /**
      * ConfigInjectors Collection
      *
-     * @var Collection<array-key,InjectorInterface>
+     * @var Collection<string,InjectorInterface>
      */
     private Collection $chain;
 
@@ -135,7 +135,7 @@ final class ConfigInjectorChain implements InjectorInterface
     }
 
     /**
-     * @return Collection<array-key,InjectorInterface>
+     * @return Collection<string,InjectorInterface>
      */
     public function getCollection(): Collection
     {

@@ -27,6 +27,8 @@ use const ARRAY_FILTER_USE_BOTH;
  *
  * @template TKey of array-key
  * @template TValue
+ *
+ * @implements IteratorAggregate<TKey, TValue>
  */
 final class Collection implements
     Countable,

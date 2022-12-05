@@ -14,7 +14,7 @@ final class DiscoveryChain implements DiscoveryChainInterface
     /**
      * Discovery Collection
      *
-     * @var Collection<array-key,DiscoveryInterface>
+     * @var Collection<string,DiscoveryInterface>
      */
     protected Collection $chain;
 
@@ -27,7 +27,7 @@ final class DiscoveryChain implements DiscoveryChainInterface
     public function __construct(array $discovery, string $projectDirectory = '')
     {
         $this->chain = (new Collection($discovery))
-            // Create a discovery class for the dicovery type
+            // Create a discovery class for the discovery type
             ->map(static fn(string $discoveryClass) => new $discoveryClass($projectDirectory))
             // Use only those where we can locate a corresponding config file
             ->filter(static fn(DiscoveryInterface $discovery) => $discovery->locate());
