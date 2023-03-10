@@ -69,6 +69,14 @@ class ConfigDiscoveryTest extends TestCase
         $this->createDevelopmentConfig(false);
     }
 
+    public function createMezzioDevelopmentConfig(bool $dist = true): void
+    {
+        $configFileName = 'config/development.config.php' . ($dist ? '.dist' : '');
+        vfsStream::newFile($configFileName)
+            ->at($this->projectRoot)
+            ->setContent('<' . "?php\n\$aggregator = new ConfigAggregator([\n]);");
+    }
+
     public function createAggregatorConfig(): void
     {
         vfsStream::newFile('config/config.php')
@@ -157,6 +165,7 @@ class ConfigDiscoveryTest extends TestCase
         $this->createApplicationConfig();
         $this->createDevelopmentConfig();
         $this->createAggregatorConfig();
+        $this->createMezzioDevelopmentConfig();
         $this->createMezzioConfig();
         $this->createModulesConfig();
 

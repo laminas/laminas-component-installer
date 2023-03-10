@@ -15,7 +15,7 @@ final class ConfigAggregator extends AbstractDiscovery
     /**
      * Configuration file to look for.
      */
-    protected string $configFile = 'config/config.php';
+    protected string $configFile;
 
     /**
      * Expected pattern to match if the configuration file exists.
@@ -24,9 +24,10 @@ final class ConfigAggregator extends AbstractDiscovery
      */
     protected string $expected = '';
 
-    public function __construct(string $projectDirectory = '')
+    public function __construct(string $projectDirectory = '', string $configFile = 'config/config.php')
     {
-        $this->expected = sprintf(
+        $this->configFile = $configFile;
+        $this->expected   = sprintf(
             '/new (?:%s?%s)?ConfigAggregator\(\s*(?:array\(|\[)/s',
             preg_quote('\\'),
             preg_quote('Laminas\ConfigAggregator\\')

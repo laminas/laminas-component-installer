@@ -40,7 +40,7 @@ trait ConditionalDiscoveryTrait
     private function validConfigAggregatorConfig(): bool
     {
         $discoveryClass = $this->getDiscoveryClass();
-        $discovery      = new $discoveryClass($this->getProjectRoot());
+        $discovery      = new $discoveryClass($this->getProjectRoot(), $this->configFile);
         return $discovery->locate();
     }
 
