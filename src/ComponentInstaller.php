@@ -286,6 +286,12 @@ class ComponentInstaller implements
         $installer    = $this->composer->getInstallationManager();
         $packagePath  = $installer->getInstallPath($package);
 
+        /** @psalm-suppress TypeDoesNotContainNull Package path become nullable in composer 2.5.6 */
+        if ($packagePath === null || $packagePath === '') {
+            // Do not try to discover dependencies for metapackage and other
+            // potential package types that have no install location.
+            return [];
+        }
         $this->mapAutoloaders($package->getAutoload(), $dependencies, $packagePath);
 
         return $dependencies->getArrayCopy();
