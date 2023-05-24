@@ -286,6 +286,11 @@ class ComponentInstaller implements
         $installer    = $this->composer->getInstallationManager();
         $packagePath  = $installer->getInstallPath($package);
 
+        if ($packagePath === null || $packagePath === '') {
+            // Do not try to discover dependencies for metapackage and other
+            // potential package types that have no install location.
+            return [];
+        }
         $this->mapAutoloaders($package->getAutoload(), $dependencies, $packagePath);
 
         return $dependencies->getArrayCopy();
@@ -748,7 +753,7 @@ class ComponentInstaller implements
      *
      * @param AutoloadRules       $autoload     List of autoloader types and associated autoloader definitions.
      * @param ArrayObject $dependencies Module dependencies defined by the module.
-     * @param string      $packagePath  Path to the package on the filesystem.
+     * @param non-empty-string $packagePath  Path to the package on the filesystem.
      * @psalm-param ArrayObject<non-empty-string,list<non-empty-string>>                   $dependencies
      */
     private function mapAutoloaders(array $autoload, ArrayObject $dependencies, string $packagePath): void
@@ -764,7 +769,7 @@ class ComponentInstaller implements
      * @param array       $map          Map of namespace => path(s) pairs.
      * @param string      $type         Type of autoloader being iterated.
      * @param ArrayObject $dependencies Module dependencies defined by the module.
-     * @param string      $packagePath  Path to the package on the filesystem.
+     * @param non-empty-string $packagePath  Path to the package on the filesystem.
      * @psalm-param array<int|string, array<array-key, string>|string>           $map
      * @psalm-param ArrayObject<non-empty-string,list<non-empty-string>>  $dependencies
      */
@@ -783,7 +788,7 @@ class ComponentInstaller implements
      * @param string|int  $namespace    PHP namespace to which the paths map or index of file/directory list.
      * @param string      $type         Type of autoloader being iterated.
      * @param ArrayObject $dependencies Module dependencies defined by the module.
-     * @param string      $packagePath  Path to the package on the filesystem.
+     * @param non-empty-string $packagePath  Path to the package on the filesystem.
      * @psalm-param list<string> $paths
      * @psalm-param ArrayObject<non-empty-string,list<non-empty-string>> $dependencies
      */
@@ -806,7 +811,7 @@ class ComponentInstaller implements
      * @param string|int  $namespace    PHP namespace to which the paths map.
      * @param string      $type         Type of autoloader being iterated.
      * @param ArrayObject $dependencies Module dependencies defined by the module.
-     * @param string      $packagePath  Path to the package on the filesystem.
+     * @param non-empty-string $packagePath  Path to the package on the filesystem.
      * @psalm-param ArrayObject<non-empty-string,list<non-empty-string>> $dependencies
      */
     private function mapPath(
