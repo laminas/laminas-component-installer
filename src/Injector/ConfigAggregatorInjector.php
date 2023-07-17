@@ -18,15 +18,13 @@ final class ConfigAggregatorInjector extends AbstractInjector
 {
     use ConditionalDiscoveryTrait;
 
+    /** @var non-empty-string */
     public const DEFAULT_CONFIG_FILE = 'config/config.php';
 
     /** @var list<InjectorInterface::TYPE_*> */
     protected array $allowedTypes = [
         self::TYPE_CONFIG_PROVIDER,
     ];
-
-    /** @var non-empty-string */
-    protected string $configFile = self::DEFAULT_CONFIG_FILE;
 
     /**
      * Discovery class, for testing if this injector is valid for the given
@@ -68,9 +66,13 @@ final class ConfigAggregatorInjector extends AbstractInjector
      *
      * Sets $isRegisteredPattern and pattern for $injectionPatterns to ensure
      * proper PCRE quoting.
+     *
+     * @param non-empty-string $configFile
      */
-    public function __construct(string $projectRoot = '')
+    public function __construct(string $projectRoot = '', string $configFile = self::DEFAULT_CONFIG_FILE)
     {
+        $this->configFile = $configFile;
+
         $ns                        = preg_quote('\\');
         $this->isRegisteredPattern = '/new (?:'
             . $ns
@@ -96,7 +98,7 @@ final class ConfigAggregatorInjector extends AbstractInjector
 
     protected function getDefaultConfigFile(): string
     {
-        return self::DEFAULT_CONFIG_FILE;
+        return $this->configFile;
     }
 
     protected function getDiscoveryClass(): string

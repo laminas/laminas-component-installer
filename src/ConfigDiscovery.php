@@ -21,8 +21,10 @@ final class ConfigDiscovery
         'config/application.config.php'      => ConfigDiscovery\ApplicationConfig::class,
         'config/modules.config.php'          => ConfigDiscovery\ModulesConfig::class,
         'config/development.config.php.dist' => [
-            'dist' => ConfigDiscovery\DevelopmentConfig::class,
-            'work' => ConfigDiscovery\DevelopmentWorkConfig::class,
+            'dist'        => ConfigDiscovery\DevelopmentConfig::class,
+            'work'        => ConfigDiscovery\DevelopmentWorkConfig::class,
+            'mezzio-dist' => ConfigDiscovery\MezzioDevelopmentConfig::class,
+            'mezzio-work' => ConfigDiscovery\MezzioDevelopmentWorkConfig::class,
         ],
         'config/config.php'                  => [
             'aggregator' => ConfigDiscovery\ConfigAggregator::class,
@@ -37,8 +39,10 @@ final class ConfigDiscovery
         'config/application.config.php'      => Injector\ApplicationConfigInjector::class,
         'config/modules.config.php'          => Injector\ModulesConfigInjector::class,
         'config/development.config.php.dist' => [
-            'dist' => Injector\DevelopmentConfigInjector::class,
-            'work' => Injector\DevelopmentWorkConfigInjector::class,
+            'dist'        => Injector\DevelopmentConfigInjector::class,
+            'work'        => Injector\DevelopmentWorkConfigInjector::class,
+            'mezzio-dist' => Injector\MezzioDevelopmentConfigInjector::class,
+            'mezzio-work' => Injector\MezzioDevelopmentWorkConfigInjector::class,
         ],
         'config/config.php'                  => [
             'aggregator' => Injector\ConfigAggregatorInjector::class,
