@@ -77,14 +77,12 @@ final class MezzioConfigInjector extends AbstractInjector
             . preg_quote('Mezzio\ConfigManager\\')
             . ')?ConfigManager\(\s*(?:array\(|\[).*\s+%s::class/s';
 
-        $pattern = sprintf(
-            '/(new (?:%s?%s)?ConfigManager\(\s*(?:array\(|\[)\s*)$/m',
-            preg_quote('\\'),
-            preg_quote('Mezzio\ConfigManager\\')
-        );
-        assert($pattern !== '');
         $this->injectionPatterns[self::TYPE_CONFIG_PROVIDER] = [
-            'pattern'     => $pattern,
+            'pattern'     => sprintf(
+                '/(new (?:%s?%s)?ConfigManager\(\s*(?:array\(|\[)\s*)$/m',
+                preg_quote('\\'),
+                preg_quote('Mezzio\ConfigManager\\')
+            ),
             'replacement' => "\$1\n    %s::class,",
         ];
 

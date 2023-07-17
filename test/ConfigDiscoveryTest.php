@@ -49,14 +49,14 @@ class ConfigDiscoveryTest extends TestCase
         ];
     }
 
-    public function createApplicationConfig(): void
+    private function createApplicationConfig(): void
     {
         vfsStream::newFile('config/application.config.php')
             ->at($this->projectRoot)
             ->setContent('<' . "?php\nreturn [\n    'modules' => [\n    ]\n];");
     }
 
-    public function createDevelopmentConfig(bool $dist = true): void
+    private function createDevelopmentConfig(bool $dist = true): void
     {
         $configFileName = 'config/development.config.php' . ($dist ? '.dist' : '');
         vfsStream::newFile($configFileName)
@@ -64,12 +64,12 @@ class ConfigDiscoveryTest extends TestCase
             ->setContent('<' . "?php\nreturn [\n    'modules' => [\n    ]\n];");
     }
 
-    public function createDevelopmentWorkConfig(): void
+    private function createDevelopmentWorkConfig(): void
     {
         $this->createDevelopmentConfig(false);
     }
 
-    public function createMezzioDevelopmentConfig(bool $dist = true): void
+    private function createMezzioDevelopmentConfig(bool $dist = true): void
     {
         $configFileName = 'config/development.config.php' . ($dist ? '.dist' : '');
         vfsStream::newFile($configFileName)
@@ -77,21 +77,21 @@ class ConfigDiscoveryTest extends TestCase
             ->setContent('<' . "?php\n\$aggregator = new ConfigAggregator([\n]);");
     }
 
-    public function createAggregatorConfig(): void
+    private function createAggregatorConfig(): void
     {
         vfsStream::newFile('config/config.php')
             ->at($this->projectRoot)
             ->setContent('<' . "?php\n\$aggregator = new ConfigAggregator([\n]);");
     }
 
-    public function createMezzioConfig(): void
+    private function createMezzioConfig(): void
     {
         vfsStream::newFile('config/config.php')
             ->at($this->projectRoot)
             ->setContent('<' . "?php\n\$configManager = new ConfigManager([\n]);");
     }
 
-    public function createModulesConfig(): void
+    private function createModulesConfig(): void
     {
         vfsStream::newFile('config/modules.config.php')
             ->at($this->projectRoot)

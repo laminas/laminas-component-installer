@@ -8,4 +8,5 @@
 /mkdocs.yml export-ignore
 /phpcs.xml export-ignore
 /phpunit.xml.dist export-ignore
+/psalm-baseline.xml export-ignore
 /test/ export-ignore

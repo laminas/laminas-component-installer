@@ -142,43 +142,6 @@ final class ComponentInstallerTest extends TestCase
         );
     }
 
-    /**
-     * @param mixed $argument
-     */
-    public static function assertPrompt($argument, ?string $packageName = null): bool
-    {
-        if (! is_string($argument)) {
-            return false;
-        }
-
-        if (false !== strpos($argument, 'Remember this option for other packages of the same type?')) {
-            return true;
-        }
-
-        if (! $packageName) {
-            return false;
-        }
-
-        if (
-            false === strpos(
-                $argument,
-                sprintf("Please select which config file you wish to inject '%s' into", $packageName)
-            )
-        ) {
-            return false;
-        }
-
-        if (false === strpos($argument, 'Do not inject')) {
-            return false;
-        }
-
-        if (false === strpos($argument, 'application.config.php')) {
-            return false;
-        }
-
-        return true;
-    }
-
     public function createApplicationConfig(?string $contents = null): void
     {
         $contents = $contents ?: $this->createApplicationConfigWithModules([]);

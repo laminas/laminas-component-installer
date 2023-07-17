@@ -142,9 +142,7 @@ abstract class AbstractInjector implements InjectorInterface
     public function __construct(string $projectRoot = '')
     {
         if (trim($projectRoot) !== '') {
-            $configFileWithProjectRootPrefix = sprintf('%s/%s', $projectRoot, $this->configFile);
-            assert($configFileWithProjectRootPrefix !== '');
-            $this->configFile = $configFileWithProjectRootPrefix;
+            $this->configFile = sprintf('%s/%s', $projectRoot, $this->configFile);
         }
     }
 

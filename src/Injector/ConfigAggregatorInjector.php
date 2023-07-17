@@ -82,14 +82,12 @@ final class ConfigAggregatorInjector extends AbstractInjector
             . $ns
             . '?%s::class/s';
 
-        $pattern = sprintf(
-            "/(new (?:%s?%s)?ConfigAggregator\(\s*(?:array\(|\[)\s*)(?:\r|\n|\r\n)(\s*)/",
-            preg_quote('\\'),
-            preg_quote('Laminas\ConfigAggregator\\')
-        );
-        assert($pattern !== '');
         $this->injectionPatterns[self::TYPE_CONFIG_PROVIDER] = [
-            'pattern'     => $pattern,
+            'pattern'     => sprintf(
+                "/(new (?:%s?%s)?ConfigAggregator\(\s*(?:array\(|\[)\s*)(?:\r|\n|\r\n)(\s*)/",
+                preg_quote('\\'),
+                preg_quote('Laminas\ConfigAggregator\\')
+            ),
             'replacement' => "\$1\n\$2%s::class,\n\$2",
         ];
 

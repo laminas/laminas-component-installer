@@ -168,16 +168,6 @@ final class Collection implements
     }
 
     /**
-     * @param TKey $offset
-     */
-    public function remove($offset): void
-    {
-        if ($this->has($offset)) {
-            unset($this->items[$offset]);
-        }
-    }
-
-    /**
      * Countable: number of items in the collection.
      */
     public function count(): int
@@ -215,7 +205,7 @@ final class Collection implements
     }
 
     /**
-     * @return self<int,TValue>
+     * @return self<int<0, max>, TValue>
      */
     public function toOrderedCollection(): self
     {
