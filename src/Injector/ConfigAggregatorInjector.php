@@ -7,7 +7,6 @@ namespace Laminas\ComponentInstaller\Injector;
 use Laminas\ComponentInstaller\ConfigDiscovery\ConfigAggregator as ConfigAggregatorDiscovery;
 use Laminas\ComponentInstaller\ConfigDiscovery\DiscoveryInterface;
 
-use function assert;
 use function preg_quote;
 use function sprintf;
 

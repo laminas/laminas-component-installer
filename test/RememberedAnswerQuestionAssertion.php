@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace LaminasTest\ComponentInstaller;
 
-use function assert;
 use function sprintf;
 use function strpos;
 

@@ -7,7 +7,6 @@ namespace Laminas\ComponentInstaller\Injector;
 use Laminas\ComponentInstaller\ConfigDiscovery\DiscoveryInterface;
 use Laminas\ComponentInstaller\ConfigDiscovery\MezzioConfig as MezzioConfigDiscovery;
 
-use function assert;
 use function preg_quote;
 use function sprintf;
 

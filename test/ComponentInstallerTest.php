@@ -30,13 +30,11 @@ use function count;
 use function dirname;
 use function file_get_contents;
 use function implode;
-use function is_string;
 use function method_exists;
 use function mkdir;
 use function preg_match;
 use function preg_quote;
 use function sprintf;
-use function strpos;
 
 /**
  * @psalm-type ComponentInstallerConfiguration array{component?:string,module?:string}

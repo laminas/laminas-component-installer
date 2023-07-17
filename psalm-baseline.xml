@@ -77,8 +77,5 @@
             InjectorInterface::TYPE_MODULE,
         ])</code>
     </InvalidPropertyAssignmentValue>
-    <UnusedMethod>
-      <code>createDevelopmentWorkConfig</code>
-    </UnusedMethod>
   </file>
 </files>

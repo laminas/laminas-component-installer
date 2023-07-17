@@ -7,7 +7,6 @@ namespace Laminas\ComponentInstaller\Injector;
 use Laminas\ComponentInstaller\Exception;
 
 use function addslashes;
-use function assert;
 use function count;
 use function file_get_contents;
 use function file_put_contents;
