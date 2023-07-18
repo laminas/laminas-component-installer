@@ -7,7 +7,6 @@ namespace Laminas\ComponentInstaller\Injector;
 use Laminas\ComponentInstaller\Exception;
 
 use function addslashes;
-use function assert;
 use function count;
 use function file_get_contents;
 use function file_put_contents;
@@ -142,9 +141,7 @@ abstract class AbstractInjector implements InjectorInterface
     public function __construct(string $projectRoot = '')
     {
         if (trim($projectRoot) !== '') {
-            $configFileWithProjectRootPrefix = sprintf('%s/%s', $projectRoot, $this->configFile);
-            assert($configFileWithProjectRootPrefix !== '');
-            $this->configFile = $configFileWithProjectRootPrefix;
+            $this->configFile = sprintf('%s/%s', $projectRoot, $this->configFile);
         }
     }
 

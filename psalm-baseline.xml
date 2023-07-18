@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="5.13.1@086b94371304750d1c673315321a55d15fc59015">
+  <file src="src/ComponentInstaller.php">
+    <InvalidArgument>
+      <code>new Collection(array_keys(self::PACKAGE_TYPES))</code>
+    </InvalidArgument>
+    <InvalidReturnStatement>
+      <code><![CDATA[(new Collection(self::PACKAGE_TYPES))
+            ->filter(fn(string $configKey) => isset($extra[$configKey]))]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[Collection<InjectorInterface::TYPE_*,non-empty-string>]]></code>
+    </InvalidReturnType>
+  </file>
+  <file src="src/ConfigDiscovery.php">
+    <InvalidReturnStatement>
+      <code><![CDATA[new Collection([
+            new ConfigOption('Do not inject', new Injector\NoopInjector()),
+            ...$options->toArray(),
+        ])]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[Collection<int,ConfigOption>]]></code>
+    </InvalidReturnType>
+  </file>
+  <file src="src/ConfigDiscovery/DevelopmentWorkConfig.php">
+    <PossiblyUnusedMethod>
+      <code>__construct</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/ConfigDiscovery/MezzioDevelopmentConfig.php">
+    <PossiblyUnusedMethod>
+      <code>__construct</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/ConfigDiscovery/MezzioDevelopmentWorkConfig.php">
+    <PossiblyUnusedMethod>
+      <code>__construct</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Injector/DevelopmentConfigInjector.php">
+    <PossiblyUnusedMethod>
+      <code>__construct</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Injector/DevelopmentWorkConfigInjector.php">
+    <PossiblyUnusedMethod>
+      <code>__construct</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Injector/MezzioConfigInjector.php">
+    <PossiblyUnusedMethod>
+      <code>__construct</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Injector/MezzioDevelopmentConfigInjector.php">
+    <PossiblyUnusedMethod>
+      <code>__construct</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Injector/MezzioDevelopmentWorkConfigInjector.php">
+    <PossiblyUnusedMethod>
+      <code>__construct</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="test/ComponentInstallerTest.php">
+    <DeprecatedMethod>
+      <code>withConsecutive</code>
+      <code>withConsecutive</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="test/ConfigDiscoveryTest.php">
+    <InvalidPropertyAssignmentValue>
+      <code>new Collection([
+            InjectorInterface::TYPE_CONFIG_PROVIDER,
+            InjectorInterface::TYPE_COMPONENT,
+            InjectorInterface::TYPE_MODULE,
+        ])</code>
+    </InvalidPropertyAssignmentValue>
+  </file>
+</files>

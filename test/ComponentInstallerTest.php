@@ -30,13 +30,11 @@ use function count;
 use function dirname;
 use function file_get_contents;
 use function implode;
-use function is_string;
 use function method_exists;
 use function mkdir;
 use function preg_match;
 use function preg_quote;
 use function sprintf;
-use function strpos;
 
 /**
  * @psalm-type ComponentInstallerConfiguration array{component?:string,module?:string}
@@ -140,43 +138,6 @@ final class ComponentInstallerTest extends TestCase
             $this->composer,
             $this->io
         );
-    }
-
-    /**
-     * @param mixed $argument
-     */
-    public static function assertPrompt($argument, ?string $packageName = null): bool
-    {
-        if (! is_string($argument)) {
-            return false;
-        }
-
-        if (false !== strpos($argument, 'Remember this option for other packages of the same type?')) {
-            return true;
-        }
-
-        if (! $packageName) {
-            return false;
-        }
-
-        if (
-            false === strpos(
-                $argument,
-                sprintf("Please select which config file you wish to inject '%s' into", $packageName)
-            )
-        ) {
-            return false;
-        }
-
-        if (false === strpos($argument, 'Do not inject')) {
-            return false;
-        }
-
-        if (false === strpos($argument, 'application.config.php')) {
-            return false;
-        }
-
-        return true;
     }
 
     public function createApplicationConfig(?string $contents = null): void

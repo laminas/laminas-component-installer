@@ -51,8 +51,7 @@ final class ConfigInjectorChain implements InjectorInterface
         $this->chain = (new Collection($injectors))
             // Keep only those injectors that discovery exists in discoveryChain
             ->filter(
-            /** @psalm-suppress UnusedClosureParam https://github.com/vimeo/psalm/issues/8095 */
-                fn(string $injector, string $file) => $discoveryChain->discoveryExists($file)
+                static fn(string $injector, string $file) => $discoveryChain->discoveryExists($file)
             )
             // Create an injector for the config file
             ->map(

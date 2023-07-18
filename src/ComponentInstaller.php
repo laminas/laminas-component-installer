@@ -408,7 +408,6 @@ class ComponentInstaller implements
         $discoveredTypes = new Collection([]);
         (new Collection($extra))
             ->filter(
-            /** @psalm-suppress UnusedClosureParam https://github.com/vimeo/psalm/issues/8095 */
                 static fn(array $components, string $type) => in_array($type, self::PACKAGE_TYPES, true)
             )
             ->each(static function (array $components, string $type) use ($packageTypes, $discoveredTypes): void {
@@ -458,11 +457,10 @@ class ComponentInstaller implements
         $componentsByType = (new Collection($extra))
             ->filter(
             /**
-             * @psalm-suppress UnusedClosureParam https://github.com/vimeo/psalm/issues/8095
              * @param non-empty-string $typeIdentifier
              */
-                fn (array $components, string $typeIdentifier) => $supportedTypes->anySatisfies(
-                    fn (int $supportedType) => $supportedType === $packageTypes->getKey($typeIdentifier)
+                static fn (array $components, string $typeIdentifier) => $supportedTypes->anySatisfies(
+                    static fn (int $supportedType) => $supportedType === $packageTypes->getKey($typeIdentifier)
                 )
             );
 
@@ -644,11 +642,8 @@ class ComponentInstaller implements
         $injectors = $configOptions
             ->map(fn(ConfigOption $configOption) => $configOption->getInjector())
             ->filter(
-            /**
-             * @psalm-suppress UnusedClosureParam https://github.com/vimeo/psalm/issues/8095
-             */
-                fn(InjectorInterface $injector) => $packageTypes->anySatisfies(
-                    fn(string $key, int $type) => $injector->registersType($type)
+                static fn(InjectorInterface $injector) => $packageTypes->anySatisfies(
+                    static fn(string $key, int $type) => $injector->registersType($type)
                 )
             );
 

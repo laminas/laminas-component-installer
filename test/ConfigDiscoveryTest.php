@@ -49,14 +49,14 @@ class ConfigDiscoveryTest extends TestCase
         ];
     }
 
-    public function createApplicationConfig(): void
+    private function createApplicationConfig(): void
     {
         vfsStream::newFile('config/application.config.php')
             ->at($this->projectRoot)
             ->setContent('<' . "?php\nreturn [\n    'modules' => [\n    ]\n];");
     }
 
-    public function createDevelopmentConfig(bool $dist = true): void
+    private function createDevelopmentConfig(bool $dist = true): void
     {
         $configFileName = 'config/development.config.php' . ($dist ? '.dist' : '');
         vfsStream::newFile($configFileName)
@@ -64,12 +64,12 @@ class ConfigDiscoveryTest extends TestCase
             ->setContent('<' . "?php\nreturn [\n    'modules' => [\n    ]\n];");
     }
 
-    public function createDevelopmentWorkConfig(): void
+    private function createDevelopmentWorkConfig(): void
     {
         $this->createDevelopmentConfig(false);
     }
 
-    public function createMezzioDevelopmentConfig(bool $dist = true): void
+    private function createMezzioDevelopmentConfig(bool $dist = true): void
     {
         $configFileName = 'config/development.config.php' . ($dist ? '.dist' : '');
         vfsStream::newFile($configFileName)
@@ -77,21 +77,21 @@ class ConfigDiscoveryTest extends TestCase
             ->setContent('<' . "?php\n\$aggregator = new ConfigAggregator([\n]);");
     }
 
-    public function createAggregatorConfig(): void
+    private function createAggregatorConfig(): void
     {
         vfsStream::newFile('config/config.php')
             ->at($this->projectRoot)
             ->setContent('<' . "?php\n\$aggregator = new ConfigAggregator([\n]);");
     }
 
-    public function createMezzioConfig(): void
+    private function createMezzioConfig(): void
     {
         vfsStream::newFile('config/config.php')
             ->at($this->projectRoot)
             ->setContent('<' . "?php\n\$configManager = new ConfigManager([\n]);");
     }
 
-    public function createModulesConfig(): void
+    private function createModulesConfig(): void
     {
         vfsStream::newFile('config/modules.config.php')
             ->at($this->projectRoot)
@@ -180,83 +180,107 @@ class ConfigDiscoveryTest extends TestCase
 
     /**
      * @psalm-return array<array-key, array{
-     *     seedMethod: string,
+     *     seedMethod: callable(self): void,
      *     type: InjectorInterface::TYPE_*,
      *     expected: class-string<InjectorInterface>,
      *     chain: bool
      * }>
      */
-    public function configFileSubset(): array
+    public static function configFileSubset(): array
     {
         return [
             [
-                'seedMethod' => 'createApplicationConfig',
+                'seedMethod' => static function (self $test): void {
+                    $test->createApplicationConfig();
+                },
                 'type'       => InjectorInterface::TYPE_COMPONENT,
                 'expected'   => Injector\ApplicationConfigInjector::class,
                 'chain'      => false,
             ],
             [
-                'seedMethod' => 'createApplicationConfig',
+                'seedMethod' => static function (self $test): void {
+                    $test->createApplicationConfig();
+                },
                 'type'       => InjectorInterface::TYPE_MODULE,
                 'expected'   => Injector\ApplicationConfigInjector::class,
                 'chain'      => false,
             ],
             [
-                'seedMethod' => 'createAggregatorConfig',
+                'seedMethod' => static function (self $test): void {
+                    $test->createAggregatorConfig();
+                },
                 'type'       => InjectorInterface::TYPE_CONFIG_PROVIDER,
                 'expected'   => Injector\ConfigAggregatorInjector::class,
                 'chain'      => true,
             ],
             [
-                'seedMethod' => 'createAggregatorConfig',
+                'seedMethod' => static function (self $test): void {
+                    $test->createAggregatorConfig();
+                },
                 'type'       => InjectorInterface::TYPE_CONFIG_PROVIDER,
                 'expected'   => Injector\ConfigAggregatorInjector::class,
                 'chain'      => true,
             ],
             [
-                'seedMethod' => 'createDevelopmentConfig',
+                'seedMethod' => static function (self $test): void {
+                    $test->createDevelopmentConfig();
+                },
                 'type'       => InjectorInterface::TYPE_COMPONENT,
                 'expected'   => Injector\DevelopmentConfigInjector::class,
                 'chain'      => true,
             ],
             [
-                'seedMethod' => 'createDevelopmentConfig',
+                'seedMethod' => static function (self $test): void {
+                    $test->createDevelopmentConfig();
+                },
                 'type'       => InjectorInterface::TYPE_MODULE,
                 'expected'   => Injector\DevelopmentConfigInjector::class,
                 'chain'      => true,
             ],
             [
-                'seedMethod' => 'createDevelopmentWorkConfig',
+                'seedMethod' => static function (self $test): void {
+                    $test->createDevelopmentWorkConfig();
+                },
                 'type'       => InjectorInterface::TYPE_COMPONENT,
                 'expected'   => Injector\DevelopmentWorkConfigInjector::class,
                 'chain'      => true,
             ],
             [
-                'seedMethod' => 'createDevelopmentWorkConfig',
+                'seedMethod' => static function (self $test): void {
+                    $test->createDevelopmentWorkConfig();
+                },
                 'type'       => InjectorInterface::TYPE_MODULE,
                 'expected'   => Injector\DevelopmentWorkConfigInjector::class,
                 'chain'      => true,
             ],
             [
-                'seedMethod' => 'createMezzioConfig',
+                'seedMethod' => static function (self $test): void {
+                    $test->createMezzioConfig();
+                },
                 'type'       => InjectorInterface::TYPE_CONFIG_PROVIDER,
                 'expected'   => Injector\MezzioConfigInjector::class,
                 'chain'      => true,
             ],
             [
-                'seedMethod' => 'createMezzioConfig',
+                'seedMethod' => static function (self $test): void {
+                    $test->createMezzioConfig();
+                },
                 'type'       => InjectorInterface::TYPE_CONFIG_PROVIDER,
                 'expected'   => Injector\MezzioConfigInjector::class,
                 'chain'      => true,
             ],
             [
-                'seedMethod' => 'createModulesConfig',
+                'seedMethod' => static function (self $test): void {
+                    $test->createModulesConfig();
+                },
                 'type'       => InjectorInterface::TYPE_COMPONENT,
                 'expected'   => Injector\ModulesConfigInjector::class,
                 'chain'      => false,
             ],
             [
-                'seedMethod' => 'createModulesConfig',
+                'seedMethod' => static function (self $test): void {
+                    $test->createModulesConfig();
+                },
                 'type'       => InjectorInterface::TYPE_MODULE,
                 'expected'   => Injector\ModulesConfigInjector::class,
                 'chain'      => false,
@@ -266,16 +290,17 @@ class ConfigDiscoveryTest extends TestCase
 
     /**
      * @dataProvider configFileSubset
+     * @param (callable(self): void) $seedMethod
      * @param InjectorInterface::TYPE_* $type
      * @param class-string<InjectorInterface> $expected
      */
     public function testGetAvailableConfigOptionsCanReturnsSubsetOfOptionsBaseOnPackageType(
-        string $seedMethod,
+        callable $seedMethod,
         int $type,
         string $expected,
         bool $chain
     ): void {
-        $this->{$seedMethod}();
+        $seedMethod($this);
         $options = $this->discovery->getAvailableConfigOptions(new Collection([$type]), vfsStream::url('project'));
         $this->assertCount(2, $options);
 

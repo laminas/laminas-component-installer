@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace LaminasTest\ComponentInstaller;
 
-use function assert;
 use function sprintf;
 use function strpos;
 
@@ -39,10 +38,8 @@ final class RememberedAnswerQuestionAssertion extends AbstractQuestionAssertion
 
     public static function inject(string $component, int $chosen, bool $remember): self
     {
-        $question = sprintf('Please select which config file you wish to inject \'%s\' into', $component);
-        assert($question !== '');
         return self::create(
-            $question,
+            sprintf('Please select which config file you wish to inject \'%s\' into', $component),
             $chosen,
             $remember
         );

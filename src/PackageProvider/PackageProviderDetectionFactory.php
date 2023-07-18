@@ -30,11 +30,6 @@ final class PackageProviderDetectionFactory implements PackageProviderDetectionF
         $this->composer = $composer;
     }
 
-    public static function create(Composer $composer): self
-    {
-        return new self($composer);
-    }
-
     public function detect(PackageEvent $event, string $packageName): PackageProviderDetectionInterface
     {
         $installedRepo = new InstalledRepository($this->prepareRepositoriesForInstalledRepository());
