@@ -41,7 +41,7 @@ class DevelopmentConfigTest extends TestCase
     /**
      * @psalm-return array<string, array{0: string}>
      */
-    public function validDevelopmentConfigContents(): array
+    public static function validDevelopmentConfigContents(): array
     {
         return [
             'long-array'  => ['<' . "?php\nreturn array(\n    'modules' => array(\n    )\n);"],

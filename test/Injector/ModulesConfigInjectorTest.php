@@ -29,7 +29,7 @@ class ModulesConfigInjectorTest extends AbstractInjectorTestCase
         InjectorInterface::TYPE_BEFORE_APPLICATION,
     ];
 
-    public function allowedTypes(): array
+    public static function allowedTypes(): array
     {
         return [
             'config-provider'            => [InjectorInterface::TYPE_CONFIG_PROVIDER, false],
@@ -40,7 +40,7 @@ class ModulesConfigInjectorTest extends AbstractInjectorTestCase
         ];
     }
 
-    public function injectComponentProvider(): array
+    public static function injectComponentProvider(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
         $baseContentsLongArray  = '<' . "?php\nreturn array(\n    'Application',\n);";
@@ -54,7 +54,7 @@ class ModulesConfigInjectorTest extends AbstractInjectorTestCase
         // phpcs:enable
     }
 
-    public function packageAlreadyRegisteredProvider(): array
+    public static function packageAlreadyRegisteredProvider(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
         return [
@@ -66,7 +66,7 @@ class ModulesConfigInjectorTest extends AbstractInjectorTestCase
         // phpcs:enable
     }
 
-    public function emptyConfiguration(): array
+    public static function emptyConfiguration(): array
     {
         $baseContentsLongArray  = '<' . "?php\nreturn array(\n    'Application',\n);";
         $baseContentsShortArray = '<' . "?php\nreturn [\n    'Application',\n];";
@@ -77,7 +77,7 @@ class ModulesConfigInjectorTest extends AbstractInjectorTestCase
         ];
     }
 
-    public function packagePopulatedInConfiguration(): array
+    public static function packagePopulatedInConfiguration(): array
     {
         $baseContentsLongArray  = '<' . "?php\nreturn array(\n    'Application',\n);";
         $baseContentsShortArray = '<' . "?php\nreturn [\n    'Application',\n];";

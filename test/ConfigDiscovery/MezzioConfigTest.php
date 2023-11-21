@@ -41,7 +41,7 @@ class MezzioConfigTest extends TestCase
     /**
      * @psalm-return array<string, array{0: string}>
      */
-    public function validMezzioConfigContents(): array
+    public static function validMezzioConfigContents(): array
     {
         // @codingStandardsIgnoreStart
         return [

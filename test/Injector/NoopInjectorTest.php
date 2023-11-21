@@ -34,7 +34,7 @@ class NoopInjectorTest extends TestCase
     /**
      * @psalm-return array<string, array{0: InjectorInterface::TYPE_*}>
      */
-    public function packageTypes(): array
+    public static function packageTypes(): array
     {
         return [
             'config-provider' => [NoopInjector::TYPE_CONFIG_PROVIDER],
