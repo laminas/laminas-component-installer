@@ -22,16 +22,20 @@ use Generator;
 use Laminas\ComponentInstaller\ComponentInstaller;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
+use PHPUnit\Framework\Constraint\Constraint;
+use PHPUnit\Framework\Constraint\IsAnything;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
 
 use function count;
+use function current;
 use function dirname;
 use function file_get_contents;
 use function implode;
 use function method_exists;
 use function mkdir;
+use function next;
 use function preg_match;
 use function preg_quote;
 use function sprintf;
@@ -191,20 +195,40 @@ final class ComponentInstallerTest extends TestCase
         $consecutiveArguments = [];
 
         foreach ($informations as $information) {
-            $consecutiveArguments[] = [
-                self::callback(static function (string $argument) use ($information): bool {
-                    return preg_match(
-                        sprintf('/%s/', preg_quote($argument, '/')),
-                        $information
-                    ) !== false;
-                }),
-            ];
+            $consecutiveArguments[] = self::callback(static function (string $argument) use ($information): bool {
+                return preg_match(
+                    sprintf('/%s/', preg_quote($argument, '/')),
+                    $information
+                ) !== false;
+            });
         }
+
+        $consecutive = new class ($consecutiveArguments) extends Constraint {
+            /**
+             * @param list<Constraint> $assertions
+             */
+            public function __construct(private array $assertions)
+            {
+                $this->assertions[] = new IsAnything();
+            }
+
+            public function matches(mixed $other): bool
+            {
+                $assertion = current($this->assertions);
+                next($this->assertions);
+                return $assertion->matches($other);
+            }
+
+            public function toString(): string
+            {
+                return current($this->assertions)->toString();
+            }
+        };
 
         $this->io
             ->expects(self::exactly(count($consecutiveArguments)))
             ->method('write')
-            ->withConsecutive(...$consecutiveArguments);
+            ->with($consecutive);
     }
 
     /**
@@ -214,22 +238,46 @@ final class ComponentInstallerTest extends TestCase
     {
         $consecutiveReturnValues = $consecutiveArguments = [];
         foreach ($questionsAssertions as $questionAssertion) {
-            $consecutiveArguments[]    = [
-                self::callback($questionAssertion->assertion()),
-            ];
+            $consecutiveArguments[]    = self::callback($questionAssertion->assertion());
             $consecutiveReturnValues[] = $questionAssertion->expectedAnswer;
 
             if ($questionAssertion instanceof RememberedAnswerQuestionAssertion) {
-                $consecutiveArguments[]    = [self::callback($questionAssertion->rememberAnswerAssertion())];
+                $consecutiveArguments[]    = self::callback($questionAssertion->rememberAnswerAssertion());
                 $consecutiveReturnValues[] = $questionAssertion->remember ? 'y' : 'n';
             }
         }
 
+        $consecutive = new class ($consecutiveArguments) extends Constraint {
+            /**
+             * @param list<Constraint> $assertions
+             */
+            public function __construct(private array $assertions)
+            {
+                $this->assertions[] = new IsAnything();
+            }
+
+            public function matches(mixed $other): bool
+            {
+                $assertion = current($this->assertions);
+                next($this->assertions);
+                return $assertion->matches($other);
+            }
+
+            public function toString(): string
+            {
+                return current($this->assertions)->toString();
+            }
+        };
+
+        $matcher = self::exactly(count($consecutiveReturnValues));
+
         $this->io
-            ->expects(self::exactly(count($consecutiveArguments)))
+            ->expects($matcher)
             ->method('ask')
-            ->withConsecutive(...$consecutiveArguments)
-            ->willReturnOnConsecutiveCalls(...$consecutiveReturnValues);
+            ->with($consecutive)
+            ->willReturnCallback(function () use ($matcher, $consecutiveReturnValues) {
+                return $consecutiveReturnValues[$matcher->numberOfInvocations() - 1];
+            });
     }
 
     /**
@@ -332,7 +380,7 @@ CONTENT
      *     5: null|string
      * }>
      */
-    public function dependency(): array
+    public static function dependency(): array
     {
         return [
             // 'description' => [
@@ -706,7 +754,7 @@ CONTENT
      *     2: list<non-empty-string>
      * }>
      */
-    public function modules(): array
+    public static function modules(): array
     {
         return [
             // 'description' => [
@@ -1347,7 +1395,7 @@ CONTENT
      *     1: array<string, array<array-key, string>>
      * }>
      */
-    public function moduleClass(): array
+    public static function moduleClass(): array
     {
         return [
             [__DIR__ . '/TestAsset/ModuleBadlyFormatted.php', ['BadlyFormatted\Application' => ['Dependency1']]],
@@ -1744,7 +1792,7 @@ CONFIG;
      *     non-empty-string
      * }>
      */
-    public function injectorConfigProvider(): array
+    public static function injectorConfigProvider(): array
     {
         $config = <<<'CONFIG'
         <?php
@@ -1932,7 +1980,7 @@ CONFIG;
      *     5:list<non-empty-string>
      * }>
      */
-    public function packageUpdateScenarios(): Generator
+    public static function packageUpdateScenarios(): Generator
     {
         yield 'package introduces module' => [
             [], // Initially installed application modules

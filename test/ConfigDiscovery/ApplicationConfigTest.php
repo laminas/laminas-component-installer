@@ -41,7 +41,7 @@ class ApplicationConfigTest extends TestCase
     /**
      * @psalm-return array<string, array{0: string}>
      */
-    public function validApplicationConfigContents(): array
+    public static function validApplicationConfigContents(): array
     {
         return [
             'long-array'  => ['<' . "?php\nreturn array(\n    'modules' => array(\n    )\n);"],
