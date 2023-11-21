@@ -220,6 +220,7 @@ abstract class AbstractInjector implements InjectorInterface
             return false;
         }
 
+        /** @var non-empty-string $pattern */
         $pattern     = sprintf(
             $this->injectionPatterns[self::TYPE_DEPENDENCY]['pattern'],
             preg_quote($lastDependency, '/')
@@ -274,6 +275,7 @@ abstract class AbstractInjector implements InjectorInterface
         string $config,
         string $firstApplicationModule
     ): bool {
+        /** @var non-empty-string $pattern */
         $pattern     = sprintf(
             $this->injectionPatterns[self::TYPE_BEFORE_APPLICATION]['pattern'],
             preg_quote($firstApplicationModule, '/')

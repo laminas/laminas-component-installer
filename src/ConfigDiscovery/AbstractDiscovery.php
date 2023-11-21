@@ -18,16 +18,20 @@ abstract class AbstractDiscovery implements DiscoveryInterface
     /**
      * Configuration file to look for.
      *
-     * Implementations MUST overwite this.
+     * Implementations MUST overwrite this.
+     *
+     * @var non-empty-string
      */
-    protected string $configFile = '';
+    protected string $configFile = 'to-be-overridden';
 
     /**
      * Expected pattern to match if the configuration file exists.
      *
      * Implementations MUST overwrite this.
+     *
+     * @var non-empty-string
      */
-    protected string $expected = '';
+    protected string $expected = 'to-be-overridden';
 
     /**
      * Optionally specify project directory; $configFile will be relative to
