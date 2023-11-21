@@ -14,6 +14,8 @@ final class MezzioConfig extends AbstractDiscovery
 {
     /**
      * Configuration file to look for.
+     *
+     * @var non-empty-string
      */
     protected string $configFile = 'config/config.php';
 
@@ -21,8 +23,10 @@ final class MezzioConfig extends AbstractDiscovery
      * Expected pattern to match if the configuration file exists.
      *
      * Pattern is set in constructor to ensure PCRE quoting is correct.
+     *
+     * @var non-empty-string
      */
-    protected string $expected = '';
+    protected string $expected;
 
     public function __construct(string $projectDirectory = '')
     {

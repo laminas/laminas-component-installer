@@ -11,11 +11,15 @@ final class ApplicationConfig extends AbstractDiscovery
 {
     /**
      * Configuration file to look for.
+     *
+     * @var non-empty-string
      */
     protected string $configFile = 'config/application.config.php';
 
     /**
      * Expected pattern to match if the configuration file exists.
+     *
+     * @var non-empty-string
      */
     protected string $expected = '/^(\s+)(\'modules\'\s*\=\>\s*(array\(|\[))\s*$/m';
 

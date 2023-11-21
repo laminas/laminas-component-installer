@@ -14,6 +14,8 @@ final class ConfigAggregator extends AbstractDiscovery
 {
     /**
      * Configuration file to look for.
+     *
+     * @var non-empty-string
      */
     protected string $configFile;
 
@@ -21,9 +23,14 @@ final class ConfigAggregator extends AbstractDiscovery
      * Expected pattern to match if the configuration file exists.
      *
      * Pattern is set in constructor to ensure PCRE quoting is correct.
+     *
+     * @var non-empty-string
      */
-    protected string $expected = '';
+    protected string $expected;
 
+    /**
+     * @param non-empty-string $configFile
+     */
     public function __construct(string $projectDirectory = '', string $configFile = 'config/config.php')
     {
         $this->configFile = $configFile;
