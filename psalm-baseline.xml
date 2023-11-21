@@ -72,12 +72,6 @@
       <code>__construct</code>
     </PossiblyUnusedMethod>
   </file>
-  <file src="test/ComponentInstallerTest.php">
-    <DeprecatedMethod>
-      <code>withConsecutive</code>
-      <code>withConsecutive</code>
-    </DeprecatedMethod>
-  </file>
   <file src="test/ConfigDiscoveryTest.php">
     <InvalidPropertyAssignmentValue>
       <code>new Collection([
