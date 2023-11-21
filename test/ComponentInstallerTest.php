@@ -1366,7 +1366,6 @@ CONTENT
     {
         $r  = new ReflectionObject($this->installer);
         $rm = $r->getMethod('getModuleDependencies');
-        $rm->setAccessible(true);
 
         /** @psalm-suppress MixedAssignment We do want to assert the value and thus we do not care about mixed here. */
         $dependencies = $rm->invoke($this->installer, $file);
@@ -1412,7 +1411,6 @@ CONTENT
 
         $r  = new ReflectionObject($this->installer);
         $rm = $r->getMethod('loadModuleClassesDependencies');
-        $rm->setAccessible(true);
 
         /** @psalm-suppress MixedAssignment We do want to assert the value and thus we do not care about mixed here. */
         $dependencies = $rm->invoke($this->installer, $package);
