@@ -35,7 +35,7 @@
         "composer-plugin-api": "^2.0"
     },
     "require-dev": {
-        "composer/composer": "^2.6.4",
+        "composer/composer": "^2.7.0",
         "laminas/laminas-coding-standard": "~2.5.0",
         "mikey179/vfsstream": "^1.6.11",
         "phpunit/phpunit": "^10.4",
