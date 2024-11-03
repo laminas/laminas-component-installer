@@ -11,7 +11,7 @@ final class DevelopmentWorkConfig implements DiscoveryInterface
 {
     private const CONFIG_FILE = 'config/development.config.php';
 
-    private DiscoveryInterface $applicationDiscovery;
+    private readonly DiscoveryInterface $applicationDiscovery;
 
     public function __construct(string $projectDirectory = '')
     {

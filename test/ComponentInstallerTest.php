@@ -86,9 +86,7 @@ final class ComponentInstallerTest extends TestCase
         $this->rootPackage = $rootPackage;
         $this->rootPackage
             ->method('getExtra')
-            ->willReturnCallback(function (): array {
-                return $this->rootPackageExtra;
-            });
+            ->willReturnCallback(fn(): array => $this->rootPackageExtra);
 
         $installationManager       = $this->createMock(InstallationManager::class);
         $this->installationManager = $installationManager;
@@ -146,7 +144,7 @@ final class ComponentInstallerTest extends TestCase
 
     public function createApplicationConfig(?string $contents = null): void
     {
-        $contents = $contents ?? $this->createApplicationConfigWithModules([]);
+        $contents ??= $this->createApplicationConfigWithModules([]);
         vfsStream::newFile('config/application.config.php')
             ->at($this->projectRoot)
             ->setContent($contents);
@@ -195,12 +193,10 @@ final class ComponentInstallerTest extends TestCase
         $consecutiveArguments = [];
 
         foreach ($informations as $information) {
-            $consecutiveArguments[] = self::callback(static function (string $argument) use ($information): bool {
-                return preg_match(
-                    sprintf('/%s/', preg_quote($argument, '/')),
-                    $information
-                ) !== false;
-            });
+            $consecutiveArguments[] = self::callback(static fn(string $argument): bool => preg_match(
+                sprintf('/%s/', preg_quote($argument, '/')),
+                $information
+            ) !== false);
         }
 
         $consecutive = new class ($consecutiveArguments) extends Constraint {
@@ -275,9 +271,7 @@ final class ComponentInstallerTest extends TestCase
             ->expects($matcher)
             ->method('ask')
             ->with($consecutive)
-            ->willReturnCallback(function () use ($matcher, $consecutiveReturnValues) {
-                return $consecutiveReturnValues[$matcher->numberOfInvocations() - 1];
-            });
+            ->willReturnCallback(fn() => $consecutiveReturnValues[$matcher->numberOfInvocations() - 1]);
     }
 
     /**

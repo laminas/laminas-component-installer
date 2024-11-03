@@ -13,11 +13,8 @@ use function array_values;
  */
 final class InstalledRepositoryPackageProvider implements PackageProviderDetectionInterface
 {
-    private InstalledRepository $installedRepository;
-
-    public function __construct(InstalledRepository $installedRepository)
+    public function __construct(private readonly InstalledRepository $installedRepository)
     {
-        $this->installedRepository = $installedRepository;
     }
 
     public function whatProvides(string $packageName): array

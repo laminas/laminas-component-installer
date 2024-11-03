@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LaminasTest\ComponentInstaller;
 
-use function strpos;
+use function str_contains;
 
 /**
  * @psalm-immutable
@@ -18,19 +18,13 @@ abstract class AbstractQuestionAssertion
     public $expectedQuestion;
 
     /**
-     * @var mixed
-     * @psalm-var scalar
-     */
-    public $expectedAnswer;
-
-    /**
      * @psalm-param non-empty-string $expectedQuestion
      * @psalm-param scalar           $expectedAnswer
+     * @param mixed $expectedAnswer
      */
-    protected function __construct(string $expectedQuestion, $expectedAnswer)
+    protected function __construct(string $expectedQuestion, public $expectedAnswer)
     {
         $this->expectedQuestion = $expectedQuestion;
-        $this->expectedAnswer   = $expectedAnswer;
     }
 
     /**
@@ -38,13 +32,11 @@ abstract class AbstractQuestionAssertion
      */
     final public function assertion(): callable
     {
-        return function (string $param): bool {
-            return $this->assertQuestionMatchesExpectation($param);
-        };
+        return fn(string $param): bool => $this->assertQuestionMatchesExpectation($param);
     }
 
     private function assertQuestionMatchesExpectation(string $argument): bool
     {
-        return strpos($argument, $this->expectedQuestion) !== false;
+        return str_contains($argument, $this->expectedQuestion);
     }
 }

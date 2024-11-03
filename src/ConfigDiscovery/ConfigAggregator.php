@@ -13,13 +13,6 @@ use function sprintf;
 final class ConfigAggregator extends AbstractDiscovery
 {
     /**
-     * Configuration file to look for.
-     *
-     * @var non-empty-string
-     */
-    protected string $configFile;
-
-    /**
      * Expected pattern to match if the configuration file exists.
      *
      * Pattern is set in constructor to ensure PCRE quoting is correct.
@@ -31,10 +24,14 @@ final class ConfigAggregator extends AbstractDiscovery
     /**
      * @param non-empty-string $configFile
      */
-    public function __construct(string $projectDirectory = '', string $configFile = 'config/config.php')
-    {
-        $this->configFile = $configFile;
-        $this->expected   = sprintf(
+    public function __construct(
+        string $projectDirectory = '',
+        /**
+         * Configuration file to look for.
+         */
+        protected string $configFile = 'config/config.php'
+    ) {
+        $this->expected = sprintf(
             '/new (?:%s?%s)?ConfigAggregator\(\s*(?:array\(|\[)/s',
             preg_quote('\\'),
             preg_quote('Laminas\ConfigAggregator\\')

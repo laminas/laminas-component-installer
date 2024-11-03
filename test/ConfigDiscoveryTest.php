@@ -14,7 +14,6 @@ use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 
-use function get_class;
 use function sprintf;
 
 class ConfigDiscoveryTest extends TestCase
@@ -121,7 +120,7 @@ class ConfigDiscoveryTest extends TestCase
     public function assertOptionsContainsInjector(string $injectorType, Collection $options): InjectorInterface
     {
         foreach ($options as $option) {
-            if ($injectorType === get_class($option->getInjector())) {
+            if ($injectorType === $option->getInjector()::class) {
                 return $option->getInjector();
             }
         }
@@ -142,7 +141,7 @@ class ConfigDiscoveryTest extends TestCase
         $this->assertInstanceOf(Injector\ConfigInjectorChain::class, $chain);
 
         foreach ($chain->getCollection() as $injector) {
-            if ($injectorType === get_class($injector)) {
+            if ($injectorType === $injector::class) {
                 return;
             }
         }

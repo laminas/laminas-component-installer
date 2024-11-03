@@ -22,7 +22,7 @@ final class ConfigInjectorChain implements InjectorInterface
      *
      * @var Collection<string,InjectorInterface>
      */
-    private Collection $chain;
+    private readonly Collection $chain;
 
     /**
      * Types this injector is allowed to register.

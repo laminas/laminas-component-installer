@@ -23,11 +23,8 @@ use function method_exists;
  */
 final class PackageProviderDetectionFactory implements PackageProviderDetectionFactoryInterface
 {
-    private Composer $composer;
-
-    public function __construct(Composer $composer)
+    public function __construct(private readonly Composer $composer)
     {
-        $this->composer = $composer;
     }
 
     public function detect(PackageEvent $event, string $packageName): PackageProviderDetectionInterface
