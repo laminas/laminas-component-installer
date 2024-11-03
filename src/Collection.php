@@ -34,15 +34,11 @@ final class Collection implements
     Countable,
     IteratorAggregate
 {
-    /** @var array<TKey,TValue> */
-    protected array $items;
-
     /**
      * @param array<TKey,TValue> $items
      */
-    public function __construct(array $items)
+    public function __construct(protected array $items)
     {
-        $this->items = $items;
     }
 
     /**

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace LaminasTest\ComponentInstaller;
 
 use function sprintf;
-use function strpos;
+use function str_contains;
 
 /**
  * @psalm-immutable
@@ -14,17 +14,13 @@ final class RememberedAnswerQuestionAssertion extends AbstractQuestionAssertion
 {
     private const REMEMBER_QUESTION = 'Remember this option for other packages of the same type';
 
-    /** @var bool */
-    public $remember;
-
     /**
      * @psalm-param non-empty-string $expectedQuestion
      * @psalm-param scalar           $expectedAnswer
      */
-    private function __construct(string $expectedQuestion, $expectedAnswer, bool $remember)
+    private function __construct(string $expectedQuestion, $expectedAnswer, public bool $remember)
     {
         parent::__construct($expectedQuestion, $expectedAnswer);
-        $this->remember = $remember;
     }
 
     /**
@@ -50,8 +46,6 @@ final class RememberedAnswerQuestionAssertion extends AbstractQuestionAssertion
      */
     public function rememberAnswerAssertion(): callable
     {
-        return static function (string $question): bool {
-            return strpos($question, self::REMEMBER_QUESTION) !== false;
-        };
+        return static fn(string $question): bool => str_contains($question, self::REMEMBER_QUESTION);
     }
 }

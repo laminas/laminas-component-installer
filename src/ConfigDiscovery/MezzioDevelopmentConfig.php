@@ -11,7 +11,7 @@ final class MezzioDevelopmentConfig implements DiscoveryInterface
 {
     private const CONFIG_FILE = 'config/development.config.php.dist';
 
-    private ConfigAggregator $discovery;
+    private readonly ConfigAggregator $discovery;
 
     public function __construct(string $projectDirectory = '')
     {

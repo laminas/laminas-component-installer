@@ -47,10 +47,10 @@ use function preg_match;
 use function preg_replace;
 use function rtrim;
 use function sprintf;
+use function str_ends_with;
 use function str_replace;
 use function stripslashes;
 use function strtolower;
-use function substr;
 
 /**
  * If a package represents a component module, update the application configuration.
@@ -546,7 +546,7 @@ class ComponentInstaller implements
 
         while (true) {
             /** @psalm-suppress MixedAssignment Well the method returns mixed. We do verifying this in the next lines. */
-            $answer = $this->io->ask(implode($questions), $default);
+            $answer = $this->io->ask(implode('', $questions), $default);
 
             if (is_numeric($answer) && $options->has((int) $answer)) {
                 $injector = $options->get((int) $answer)->getInjector();
@@ -569,7 +569,7 @@ class ComponentInstaller implements
         $ask = ["\n  <question>Remember this option for other packages of the same type? (Y/n)</question>"];
 
         while (true) {
-            $answer = $this->io->ask(implode($ask), 'y');
+            $answer = $this->io->ask(implode('', $ask), 'y');
             if (! is_string($answer)) {
                 throw new RuntimeException(sprintf(
                     'Expected `%s#ask` to return a string: "%s" returned',
@@ -726,11 +726,7 @@ class ComponentInstaller implements
      */
     private function getCachedInjector(int $packageType): ?InjectorInterface
     {
-        if (isset($this->cachedInjectors[$packageType])) {
-            return $this->cachedInjectors[$packageType];
-        }
-
-        return null;
+        return $this->cachedInjectors[$packageType] ?? null;
     }
 
     /**
@@ -819,7 +815,7 @@ class ComponentInstaller implements
         switch ($type) {
             case 'classmap':
                 $fullPath = sprintf('%s/%s', $packagePath, $path);
-                if (substr($path, -10) === 'Module.php') {
+                if (str_ends_with($path, 'Module.php')) {
                     $modulePath = $fullPath;
                     break;
                 }
@@ -827,7 +823,7 @@ class ComponentInstaller implements
                 $modulePath = sprintf('%s/Module.php', rtrim($fullPath, '/'));
                 break;
             case 'files':
-                if (substr($path, -10) !== 'Module.php') {
+                if (! str_ends_with($path, 'Module.php')) {
                     return;
                 }
                 $modulePath = sprintf('%s/%s', $packagePath, $path);

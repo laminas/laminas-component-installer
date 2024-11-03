@@ -11,7 +11,7 @@ final class MezzioDevelopmentConfigInjector implements InjectorInterface
 {
     private const CONFIG_FILE = 'config/development.config.php.dist';
 
-    private ConfigAggregatorInjector $injector;
+    private readonly ConfigAggregatorInjector $injector;
 
     public function __construct(string $projectRoot)
     {
