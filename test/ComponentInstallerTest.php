@@ -297,16 +297,16 @@ final class ComponentInstallerTest extends TestCase
         $this->createModuleClass(
             $installPath . '/src/SomeComponent/Module.php',
             <<<CONTENT
-<?php
-namespace SomeComponent;
+                <?php
+                namespace SomeComponent;
 
-class Module {
-    public function getModuleDependencies()
-    {
-        return ['SomeDependency'];
-    }
-}
-CONTENT
+                class Module {
+                    public function getModuleDependencies()
+                    {
+                        return ['SomeDependency'];
+                    }
+                }
+                CONTENT
         );
 
         $package = $this->createMock(PackageInterface::class);
@@ -1469,66 +1469,66 @@ CONTENT
         $this->createModuleClass(
             $path . '/src/Psr0Too/DoesNotExist/Module.php',
             <<<CONTENT
-<?php
-namespace DoesNotExist;
+                <?php
+                namespace DoesNotExist;
 
-class Module
-{
-    public function getModuleDependencies()
-    {
-        return ['DoesNotExistDependency'];
-    }
-}
-CONTENT
+                class Module
+                {
+                    public function getModuleDependencies()
+                    {
+                        return ['DoesNotExistDependency'];
+                    }
+                }
+                CONTENT
         );
 
         $this->createModuleClass(
             $path . '/src/Psr4/Module.php',
             <<<CONTENT
-<?php
-namespace DoesNotExistEither;
+                <?php
+                namespace DoesNotExistEither;
 
-class Module
-{
-    public function getModuleDependencies()
-    {
-        return ['DoesNotExistEitherDependency'];
-    }
-}
-CONTENT
+                class Module
+                {
+                    public function getModuleDependencies()
+                    {
+                        return ['DoesNotExistEitherDependency'];
+                    }
+                }
+                CONTENT
         );
 
         mkdir(sprintf('%s/%s/src/ClassmappedToo', vfsStream::url('project'), $path));
         $this->createModuleClass(
             $path . '/src/ClassmappedToo/Module.php',
             <<<CONTENT
-<?php
-namespace ClassmappedToo;
+                <?php
+                namespace ClassmappedToo;
 
-class Module
-{
-    public function getModuleDependencies()
-    {
-        return ['ClassmappedTooDependency'];
-    }
-}
-CONTENT
+                class Module
+                {
+                    public function getModuleDependencies()
+                    {
+                        return ['ClassmappedTooDependency'];
+                    }
+                }
+                CONTENT
         );
 
         $this->createModuleClass(
             $path . '/src/File/Module.php',
             <<<CONTENT
-<?php
-namespace File;
+                <?php
+                namespace File;
 
-class Module
-{
-    public function getModuleDependencies()
-    {
-        return ['FileDependency'];
-    }
-}
-CONTENT
+                class Module
+                {
+                    public function getModuleDependencies()
+                    {
+                        return ['FileDependency'];
+                    }
+                }
+                CONTENT
         );
     }
 
@@ -1575,25 +1575,25 @@ CONTENT
     public function testInstallAutoInstallableDevModuleWithDifferentInjectors(): void
     {
         $moduleConfigContent = <<<'CONFIG'
-<?php
-return [
-    'modules' => [
-        'Laminas\Router',
-        'Laminas\Validator',
-        'Application'
-    ]
-];
-CONFIG;
+            <?php
+            return [
+                'modules' => [
+                    'Laminas\Router',
+                    'Laminas\Validator',
+                    'Application'
+                ]
+            ];
+            CONFIG;
 
         $this->createConfigFile('modules.config.php', $moduleConfigContent);
 
         $configContents = <<<'CONFIG'
-<?php
-return [
-    'modules' => [
-    ]
-];
-CONFIG;
+            <?php
+            return [
+                'modules' => [
+                ]
+            ];
+            CONFIG;
         foreach (['development.config.php.dist', 'development.config.php'] as $configName) {
             $this->createConfigFile($configName, $configContents);
         }
@@ -1688,15 +1688,15 @@ CONFIG;
     public function testInstallAutoInstallableDevModuleWithUniqueInjector(): void
     {
         $moduleConfigContent = <<<'CONFIG'
-<?php
-return [
-    'modules' => [
-        'Laminas\Router',
-        'Laminas\Validator',
-        'Application',
-    ]
-];
-CONFIG;
+            <?php
+            return [
+                'modules' => [
+                    'Laminas\Router',
+                    'Laminas\Validator',
+                    'Application',
+                ]
+            ];
+            CONFIG;
 
         $this->createConfigFile('modules.config.php', $moduleConfigContent);
 
