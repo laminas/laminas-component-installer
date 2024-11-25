@@ -1,4 +1,4 @@
-<?php
+<?php // phpcs:disable Squiz.Functions.MultiLineFunctionDeclaration.Indent,SlevomatCodingStandard.TypeHints.DeclareStrictTypes.IncorrectWhitespaceBeforeDeclare
 
 declare(strict_types=1);
 
