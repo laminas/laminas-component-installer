@@ -1018,7 +1018,6 @@ class ComponentInstaller implements
     }
 
     /**
-     * @param array $maybeLaminasSpecificConfiguration
      * @return ComposerExtraComponentInstallerProjectArrayType|ComposerExtraComponentInstallerArrayType
      * @psalm-return (
      *  $rootProject is true
