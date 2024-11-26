@@ -791,9 +791,6 @@ final class ComponentInstallerTest extends TestCase
 
     /**
      * @dataProvider modules
-     * @param array $availableModules
-     * @param array $enabledModules
-     * @param array $result
      * @psalm-param list<non-empty-string> $availableModules
      * @psalm-param list<non-empty-string> $enabledModules
      * @psalm-param list<non-empty-string> $result
