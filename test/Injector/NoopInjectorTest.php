@@ -7,6 +7,7 @@ namespace LaminasTest\ComponentInstaller\Injector;
 use Laminas\ComponentInstaller\Injector\InjectorInterface;
 use Laminas\ComponentInstaller\Injector\NoopInjector;
 use Override;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class NoopInjectorTest extends TestCase
@@ -20,9 +21,7 @@ final class NoopInjectorTest extends TestCase
         $this->injector = new NoopInjector();
     }
 
-    /**
-     * @dataProvider packageTypes
-     */
+    #[DataProvider('packageTypes')]
     public function testWillRegisterAnyType(int $type): void
     {
         $this->assertTrue($this->injector->registersType($type), 'NoopInjector does not register type ' . $type);
@@ -47,8 +46,8 @@ final class NoopInjectorTest extends TestCase
 
     /**
      * @param InjectorInterface::TYPE_* $type
-     * @dataProvider packageTypes
      */
+    #[DataProvider('packageTypes')]
     public function testInjectIsANoop(int $type): void
     {
         $injected = $this->injector->inject('Foo\Bar', $type);

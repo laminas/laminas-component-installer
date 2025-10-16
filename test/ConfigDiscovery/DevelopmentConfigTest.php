@@ -8,6 +8,7 @@ use Laminas\ComponentInstaller\ConfigDiscovery\DevelopmentConfig;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use Override;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class DevelopmentConfigTest extends TestCase
@@ -51,9 +52,7 @@ final class DevelopmentConfigTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider validDevelopmentConfigContents
-     */
+    #[DataProvider('validDevelopmentConfigContents')]
     public function testLocateReturnsTrueWhenFileExistsAndHasExpectedContent(string $contents): void
     {
         vfsStream::newFile('config/development.config.php.dist')

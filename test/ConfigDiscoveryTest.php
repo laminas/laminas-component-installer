@@ -13,6 +13,7 @@ use Laminas\ComponentInstaller\Injector\NoopInjector;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use Override;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function sprintf;
@@ -290,11 +291,11 @@ final class ConfigDiscoveryTest extends TestCase
     }
 
     /**
-     * @dataProvider configFileSubset
      * @param (callable(self): void) $seedMethod
      * @param InjectorInterface::TYPE_* $type
      * @param class-string<InjectorInterface> $expected
      */
+    #[DataProvider('configFileSubset')]
     public function testGetAvailableConfigOptionsCanReturnsSubsetOfOptionsBaseOnPackageType(
         callable $seedMethod,
         int $type,

@@ -4,23 +4,24 @@
     xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
     bootstrap="vendor/autoload.php"
     cacheDirectory=".phpunit.cache"
-    displayDetailsOnIncompleteTests="true"
-    displayDetailsOnSkippedTests="true"
-    displayDetailsOnTestsThatTriggerDeprecations="true"
-    displayDetailsOnTestsThatTriggerErrors="true"
-    displayDetailsOnTestsThatTriggerNotices="true"
-    displayDetailsOnTestsThatTriggerWarnings="true"
     colors="true"
+    displayDetailsOnAllIssues="true"
+    failOnAllIssues="true"
 >
+    <php>
+        <!-- Prevent cache folder interaction -->
+        <env name="COMPOSER_CACHE_READ_ONLY" value="true" />
+        <env name="COMPOSER_HTACCESS_PROTECT" value="false" />
+    </php>
     <testsuites>
         <testsuite name="Laminas\\ComponentInstaller Tests">
             <directory>./test</directory>
         </testsuite>
     </testsuites>
 
-    <source>
+    <source ignoreIndirectDeprecations="true">
         <include>
-            <directory suffix=".php">src</directory>
+            <directory suffix=".php">./src</directory>
         </include>
     </source>
 </phpunit>
