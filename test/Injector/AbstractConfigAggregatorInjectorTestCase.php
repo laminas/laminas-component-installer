@@ -7,6 +7,7 @@ namespace LaminasTest\ComponentInstaller\Injector;
 use Laminas\ComponentInstaller\Injector\ConfigAggregatorInjector;
 use Laminas\ComponentInstaller\Injector\InjectorInterface;
 use org\bovigo\vfs\vfsStream;
+use Override;
 
 use function file_get_contents;
 use function preg_replace;
@@ -26,6 +27,7 @@ abstract class AbstractConfigAggregatorInjectorTestCase extends AbstractInjector
         return preg_replace('/array\(([^)]+)\)/s', '[$1]', $contents);
     }
 
+    #[Override]
     public static function allowedTypes(): array
     {
         return [
@@ -35,6 +37,7 @@ abstract class AbstractConfigAggregatorInjectorTestCase extends AbstractInjector
         ];
     }
 
+    #[Override]
     public static function injectComponentProvider(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
@@ -77,6 +80,7 @@ abstract class AbstractConfigAggregatorInjectorTestCase extends AbstractInjector
         // phpcs:enable
     }
 
+    #[Override]
     public static function packageAlreadyRegisteredProvider(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
@@ -99,6 +103,7 @@ abstract class AbstractConfigAggregatorInjectorTestCase extends AbstractInjector
         // phpcs:enable
     }
 
+    #[Override]
     public static function emptyConfiguration(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
@@ -121,6 +126,7 @@ abstract class AbstractConfigAggregatorInjectorTestCase extends AbstractInjector
         ];
     }
 
+    #[Override]
     public static function packagePopulatedInConfiguration(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong

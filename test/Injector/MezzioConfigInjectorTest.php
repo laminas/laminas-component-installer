@@ -6,11 +6,12 @@ namespace LaminasTest\ComponentInstaller\Injector;
 
 use Laminas\ComponentInstaller\Injector\InjectorInterface;
 use Laminas\ComponentInstaller\Injector\MezzioConfigInjector;
+use Override;
 
 use function file_get_contents;
 use function preg_replace;
 
-class MezzioConfigInjectorTest extends AbstractInjectorTestCase
+final class MezzioConfigInjectorTest extends AbstractInjectorTestCase
 {
     /** @var non-empty-string */
     protected $configFile = 'config/config.php';
@@ -34,6 +35,7 @@ class MezzioConfigInjectorTest extends AbstractInjectorTestCase
         return preg_replace('/array\(([^)]+)\)/s', '[$1]', $contents);
     }
 
+    #[Override]
     public static function allowedTypes(): array
     {
         return [
@@ -43,6 +45,7 @@ class MezzioConfigInjectorTest extends AbstractInjectorTestCase
         ];
     }
 
+    #[Override]
     public static function injectComponentProvider(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
@@ -73,6 +76,7 @@ class MezzioConfigInjectorTest extends AbstractInjectorTestCase
         // phpcs:enable
     }
 
+    #[Override]
     public static function packageAlreadyRegisteredProvider(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
@@ -95,6 +99,7 @@ class MezzioConfigInjectorTest extends AbstractInjectorTestCase
         // phpcs:enable
     }
 
+    #[Override]
     public static function emptyConfiguration(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
@@ -117,6 +122,7 @@ class MezzioConfigInjectorTest extends AbstractInjectorTestCase
         ];
     }
 
+    #[Override]
     public static function packagePopulatedInConfiguration(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong

@@ -7,9 +7,10 @@ namespace LaminasTest\ComponentInstaller\ConfigDiscovery;
 use Laminas\ComponentInstaller\ConfigDiscovery\DevelopmentConfig;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
+use Override;
 use PHPUnit\Framework\TestCase;
 
-class DevelopmentConfigTest extends TestCase
+final class DevelopmentConfigTest extends TestCase
 {
     /** @var vfsStreamDirectory */
     private $configDir;
@@ -17,6 +18,7 @@ class DevelopmentConfigTest extends TestCase
     /** @var DevelopmentConfig */
     private $locator;
 
+    #[Override]
     protected function setUp(): void
     {
         $this->configDir = vfsStream::setup('project');

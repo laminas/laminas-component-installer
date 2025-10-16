@@ -6,8 +6,9 @@ namespace LaminasTest\ComponentInstaller\Injector;
 
 use Laminas\ComponentInstaller\Injector\DevelopmentConfigInjector;
 use Laminas\ComponentInstaller\Injector\InjectorInterface;
+use Override;
 
-class DevelopmentConfigInjectorTest extends AbstractInjectorTestCase
+final class DevelopmentConfigInjectorTest extends AbstractInjectorTestCase
 {
     /** @var non-empty-string */
     protected $configFile = 'config/development.config.php.dist';
@@ -29,6 +30,7 @@ class DevelopmentConfigInjectorTest extends AbstractInjectorTestCase
         InjectorInterface::TYPE_BEFORE_APPLICATION,
     ];
 
+    #[Override]
     public static function allowedTypes(): array
     {
         return [
@@ -40,6 +42,7 @@ class DevelopmentConfigInjectorTest extends AbstractInjectorTestCase
         ];
     }
 
+    #[Override]
     public static function injectComponentProvider(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
@@ -54,6 +57,7 @@ class DevelopmentConfigInjectorTest extends AbstractInjectorTestCase
         // phpcs:enable
     }
 
+    #[Override]
     public static function packageAlreadyRegisteredProvider(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
@@ -66,6 +70,7 @@ class DevelopmentConfigInjectorTest extends AbstractInjectorTestCase
         // phpcs:enable
     }
 
+    #[Override]
     public static function emptyConfiguration(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
@@ -79,6 +84,7 @@ class DevelopmentConfigInjectorTest extends AbstractInjectorTestCase
         ];
     }
 
+    #[Override]
     public static function packagePopulatedInConfiguration(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong

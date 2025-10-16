@@ -21,6 +21,18 @@
     </projectFiles>
 
     <issueHandlers>
+        <MissingOverrideAttribute>
+            <errorLevel type="suppress">
+                <directory name="src" />
+            </errorLevel>
+        </MissingOverrideAttribute>
+
+        <ClassMustBeFinal>
+            <errorLevel type="suppress">
+                <directory name="src" />
+            </errorLevel>
+        </ClassMustBeFinal>
+
         <InternalClass>
             <errorLevel type="suppress">
                 <directory name="test"/>

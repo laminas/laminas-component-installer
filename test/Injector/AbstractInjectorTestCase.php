@@ -7,6 +7,7 @@ namespace LaminasTest\ComponentInstaller\Injector;
 use Laminas\ComponentInstaller\Injector\InjectorInterface;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
+use Override;
 use PHPUnit\Framework\TestCase;
 
 use function file_get_contents;
@@ -37,6 +38,7 @@ abstract class AbstractInjectorTestCase extends TestCase
      */
     protected $injectorTypesAllowed = [];
 
+    #[Override]
     protected function setUp(): void
     {
         $this->configDir = vfsStream::setup('project');
