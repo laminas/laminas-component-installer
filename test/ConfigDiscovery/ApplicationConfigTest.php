@@ -8,6 +8,7 @@ use Laminas\ComponentInstaller\ConfigDiscovery\ApplicationConfig;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use Override;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class ApplicationConfigTest extends TestCase
@@ -51,9 +52,7 @@ final class ApplicationConfigTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider validApplicationConfigContents
-     */
+    #[DataProvider('validApplicationConfigContents')]
     public function testLocateReturnsTrueWhenFileExistsAndHasExpectedContent(string $contents): void
     {
         vfsStream::newFile('config/application.config.php')

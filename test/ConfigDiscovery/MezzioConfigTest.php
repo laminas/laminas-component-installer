@@ -8,6 +8,7 @@ use Laminas\ComponentInstaller\ConfigDiscovery\MezzioConfig;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use Override;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class MezzioConfigTest extends TestCase
@@ -57,9 +58,7 @@ final class MezzioConfigTest extends TestCase
         // @codingStandardsIgnoreEnd
     }
 
-    /**
-     * @dataProvider validMezzioConfigContents
-     */
+    #[DataProvider('validMezzioConfigContents')]
     public function testLocateReturnsTrueWhenFileExistsAndHasExpectedContent(string $contents): void
     {
         vfsStream::newFile('config/config.php')

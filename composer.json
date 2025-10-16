@@ -32,13 +32,13 @@
     },
     "require": {
         "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
-        "composer-plugin-api": "^2.0"
+        "composer-plugin-api": "^2.6"
     },
     "require-dev": {
         "composer/composer": "^2.7.7",
         "laminas/laminas-coding-standard": "~3.1.0",
         "mikey179/vfsstream": "^1.6.11",
-        "phpunit/phpunit": "^10.5.35",
+        "phpunit/phpunit": "^11.5.42",
         "psalm/plugin-phpunit": "^0.19.5",
         "vimeo/psalm": "^6.13.1",
         "webmozart/assert": "^1.11.0"

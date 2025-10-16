@@ -23,6 +23,7 @@ use Laminas\ComponentInstaller\ComponentInstaller;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use Override;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\IsAnything;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -639,12 +640,12 @@ final class ComponentInstallerTest extends TestCase
     }
 
     /**
-     * @dataProvider dependency
      * @param string $autoloading classmap|files|psr-0|psr-4
      * @psalm-param list<non-empty-string> $enabledModules
      * @psalm-param list<non-empty-string> $dependencies
      * @psalm-param list<non-empty-string> $result
      */
+    #[DataProvider('dependency')]
     public function testInjectModuleWithDependencies(
         string $packageName,
         array $enabledModules,
@@ -796,11 +797,11 @@ final class ComponentInstallerTest extends TestCase
     }
 
     /**
-     * @dataProvider modules
      * @psalm-param list<non-empty-string> $availableModules
      * @psalm-param list<non-empty-string> $enabledModules
      * @psalm-param list<non-empty-string> $result
      */
+    #[DataProvider('modules')]
     public function testModuleBeforeApplicationModules(
         array $availableModules,
         array $enabledModules,
@@ -1404,9 +1405,9 @@ final class ComponentInstallerTest extends TestCase
     }
 
     /**
-     * @dataProvider moduleClass
      * @psalm-param array<string, array<array-key, string>> $result
      */
+    #[DataProvider('moduleClass')]
     public function testGetModuleDependenciesFromModuleClass(string $file, array $result): void
     {
         $r  = new ReflectionObject($this->installer);
@@ -1536,11 +1537,11 @@ final class ComponentInstallerTest extends TestCase
     }
 
     /**
-     * @dataProvider injectorConfigProvider
      * @param non-empty-string $configContents
      * @param list<non-empty-string> $configNames
      * @param non-empty-string $expectedName
      */
+    #[DataProvider('injectorConfigProvider')]
     public function testUninstallMessageWithDifferentInjectors(
         string $configContents,
         array $configNames,
@@ -1910,8 +1911,8 @@ final class ComponentInstallerTest extends TestCase
      * @psalm-param list<AbstractQuestionAssertion> $inputAssertions
      * @psalm-param non-empty-list<non-empty-string> $outputAssertions
      * @psalm-param list<non-empty-string> $expectedInstalledModules
-     * @dataProvider packageUpdateScenarios
      */
+    #[DataProvider('packageUpdateScenarios')]
     public function testOnPostPackageUpdateAddsPackageWhenNewerVersionContainsDifferentInformationsThanPreviousVersion(
         array $installedModules,
         array $previousExtra,
