@@ -8,6 +8,11 @@
     displayDetailsOnAllIssues="true"
     failOnAllIssues="true"
 >
+    <php>
+        <!-- Prevent cache folder interaction -->
+        <env name="COMPOSER_CACHE_READ_ONLY" value="true" />
+        <env name="COMPOSER_HTACCESS_PROTECT" value="false" />
+    </php>
     <testsuites>
         <testsuite name="Laminas\\ComponentInstaller Tests">
             <directory>./test</directory>
