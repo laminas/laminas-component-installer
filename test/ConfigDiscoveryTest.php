@@ -12,11 +12,12 @@ use Laminas\ComponentInstaller\Injector\InjectorInterface;
 use Laminas\ComponentInstaller\Injector\NoopInjector;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
+use Override;
 use PHPUnit\Framework\TestCase;
 
 use function sprintf;
 
-class ConfigDiscoveryTest extends TestCase
+final class ConfigDiscoveryTest extends TestCase
 {
     private vfsStreamDirectory $projectRoot;
 
@@ -28,6 +29,7 @@ class ConfigDiscoveryTest extends TestCase
     /** @var list<class-string<InjectorInterface>> */
     private array $injectorTypes;
 
+    #[Override]
     protected function setUp(): void
     {
         $this->projectRoot = vfsStream::setup('project');

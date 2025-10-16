@@ -6,8 +6,9 @@ namespace LaminasTest\ComponentInstaller\Injector;
 
 use Laminas\ComponentInstaller\Injector\InjectorInterface;
 use Laminas\ComponentInstaller\Injector\ModulesConfigInjector;
+use Override;
 
-class ModulesConfigInjectorTest extends AbstractInjectorTestCase
+final class ModulesConfigInjectorTest extends AbstractInjectorTestCase
 {
     /** @var non-empty-string */
     protected $configFile = 'config/modules.config.php';
@@ -29,6 +30,7 @@ class ModulesConfigInjectorTest extends AbstractInjectorTestCase
         InjectorInterface::TYPE_BEFORE_APPLICATION,
     ];
 
+    #[Override]
     public static function allowedTypes(): array
     {
         return [
@@ -40,6 +42,7 @@ class ModulesConfigInjectorTest extends AbstractInjectorTestCase
         ];
     }
 
+    #[Override]
     public static function injectComponentProvider(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
@@ -54,6 +57,7 @@ class ModulesConfigInjectorTest extends AbstractInjectorTestCase
         // phpcs:enable
     }
 
+    #[Override]
     public static function packageAlreadyRegisteredProvider(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
@@ -66,6 +70,7 @@ class ModulesConfigInjectorTest extends AbstractInjectorTestCase
         // phpcs:enable
     }
 
+    #[Override]
     public static function emptyConfiguration(): array
     {
         $baseContentsLongArray  = '<' . "?php\nreturn array(\n    'Application',\n);";
@@ -77,6 +82,7 @@ class ModulesConfigInjectorTest extends AbstractInjectorTestCase
         ];
     }
 
+    #[Override]
     public static function packagePopulatedInConfiguration(): array
     {
         $baseContentsLongArray  = '<' . "?php\nreturn array(\n    'Application',\n);";

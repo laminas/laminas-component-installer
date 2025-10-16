@@ -22,6 +22,7 @@ use Generator;
 use Laminas\ComponentInstaller\ComponentInstaller;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
+use Override;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\IsAnything;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -74,6 +75,7 @@ final class ComponentInstallerTest extends TestCase
      **/
     private $rootPackageExtra = [];
 
+    #[Override]
     protected function setUp(): void
     {
         $this->projectRoot = vfsStream::setup('project');
@@ -208,6 +210,7 @@ final class ComponentInstallerTest extends TestCase
                 $this->assertions[] = new IsAnything();
             }
 
+            #[Override]
             public function matches(mixed $other): bool
             {
                 $assertion = current($this->assertions);
@@ -215,6 +218,7 @@ final class ComponentInstallerTest extends TestCase
                 return $assertion->matches($other);
             }
 
+            #[Override]
             public function toString(): string
             {
                 return current($this->assertions)->toString();
@@ -252,6 +256,7 @@ final class ComponentInstallerTest extends TestCase
                 $this->assertions[] = new IsAnything();
             }
 
+            #[Override]
             public function matches(mixed $other): bool
             {
                 $assertion = current($this->assertions);
@@ -259,6 +264,7 @@ final class ComponentInstallerTest extends TestCase
                 return $assertion->matches($other);
             }
 
+            #[Override]
             public function toString(): string
             {
                 return current($this->assertions)->toString();

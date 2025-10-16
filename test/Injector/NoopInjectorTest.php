@@ -6,13 +6,15 @@ namespace LaminasTest\ComponentInstaller\Injector;
 
 use Laminas\ComponentInstaller\Injector\InjectorInterface;
 use Laminas\ComponentInstaller\Injector\NoopInjector;
+use Override;
 use PHPUnit\Framework\TestCase;
 
-class NoopInjectorTest extends TestCase
+final class NoopInjectorTest extends TestCase
 {
     /** @var NoopInjector */
     private $injector;
 
+    #[Override]
     protected function setUp(): void
     {
         $this->injector = new NoopInjector();

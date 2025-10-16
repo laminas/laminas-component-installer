@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.24.0@462c80e31c34e58cc4f750c656be3927e80e550e">
+<files psalm-version="6.13.1@1e3b7f0a8ab32b23197b91107adc0a7ed8a05b51">
   <file src="src/ComponentInstaller.php">
     <InvalidArgument>
       <code><![CDATA[new Collection(array_keys(self::PACKAGE_TYPES))]]></code>
@@ -11,6 +11,9 @@
     <InvalidReturnType>
       <code><![CDATA[Collection<InjectorInterface::TYPE_*,non-empty-string>]]></code>
     </InvalidReturnType>
+    <PossiblyNullArgument>
+      <code><![CDATA[preg_replace('/[\s"\']/', '', $m[1])]]></code>
+    </PossiblyNullArgument>
   </file>
   <file src="src/ConfigDiscovery.php">
     <InvalidReturnStatement>
@@ -22,6 +25,11 @@
     <InvalidReturnType>
       <code><![CDATA[Collection<int,ConfigOption>]]></code>
     </InvalidReturnType>
+  </file>
+  <file src="src/ConfigDiscovery/AbstractDiscovery.php">
+    <PossiblyFalseArgument>
+      <code><![CDATA[$config]]></code>
+    </PossiblyFalseArgument>
   </file>
   <file src="src/ConfigDiscovery/DevelopmentWorkConfig.php">
     <PossiblyUnusedMethod>
@@ -46,9 +54,31 @@
       <code><![CDATA[sprintf($this->isRegisteredPattern, preg_quote(addslashes($package), '/'))]]></code>
       <code><![CDATA[sprintf($this->removalPatterns['pattern'], preg_quote($package))]]></code>
     </ArgumentTypeCoercion>
+    <PossiblyFalseArgument>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+    </PossiblyFalseArgument>
+    <PossiblyNullArgument>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+    </PossiblyNullArgument>
     <RiskyTruthyFalsyComparison>
       <code><![CDATA[$firstApplicationModule = $this->findFirstEnabledApplicationModule($this->applicationModules, $config)]]></code>
     </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="src/Injector/ConfigInjectorChain.php">
+    <PossiblyNullReference>
+      <code><![CDATA[getTypesAllowed]]></code>
+    </PossiblyNullReference>
   </file>
   <file src="src/Injector/DevelopmentConfigInjector.php">
     <PossiblyUnusedMethod>
@@ -75,6 +105,30 @@
       <code><![CDATA[__construct]]></code>
     </PossiblyUnusedMethod>
   </file>
+  <file src="test/ComponentInstallerTest.php">
+    <PossiblyFalseArgument>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+      <code><![CDATA[$config]]></code>
+    </PossiblyFalseArgument>
+    <PossiblyFalseReference>
+      <code><![CDATA[matches]]></code>
+      <code><![CDATA[matches]]></code>
+      <code><![CDATA[toString]]></code>
+      <code><![CDATA[toString]]></code>
+    </PossiblyFalseReference>
+  </file>
   <file src="test/ConfigDiscoveryTest.php">
     <InvalidPropertyAssignmentValue>
       <code><![CDATA[new Collection([
@@ -83,5 +137,153 @@
             InjectorInterface::TYPE_MODULE,
         ])]]></code>
     </InvalidPropertyAssignmentValue>
+  </file>
+  <file src="test/Injector/AbstractConfigAggregatorInjectorTestCase.php">
+    <InvalidNullableReturnType>
+      <code><![CDATA[string]]></code>
+    </InvalidNullableReturnType>
+    <LessSpecificReturnStatement>
+      <code><![CDATA[[
+            'fqcn-long-array'               => [$baseContentsFqcnLongArray,               $expectedContentsFqcnLongArray],
+            'global-long-array'             => [$baseContentsGloballyQualifiedLongArray,  $expectedContentsGloballyQualifiedLongArray],
+            'import-long-array'             => [$baseContentsImportLongArray,             $expectedContentsImportLongArray],
+            'import-long-array-alt-indent'  => [$baseContentsImportLongArrayAltIndent,    $expectedContentsImportLongArrayAltIndent],
+            'fqcn-short-array'              => [$baseContentsFqcnShortArray,              $expectedContentsFqcnShortArray],
+            'global-short-array'            => [$baseContentsGloballyQualifiedShortArray, $expectedContentsGloballyQualifiedShortArray],
+            'import-short-array'            => [$baseContentsImportShortArray,            $expectedContentsImportShortArray],
+            'import-short-array-alt-indent' => [$baseContentsImportShortArrayAltIndent,   $expectedContentsImportShortArrayAltIndent],
+        ]]]></code>
+      <code><![CDATA[[
+            'fqcn-long-array'               => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $baseContentsFqcnLongArray,               $expectedContentsFqcnLongArray],
+            'global-long-array'             => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $baseContentsGloballyQualifiedLongArray,  $expectedContentsGloballyQualifiedLongArray],
+            'import-long-array'             => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $baseContentsImportLongArray,             $expectedContentsImportLongArray],
+            'import-long-array-alt-indent'  => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $baseContentsImportLongArrayAltIndent,    $expectedContentsImportLongArrayAltIndent],
+            'fqcn-short-array'              => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $baseContentsFqcnShortArray,              $expectedContentsFqcnShortArray],
+            'global-short-array'            => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $baseContentsGloballyQualifiedShortArray, $expectedContentsGloballyQualifiedShortArray],
+            'import-short-array'            => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $baseContentsImportShortArray,            $expectedContentsImportShortArray],
+            'import-short-array-alt-indent' => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $baseContentsImportShortArrayAltIndent,   $expectedContentsImportShortArrayAltIndent],
+
+            // see https://github.com/laminas/laminas-component-installer/issues/21
+            'inject-only-first-occurence' => [ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER, $injectOnlyFirstOccurrenceInitial, $injectOnlyFirstOccurrenceExpected],
+        ]]]></code>
+      <code><![CDATA[[
+            'fqcn-long-array'    => [$fqcnLongArray,               ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER],
+            'global-long-array'  => [$globallyQualifiedLongArray,  ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER],
+            'import-long-array'  => [$importLongArray,             ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER],
+            'fqcn-short-array'   => [$fqcnShortArray,              ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER],
+            'global-short-array' => [$globallyQualifiedShortArray, ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER],
+            'import-short-array' => [$importShortArray,            ConfigAggregatorInjector::TYPE_CONFIG_PROVIDER],
+        ]]]></code>
+      <code><![CDATA[[
+            'fqcn-long-array'    => [$fqcnLongArray],
+            'global-long-array'  => [$globallyQualifiedLongArray],
+            'import-long-array'  => [$importLongArray],
+            'fqcn-short-array'   => [$fqcnShortArray],
+            'global-short-array' => [$globallyQualifiedShortArray],
+            'import-short-array' => [$importShortArray],
+        ]]]></code>
+    </LessSpecificReturnStatement>
+    <MoreSpecificReturnType>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[array]]></code>
+    </MoreSpecificReturnType>
+    <NullableReturnStatement>
+      <code><![CDATA[preg_replace('/array\(([^)]+)\)/s', '[$1]', $contents)]]></code>
+    </NullableReturnStatement>
+    <PossiblyFalseArgument>
+      <code><![CDATA[$baseContentsFqcnLongArray]]></code>
+      <code><![CDATA[$baseContentsFqcnLongArray]]></code>
+      <code><![CDATA[$baseContentsGloballyQualifiedLongArray]]></code>
+      <code><![CDATA[$baseContentsGloballyQualifiedLongArray]]></code>
+      <code><![CDATA[$baseContentsImportLongArray]]></code>
+      <code><![CDATA[$baseContentsImportLongArray]]></code>
+      <code><![CDATA[$baseContentsImportLongArrayAltIndent]]></code>
+      <code><![CDATA[$baseContentsImportLongArrayAltIndent]]></code>
+      <code><![CDATA[$contents]]></code>
+      <code><![CDATA[$expectedContentsFqcnLongArray]]></code>
+      <code><![CDATA[$expectedContentsFqcnLongArray]]></code>
+      <code><![CDATA[$expectedContentsGloballyQualifiedLongArray]]></code>
+      <code><![CDATA[$expectedContentsGloballyQualifiedLongArray]]></code>
+      <code><![CDATA[$expectedContentsImportLongArray]]></code>
+      <code><![CDATA[$expectedContentsImportLongArray]]></code>
+      <code><![CDATA[$expectedContentsImportLongArrayAltIndent]]></code>
+      <code><![CDATA[$expectedContentsImportLongArrayAltIndent]]></code>
+      <code><![CDATA[$fqcnLongArray]]></code>
+      <code><![CDATA[$fqcnLongArray]]></code>
+      <code><![CDATA[$globallyQualifiedLongArray]]></code>
+      <code><![CDATA[$globallyQualifiedLongArray]]></code>
+      <code><![CDATA[$importLongArray]]></code>
+      <code><![CDATA[$importLongArray]]></code>
+    </PossiblyFalseArgument>
+  </file>
+  <file src="test/Injector/MezzioConfigInjectorTest.php">
+    <InvalidNullableReturnType>
+      <code><![CDATA[string]]></code>
+    </InvalidNullableReturnType>
+    <LessSpecificReturnStatement>
+      <code><![CDATA[[
+            'fqcn-long-array'    => [$baseContentsFqcnLongArray,               $expectedContentsFqcnLongArray],
+            'global-long-array'  => [$baseContentsGloballyQualifiedLongArray,  $expectedContentsGloballyQualifiedLongArray],
+            'import-long-array'  => [$baseContentsImportLongArray,             $expectedContentsImportLongArray],
+            'fqcn-short-array'   => [$baseContentsFqcnShortArray,              $expectedContentsFqcnShortArray],
+            'global-short-array' => [$baseContentsGloballyQualifiedShortArray, $expectedContentsGloballyQualifiedShortArray],
+            'import-short-array' => [$baseContentsImportShortArray,            $expectedContentsImportShortArray],
+        ]]]></code>
+      <code><![CDATA[[
+            'fqcn-long-array'    => [$fqcnLongArray,               InjectorInterface::TYPE_CONFIG_PROVIDER],
+            'global-long-array'  => [$globallyQualifiedLongArray,  InjectorInterface::TYPE_CONFIG_PROVIDER],
+            'import-long-array'  => [$importLongArray,             InjectorInterface::TYPE_CONFIG_PROVIDER],
+            'fqcn-short-array'   => [$fqcnShortArray,              InjectorInterface::TYPE_CONFIG_PROVIDER],
+            'global-short-array' => [$globallyQualifiedShortArray, InjectorInterface::TYPE_CONFIG_PROVIDER],
+            'import-short-array' => [$importShortArray,            InjectorInterface::TYPE_CONFIG_PROVIDER],
+        ]]]></code>
+      <code><![CDATA[[
+            'fqcn-long-array'    => [$fqcnLongArray],
+            'global-long-array'  => [$globallyQualifiedLongArray],
+            'import-long-array'  => [$importLongArray],
+            'fqcn-short-array'   => [$fqcnShortArray],
+            'global-short-array' => [$globallyQualifiedShortArray],
+            'import-short-array' => [$importShortArray],
+        ]]]></code>
+      <code><![CDATA[[
+            'fqcn-long-array'    => [InjectorInterface::TYPE_CONFIG_PROVIDER, $baseContentsFqcnLongArray,               $expectedContentsFqcnLongArray],
+            'global-long-array'  => [InjectorInterface::TYPE_CONFIG_PROVIDER, $baseContentsGloballyQualifiedLongArray,  $expectedContentsGloballyQualifiedLongArray],
+            'import-long-array'  => [InjectorInterface::TYPE_CONFIG_PROVIDER, $baseContentsImportLongArray,             $expectedContentsImportLongArray],
+            'fqcn-short-array'   => [InjectorInterface::TYPE_CONFIG_PROVIDER, $baseContentsFqcnShortArray,              $expectedContentsFqcnShortArray],
+            'global-short-array' => [InjectorInterface::TYPE_CONFIG_PROVIDER, $baseContentsGloballyQualifiedShortArray, $expectedContentsGloballyQualifiedShortArray],
+            'import-short-array' => [InjectorInterface::TYPE_CONFIG_PROVIDER, $baseContentsImportShortArray,            $expectedContentsImportShortArray],
+        ]]]></code>
+    </LessSpecificReturnStatement>
+    <MoreSpecificReturnType>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[array]]></code>
+    </MoreSpecificReturnType>
+    <NullableReturnStatement>
+      <code><![CDATA[preg_replace('/array\(([^)]+)\)/s', '[$1]', $contents)]]></code>
+    </NullableReturnStatement>
+    <PossiblyFalseArgument>
+      <code><![CDATA[$baseContentsFqcnLongArray]]></code>
+      <code><![CDATA[$baseContentsFqcnLongArray]]></code>
+      <code><![CDATA[$baseContentsGloballyQualifiedLongArray]]></code>
+      <code><![CDATA[$baseContentsGloballyQualifiedLongArray]]></code>
+      <code><![CDATA[$baseContentsImportLongArray]]></code>
+      <code><![CDATA[$baseContentsImportLongArray]]></code>
+      <code><![CDATA[$expectedContentsFqcnLongArray]]></code>
+      <code><![CDATA[$expectedContentsFqcnLongArray]]></code>
+      <code><![CDATA[$expectedContentsGloballyQualifiedLongArray]]></code>
+      <code><![CDATA[$expectedContentsGloballyQualifiedLongArray]]></code>
+      <code><![CDATA[$expectedContentsImportLongArray]]></code>
+      <code><![CDATA[$expectedContentsImportLongArray]]></code>
+      <code><![CDATA[$fqcnLongArray]]></code>
+      <code><![CDATA[$fqcnLongArray]]></code>
+      <code><![CDATA[$globallyQualifiedLongArray]]></code>
+      <code><![CDATA[$globallyQualifiedLongArray]]></code>
+      <code><![CDATA[$importLongArray]]></code>
+      <code><![CDATA[$importLongArray]]></code>
+    </PossiblyFalseArgument>
   </file>
 </files>

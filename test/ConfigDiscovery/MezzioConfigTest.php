@@ -7,9 +7,10 @@ namespace LaminasTest\ComponentInstaller\ConfigDiscovery;
 use Laminas\ComponentInstaller\ConfigDiscovery\MezzioConfig;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
+use Override;
 use PHPUnit\Framework\TestCase;
 
-class MezzioConfigTest extends TestCase
+final class MezzioConfigTest extends TestCase
 {
     /** @var vfsStreamDirectory */
     private $configDir;
@@ -17,6 +18,7 @@ class MezzioConfigTest extends TestCase
     /** @var MezzioConfig */
     private $locator;
 
+    #[Override]
     protected function setUp(): void
     {
         $this->configDir = vfsStream::setup('project');
