@@ -7,9 +7,9 @@ class Module implements SomeInterface
 {
     public function getModuleDependencies()
     {
-        return array(
+        return [
             'Foo\\D1',
             'Bar\\D2',
-        );
+        ];
     }
 }

@@ -17,7 +17,7 @@ final class MezzioConfigInjector extends AbstractInjector
 {
     use ConditionalDiscoveryTrait;
 
-    public const DEFAULT_CONFIG_FILE = 'config/config.php';
+    public const string DEFAULT_CONFIG_FILE = 'config/config.php';
 
     /** @var list<InjectorInterface::TYPE_*> */
     protected array $allowedTypes = [

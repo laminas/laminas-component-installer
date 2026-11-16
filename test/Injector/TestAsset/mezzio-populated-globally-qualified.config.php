@@ -1,8 +1,8 @@
 <?php
 
-$aggregator = new \Laminas\ConfigAggregator\ConfigAggregator(array(
+$aggregator = new \Laminas\ConfigAggregator\ConfigAggregator([
     \Foo\Bar::class,
     \Application\ConfigProvider::class,
-), 'data/cache/config.php');
+], 'data/cache/config.php');
 
 return $aggregator->getMergedConfig();

@@ -7,11 +7,11 @@ namespace Laminas\ComponentInstaller\ConfigDiscovery;
 /**
  * @internal
  */
-final class MezzioDevelopmentWorkConfig implements DiscoveryInterface
+final readonly class MezzioDevelopmentWorkConfig implements DiscoveryInterface
 {
-    private const CONFIG_FILE = 'config/development.config.php';
+    private const string CONFIG_FILE = 'config/development.config.php';
 
-    private readonly ConfigAggregator $discovery;
+    private ConfigAggregator $discovery;
 
     public function __construct(string $projectDirectory = '')
     {

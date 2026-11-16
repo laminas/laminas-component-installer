@@ -18,7 +18,7 @@ final class ConfigAggregatorInjector extends AbstractInjector
     use ConditionalDiscoveryTrait;
 
     /** @var non-empty-string */
-    public const DEFAULT_CONFIG_FILE = 'config/config.php';
+    public const string DEFAULT_CONFIG_FILE = 'config/config.php';
 
     /** @var list<InjectorInterface::TYPE_*> */
     protected array $allowedTypes = [

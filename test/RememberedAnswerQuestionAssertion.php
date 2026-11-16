@@ -12,7 +12,7 @@ use function str_contains;
  */
 final class RememberedAnswerQuestionAssertion extends AbstractQuestionAssertion
 {
-    private const REMEMBER_QUESTION = 'Remember this option for other packages of the same type';
+    private const string REMEMBER_QUESTION = 'Remember this option for other packages of the same type';
 
     /**
      * @psalm-param non-empty-string $expectedQuestion

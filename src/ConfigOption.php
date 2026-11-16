@@ -9,12 +9,12 @@ use Laminas\ComponentInstaller\Injector\InjectorInterface;
 /**
  * @internal
  */
-final class ConfigOption
+final readonly class ConfigOption
 {
     /**
      * @param non-empty-string $promptText
      */
-    public function __construct(private readonly string $promptText, private readonly InjectorInterface $injector)
+    public function __construct(private string $promptText, private InjectorInterface $injector)
     {
     }
 
