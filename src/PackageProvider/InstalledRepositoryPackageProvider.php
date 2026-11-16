@@ -11,9 +11,9 @@ use function array_values;
 /**
  * @internal
  */
-final class InstalledRepositoryPackageProvider implements PackageProviderDetectionInterface
+final readonly class InstalledRepositoryPackageProvider implements PackageProviderDetectionInterface
 {
-    public function __construct(private readonly InstalledRepository $installedRepository)
+    public function __construct(private InstalledRepository $installedRepository)
     {
     }
 

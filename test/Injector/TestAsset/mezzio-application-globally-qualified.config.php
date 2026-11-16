@@ -1,7 +1,7 @@
 <?php
 
-$aggregator = new \Laminas\ConfigAggregator\ConfigAggregator(array(
+$aggregator = new \Laminas\ConfigAggregator\ConfigAggregator([
     \Application\ConfigProvider::class,
-), 'data/cache/config.php');
+], 'data/cache/config.php');
 
 return $aggregator->getMergedConfig();

@@ -122,7 +122,7 @@ class ComponentInstaller implements
     /**
      * Map of known package types to composer config keys.
      */
-    private const PACKAGE_TYPES = [
+    private const array PACKAGE_TYPES = [
         InjectorInterface::TYPE_CONFIG_PROVIDER => 'config-provider',
         InjectorInterface::TYPE_COMPONENT       => 'component',
         InjectorInterface::TYPE_MODULE          => 'module',
@@ -447,7 +447,7 @@ class ComponentInstaller implements
         $supportedTypes = new Collection([]);
         $options
             ->map(static fn (ConfigOption $option) => $option->getInjector()->getTypesAllowed())
-            ->each(static function (array $allowedTypes) use ($supportedTypes) {
+            ->each(static function (array $allowedTypes) use ($supportedTypes): void {
                 $supportedTypes->merge(new Collection($allowedTypes));
             });
 
@@ -650,7 +650,7 @@ class ComponentInstaller implements
         // Create a collection of unique modules based on the package types present,
         // and remove each from configuration.
         $this->marshalPackageComponents($metadata, $packageTypes, $configOptions)
-            ->each(function ($module) use ($package, $injectors) {
+            ->each(function ($module) use ($package, $injectors): void {
                 $this->removeModuleFromConfig($module, $package, $injectors);
             });
     }
@@ -665,7 +665,7 @@ class ComponentInstaller implements
      */
     private function removeModuleFromConfig(string $component, string $package, Collection $injectors): void
     {
-        $injectors->each(function (InjectorInterface $injector) use ($component, $package) {
+        $injectors->each(function (InjectorInterface $injector) use ($component, $package): void {
             if (! $injector->isRegistered($component)) {
                 return;
             }
@@ -705,7 +705,7 @@ class ComponentInstaller implements
         return implode(
             ', ',
             array_map(
-                fn($item) => $this->getInjectorConfigFileName($item),
+                $this->getInjectorConfigFileName(...),
                 $injector->getCollection()->toArray()
             )
         );

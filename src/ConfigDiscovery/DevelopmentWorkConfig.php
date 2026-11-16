@@ -7,11 +7,11 @@ namespace Laminas\ComponentInstaller\ConfigDiscovery;
 /**
  * @internal
  */
-final class DevelopmentWorkConfig implements DiscoveryInterface
+final readonly class DevelopmentWorkConfig implements DiscoveryInterface
 {
-    private const CONFIG_FILE = 'config/development.config.php';
+    private const string CONFIG_FILE = 'config/development.config.php';
 
-    private readonly DiscoveryInterface $applicationDiscovery;
+    private DiscoveryInterface $applicationDiscovery;
 
     public function __construct(string $projectDirectory = '')
     {

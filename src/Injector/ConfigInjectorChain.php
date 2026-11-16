@@ -106,7 +106,7 @@ final class ConfigInjectorChain implements InjectorInterface
         $injected = false;
 
         $this->chain
-            ->each(function ($injector) use ($package, $type, &$injected) {
+            ->each(function ($injector) use ($package, $type, &$injected): void {
                 $injected = $injector->inject($package, $type) || $injected;
             });
 
@@ -121,7 +121,7 @@ final class ConfigInjectorChain implements InjectorInterface
         $removed = false;
 
         $this->chain
-            ->each(function ($injector) use ($package, &$removed) {
+            ->each(function ($injector) use ($package, &$removed): void {
                 $removed = $injector->remove($package) || $removed;
             });
 

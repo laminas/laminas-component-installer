@@ -32,7 +32,7 @@ abstract class AbstractQuestionAssertion
      */
     final public function assertion(): callable
     {
-        return fn(string $param): bool => $this->assertQuestionMatchesExpectation($param);
+        return $this->assertQuestionMatchesExpectation(...);
     }
 
     private function assertQuestionMatchesExpectation(string $argument): bool

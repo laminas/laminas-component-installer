@@ -7,11 +7,11 @@ namespace Laminas\ComponentInstaller\Injector;
 /**
  * @internal
  */
-final class MezzioDevelopmentConfigInjector implements InjectorInterface
+final readonly class MezzioDevelopmentConfigInjector implements InjectorInterface
 {
-    private const CONFIG_FILE = 'config/development.config.php.dist';
+    private const string CONFIG_FILE = 'config/development.config.php.dist';
 
-    private readonly ConfigAggregatorInjector $injector;
+    private ConfigAggregatorInjector $injector;
 
     public function __construct(string $projectRoot)
     {

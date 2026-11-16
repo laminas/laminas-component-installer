@@ -21,9 +21,9 @@ use function method_exists;
 /**
  * @internal
  */
-final class PackageProviderDetectionFactory implements PackageProviderDetectionFactoryInterface
+final readonly class PackageProviderDetectionFactory implements PackageProviderDetectionFactoryInterface
 {
-    public function __construct(private readonly Composer $composer)
+    public function __construct(private Composer $composer)
     {
     }
 

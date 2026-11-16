@@ -17,7 +17,7 @@ final class ConfigDiscovery
     /**
      * Map of known configuration files and their locators.
      */
-    private const DISCOVERY = [
+    private const array DISCOVERY = [
         'config/application.config.php'      => ConfigDiscovery\ApplicationConfig::class,
         'config/modules.config.php'          => ConfigDiscovery\ModulesConfig::class,
         'config/development.config.php.dist' => [
@@ -35,7 +35,7 @@ final class ConfigDiscovery
     /**
      * Map of config files to injectors
      */
-    private const INJECTORS = [
+    private const array INJECTORS = [
         'config/application.config.php'      => Injector\ApplicationConfigInjector::class,
         'config/modules.config.php'          => Injector\ModulesConfigInjector::class,
         'config/development.config.php.dist' => [
