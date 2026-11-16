@@ -1,30 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="6.13.1@1e3b7f0a8ab32b23197b91107adc0a7ed8a05b51">
+<files psalm-version="6.20.12@56e5217b13db8789c2b8cfcc73d0f902df2cda11">
   <file src="src/ComponentInstaller.php">
-    <InvalidArgument>
-      <code><![CDATA[new Collection(array_keys(self::PACKAGE_TYPES))]]></code>
-    </InvalidArgument>
-    <InvalidReturnStatement>
-      <code><![CDATA[(new Collection(self::PACKAGE_TYPES))
-            ->filter(fn(string $configKey) => isset($extra[$configKey]))]]></code>
-    </InvalidReturnStatement>
-    <InvalidReturnType>
-      <code><![CDATA[Collection<InjectorInterface::TYPE_*,non-empty-string>]]></code>
-    </InvalidReturnType>
     <PossiblyNullArgument>
       <code><![CDATA[preg_replace('/[\s"\']/', '', $m[1])]]></code>
     </PossiblyNullArgument>
-  </file>
-  <file src="src/ConfigDiscovery.php">
-    <InvalidReturnStatement>
-      <code><![CDATA[new Collection([
-            new ConfigOption('Do not inject', new Injector\NoopInjector()),
-            ...$options->toArray(),
-        ])]]></code>
-    </InvalidReturnStatement>
-    <InvalidReturnType>
-      <code><![CDATA[Collection<int,ConfigOption>]]></code>
-    </InvalidReturnType>
   </file>
   <file src="src/ConfigDiscovery/AbstractDiscovery.php">
     <PossiblyFalseArgument>
@@ -74,6 +53,15 @@
     <RiskyTruthyFalsyComparison>
       <code><![CDATA[$firstApplicationModule = $this->findFirstEnabledApplicationModule($this->applicationModules, $config)]]></code>
     </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="src/Injector/InjectorInterface.php">
+    <MissingClassConstType>
+      <code><![CDATA[TYPE_CONFIG_PROVIDER    = 0]]></code>
+      <code><![CDATA[TYPE_COMPONENT          = 1]]></code>
+      <code><![CDATA[TYPE_MODULE             = 2]]></code>
+      <code><![CDATA[TYPE_DEPENDENCY         = 3]]></code>
+      <code><![CDATA[TYPE_BEFORE_APPLICATION = 4]]></code>
+    </MissingClassConstType>
   </file>
   <file src="src/Injector/ConfigInjectorChain.php">
     <PossiblyNullReference>
@@ -128,15 +116,6 @@
       <code><![CDATA[toString]]></code>
       <code><![CDATA[toString]]></code>
     </PossiblyFalseReference>
-  </file>
-  <file src="test/ConfigDiscoveryTest.php">
-    <InvalidPropertyAssignmentValue>
-      <code><![CDATA[new Collection([
-            InjectorInterface::TYPE_CONFIG_PROVIDER,
-            InjectorInterface::TYPE_COMPONENT,
-            InjectorInterface::TYPE_MODULE,
-        ])]]></code>
-    </InvalidPropertyAssignmentValue>
   </file>
   <file src="test/Injector/AbstractConfigAggregatorInjectorTestCase.php">
     <InvalidNullableReturnType>
